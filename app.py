@@ -63,7 +63,7 @@ p,span,div,td,th,li{color:var(--ink-soft);}
 .stButton>button{
   background:var(--brand) !important; color:#ffffff !important; border:none !important;
   border-radius:var(--radius-sm) !important; font-weight:600 !important; font-size:.88rem !important;
-  padding:.5rem 1rem !important; box-shadow:none !important; transition:background .15s ease;
+  padding:.5rem 1rem !important; box-shadow:none !important; transition:background .22s ease, color .22s ease, box-shadow .22s ease, transform .12s ease;
 }
 .stButton>button:hover{background:var(--brand-dark) !important; color:#ffffff !important;}
 .stButton>button p,.stButton>button span,.stButton>button div{color:#ffffff !important;}
@@ -102,7 +102,7 @@ hr{border:none !important; border-top:1px solid var(--border) !important; margin
 .av-progress-track{background:var(--bg-alt); border-radius:999px; height:10px; overflow:hidden;}
 .av-progress-fill{height:10px; border-radius:999px;}
 
-.av-crop-tile{border:1px solid var(--border); border-radius:var(--radius-sm); padding:.55rem; text-align:center; background:var(--surface);}
+.av-crop-tile{border:1px solid var(--border); border-radius:var(--radius-sm); padding:.55rem; text-align:center; background:var(--surface); transition:border-color .22s ease, background-color .22s ease, transform .15s ease;}
 .av-crop-tile.sel{border-color:var(--brand); background:var(--bg-alt);}
 .av-crop-tile .rank{font-size:.68rem; color:var(--muted); font-weight:700;}
 .av-crop-tile .name{font-size:.82rem; font-weight:700; color:var(--ink);}
@@ -789,28 +789,44 @@ NAV_ITEMS = [
     ("schemes",   "🏛️ " + T("tab_schemes", lang)),
     ("chat",      "💬 " + T("tab_chat", lang)),
 ]
+# Scoped to .st-key-navtabs ONLY, so it never touches other buttons
+# in the app (e.g. the Light/Dark Mode toggle, which was broken by
+# an earlier unscoped [kind="secondary"] rule).
 st.markdown("""<style>
-.stButton>button[kind="secondary"]{
-  background:transparent !important; color:var(--muted) !important;
-  border:none !important; box-shadow:none !important;
+.st-key-navtabs{border-bottom:1px solid var(--border); margin-bottom:1rem; padding-bottom:2px;}
+.st-key-navtabs .stButton>button{
+  transition:background-color .22s ease, color .22s ease, box-shadow .22s ease, transform .12s ease !important;
 }
-.stButton>button[kind="secondary"]:hover{background:var(--bg-alt) !important; color:var(--brand) !important;}
-.stButton>button[kind="primary"]{
-  background:var(--surface) !important; color:var(--brand) !important;
-  border:none !important; box-shadow:0 -3px 0 var(--brand) inset !important;
+.st-key-navtabs .stButton>button:active{transform:scale(.97);}
+.st-key-navtabs .stButton>button[kind="secondary"]{
+  background:transparent !important; border:none !important; box-shadow:none !important;
 }
-.av-navbar-wrap{border-bottom:1px solid var(--border); margin-bottom:1rem;}
+.st-key-navtabs .stButton>button[kind="secondary"] p,
+.st-key-navtabs .stButton>button[kind="secondary"] span,
+.st-key-navtabs .stButton>button[kind="secondary"] div{
+  color:var(--ink-soft) !important; font-weight:600 !important;
+}
+.st-key-navtabs .stButton>button[kind="secondary"]:hover{background:var(--bg-alt) !important;}
+.st-key-navtabs .stButton>button[kind="primary"]{
+  background:var(--surface) !important; border:none !important;
+  box-shadow:0 -3px 0 var(--brand) inset !important;
+}
+.st-key-navtabs .stButton>button[kind="primary"] p,
+.st-key-navtabs .stButton>button[kind="primary"] span,
+.st-key-navtabs .stButton>button[kind="primary"] div{
+  color:var(--brand) !important; font-weight:700 !important;
+}
 </style>""", unsafe_allow_html=True)
-st.markdown("<div class='av-navbar-wrap'>", unsafe_allow_html=True)
-nav_cols = st.columns(len(NAV_ITEMS))
-for col, (nav_key, nav_label) in zip(nav_cols, NAV_ITEMS):
-    with col:
-        is_active = st.session_state.active_tab == nav_key
-        if st.button(nav_label, key=f"navtab_{nav_key}", use_container_width=True,
-                     type="primary" if is_active else "secondary"):
-            st.session_state.active_tab = nav_key
-            st.rerun()
-st.markdown("</div>", unsafe_allow_html=True)
+
+with st.container(key="navtabs"):
+    nav_cols = st.columns(len(NAV_ITEMS))
+    for col, (nav_key, nav_label) in zip(nav_cols, NAV_ITEMS):
+        with col:
+            is_active = st.session_state.active_tab == nav_key
+            if st.button(nav_label, key=f"navtab_{nav_key}", use_container_width=True,
+                         type="primary" if is_active else "secondary"):
+                st.session_state.active_tab = nav_key
+                st.rerun()
 
 # ══════════════════════════════════════════════════════════════
 # TAB 1 — DASHBOARD
