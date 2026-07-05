@@ -144,8 +144,9 @@ hr{border:none !important; border-top:1px solid var(--border) !important; margin
 /* Dark mode toggle button — scoped to its key so it never affects other buttons */
 .st-key-dm_toggle_btn>button{
   background:#0f6b5c !important; color:#ffffff !important;
-  border:none !important; font-size:.75rem !important; font-weight:600 !important;
-  border-radius:8px !important; padding:6px 10px !important;
+  border:none !important; font-size:.68rem !important; font-weight:600 !important;
+  border-radius:8px !important; padding:3px 8px !important; min-height:0 !important;
+  height:28px !important; line-height:1 !important;
   transition:background .2s ease !important;
 }
 .st-key-dm_toggle_btn>button:hover{background:#0d5c4f !important;}
@@ -809,28 +810,16 @@ with hc2:
     _clock_bg     = "#1e3530" if _dm else "#e8f6ee"
     _clock_color  = "#3f9c88" if _dm else "#0f6b5c"
     _clock_border = "#2d4a42" if _dm else "#2d936c"
-    _btn_bg       = "#2d7a68" if _dm else "#0f6b5c"
     _btn_label    = "☀️ Light Mode" if _dm else "🌙 Dark Mode"
-    # Streamlit native button — always works, no iframe/postMessage needed
-    if st.button(_btn_label, key="dm_toggle_btn", use_container_width=True):
-        st.session_state.dark_mode = not _dm
-        st.rerun()
+    # Clock first, then Dark Mode button underneath — matching original layout
     components.html(f"""
-    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px; padding-top:4px;">
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px; padding-top:2px;">
       <div id="av-clock" style="
-          text-align:center;
-          font-size:.82rem;
-          font-weight:700;
-          color:{_clock_color};
-          background:{_clock_bg};
-          border:1.5px solid {_clock_border};
-          border-radius:8px;
-          padding:5px 14px;
-          width:150px;
-          font-family:monospace;
-          letter-spacing:.04em;
-          line-height:1.5;
-          box-sizing:border-box;
+          text-align:center; font-size:.82rem; font-weight:700;
+          color:{_clock_color}; background:{_clock_bg};
+          border:1.5px solid {_clock_border}; border-radius:8px;
+          padding:5px 14px; width:150px; font-family:monospace;
+          letter-spacing:.04em; line-height:1.5; box-sizing:border-box;
       ">loading...</div>
     </div>
     <script>
@@ -838,20 +827,17 @@ with hc2:
         var now = new Date();
         var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
         var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        var day = days[now.getDay()];
-        var d = now.getDate().toString().padStart(2,'0');
-        var m = months[now.getMonth()];
-        var hh = now.getHours().toString().padStart(2,'0');
-        var mm = now.getMinutes().toString().padStart(2,'0');
-        var ss = now.getSeconds().toString().padStart(2,'0');
         document.getElementById('av-clock').innerHTML =
-            '<div>' + day + ' ' + d + ' ' + m + '</div>' +
-            '<div>' + hh + ':' + mm + ':' + ss + '</div>';
+            '<div>' + days[now.getDay()] + ' ' + now.getDate().toString().padStart(2,'0') + ' ' + months[now.getMonth()] + '</div>' +
+            '<div>' + now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0') + '</div>';
     }}
-    tick();
-    setInterval(tick, 1000);
+    tick(); setInterval(tick, 1000);
     </script>
-    """, height=75)
+    """, height=68)
+    # Dark Mode button — native Streamlit so it reliably updates session_state
+    if st.button(_btn_label, key="dm_toggle_btn", use_container_width=True):
+        st.session_state.dark_mode = not _dm
+        st.rerun()
 
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
