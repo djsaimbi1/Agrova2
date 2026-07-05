@@ -65,9 +65,6 @@ p,span,div,td,th,li{color:var(--ink-soft);}
 }
 .stTabs [aria-selected="true"]{background:var(--surface) !important; color:var(--brand) !important; box-shadow:0 -2px 0 var(--brand) inset;}
 
-/* Hide real dark-mode toggle button — visual one lives in the clock iframe */
-div[data-testid="stHorizontalBlock"] > div:last-child .stButton > button { display:none !important; }
-
 .stButton>button{
   background:var(--brand) !important; color:#ffffff !important; border:none !important;
   border-radius:var(--radius-sm) !important; font-weight:600 !important; font-size:.88rem !important;
@@ -790,6 +787,11 @@ with hc2:
         f"<div style='text-align:right;padding-top:.6rem;'>{pill('📍 ' + selected_state, 'neutral')}</div>",
         unsafe_allow_html=True
     )
+    # Handle dark mode toggle via query param (no Streamlit button needed)
+    if st.query_params.get("toggle_dm") == "1":
+        st.session_state.dark_mode = not st.session_state.get("dark_mode", False)
+        st.query_params.clear()
+        st.rerun()
     _dm = st.session_state.get("dark_mode", False)
     _clock_bg     = "#1e3530" if _dm else "#e8f6ee"
     _clock_color  = "#3f9c88" if _dm else "#0f6b5c"
@@ -811,9 +813,9 @@ with hc2:
           font-family:monospace;
           letter-spacing:.04em;
           line-height:1.5;
+          box-sizing:border-box;
       ">loading...</div>
-      <button id="dm-btn"
-        style="
+      <button id="dm-btn" style="
           width:150px;
           font-size:.75rem;
           font-weight:600;
@@ -821,10 +823,11 @@ with hc2:
           background:{_btn_bg};
           border:none;
           border-radius:8px;
-          padding:5px 10px;
+          padding:6px 10px;
           cursor:pointer;
           font-family:sans-serif;
           letter-spacing:.02em;
+          box-sizing:border-box;
       ">{_btn_label}</button>
     </div>
     <script>
@@ -845,19 +848,12 @@ with hc2:
     tick();
     setInterval(tick, 1000);
     document.getElementById('dm-btn').addEventListener('click', function() {{
-        var btns = window.parent.document.querySelectorAll('button');
-        for (var i = 0; i < btns.length; i++) {{
-            if (btns[i].innerText.includes('Light Mode') || btns[i].innerText.includes('Dark Mode')) {{
-                if (btns[i].offsetParent !== null) {{ btns[i].click(); break; }}
-            }}
-        }}
+        var url = new URL(window.parent.location.href);
+        url.searchParams.set('toggle_dm', '1');
+        window.parent.location.href = url.toString();
     }});
     </script>
     """, height=105)
-    # Hidden Streamlit button that the iframe button triggers via postMessage
-    if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode", key="dm_toggle", help="Toggle dark mode"):
-        st.session_state.dark_mode = not _dm
-        st.rerun()
 
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
