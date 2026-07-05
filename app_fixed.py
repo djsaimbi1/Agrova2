@@ -691,6 +691,31 @@ with st.sidebar:
     simulate = st.button(T("run_btn", lang), use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════
+# ANALYSIS SNAPSHOT — makes the "Run Full Analysis" button do
+# something: on click, freeze the current readings so the
+# dashboard can show what changed since the last run.
+# ══════════════════════════════════════════════════════════════
+if "last_analysis" not in st.session_state:
+    st.session_state.last_analysis = None
+if "prev_analysis" not in st.session_state:
+    st.session_state.prev_analysis = None
+if "analysis_count" not in st.session_state:
+    st.session_state.analysis_count = 0
+if "last_analysis_time" not in st.session_state:
+    st.session_state.last_analysis_time = None
+
+current_readings = {
+    "soil": soil, "temp": temp, "rain": rain, "sun": sun, "fert": fert,
+    "gas": gas, "humidity": humidity, "wind": wind, "ph": ph, "nitrogen": nitrogen,
+}
+
+if simulate:
+    st.session_state.prev_analysis = st.session_state.last_analysis
+    st.session_state.last_analysis = current_readings
+    st.session_state.last_analysis_time = datetime.now()
+    st.session_state.analysis_count += 1
+
+# ══════════════════════════════════════════════════════════════
 # SCORING — unchanged formula from the original tool
 # ══════════════════════════════════════════════════════════════
 def score_all_crops():
@@ -850,34 +875,84 @@ with st.container(key="navtabs"):
 # ══════════════════════════════════════════════════════════════
 if st.session_state.active_tab == "dashboard":
     section(T("live_dash", lang))
+
+    prev_run = st.session_state.get("prev_analysis")
+    last_run_time = st.session_state.get("last_analysis_time")
+    analysis_count = st.session_state.get("analysis_count", 0)
+
+    def since_last_run(key, val, unit=""):
+        """Delta vs the snapshot taken on the previous 'Run Full Analysis' click."""
+        if prev_run is None:
+            return None, False
+        d = val - prev_run[key]
+        if d == 0:
+            return None, False
+        sign = "+" if d > 0 else ""
+        return f"{sign}{d}{unit} since last run", True
+
+    metric_defs = [
+        (T("soil",lang),     f"{soil}%",      "soil",     "%"),
+        (T("temp",lang),     f"{temp}°C",     "temp",     "°C"),
+        (T("rain",lang),     f"{rain}%",      "rain",     "%"),
+        (T("sun",lang),      f"{sun}%",       "sun",      "%"),
+        (T("humidity",lang), f"{humidity}%",  "humidity", "%"),
+        (T("fert",lang),     f"{fert}%",      "fert",     "%"),
+        (T("gas",lang),      f"{gas}%",       "gas",      "%"),
+        (T("wind",lang),     f"{wind} km/h",  "wind",     " km/h"),
+        (T("ph",lang),       f"{ph}",         "ph",       ""),
+        (T("nitrogen",lang), f"{nitrogen}%",  "nitrogen", "%"),
+    ]
+    raw_vals = {"soil":soil,"temp":temp,"rain":rain,"sun":sun,"humidity":humidity,
+                "fert":fert,"gas":gas,"wind":wind,"ph":ph,"nitrogen":nitrogen}
+    metrics = []
+    changed_count = 0
+    for label, val, key, unit in metric_defs:
+        delta, changed = since_last_run(key, raw_vals[key], unit)
+        if changed:
+            changed_count += 1
+        metrics.append((label, val, delta, changed))
+
+    # Status banner — this is the visible proof the button did something
+    if last_run_time is None:
+        st.markdown(
+            "<div class='av-card av-tone-info' style='margin-bottom:1rem;'>"
+            "<h4>▶️ No analysis run yet</h4>"
+            "<p>Adjust the sliders in the sidebar, then press "
+            f"<strong>{T('run_btn', lang)}</strong> to take a snapshot. "
+            "Future runs will show exactly what changed since the last one.</p></div>",
+            unsafe_allow_html=True
+        )
+    else:
+        change_msg = (f"{changed_count} parameter(s) changed since the previous run"
+                      if changed_count else "No parameters changed since the previous run")
+        st.markdown(
+            f"<div class='av-card av-tone-ok' style='margin-bottom:1rem;'>"
+            f"<h4>✅ Analysis #{analysis_count} — run at {last_run_time.strftime('%d %b, %H:%M:%S')}</h4>"
+            f"<p>{change_msg}.</p></div>",
+            unsafe_allow_html=True
+        )
+
     ACCENTS = ["#e63946","#c98a2e","#2176ae","#2d936c","#8b5cf6",
                "#e63946","#c98a2e","#2176ae","#2d936c","#8b5cf6"]
-    metrics = [
-        (T("soil",lang),     f"{soil}%",      f"{soil-50:+}%"),
-        (T("temp",lang),     f"{temp}°C",     f"{temp-25:+}°C"),
-        (T("rain",lang),     f"{rain}%",      f"{rain-40:+}%"),
-        (T("sun",lang),      f"{sun}%",       f"{sun-60:+}%"),
-        (T("humidity",lang), f"{humidity}%",  None),
-        (T("fert",lang),     f"{fert}%",      None),
-        (T("gas",lang),      f"{gas}%",       None),
-        (T("wind",lang),     f"{wind} km/h",  None),
-        (T("ph",lang),       f"{ph}",         None),
-        (T("nitrogen",lang), f"{nitrogen}%",  None),
-    ]
     dm = st.session_state.get("dark_mode", False)
     card_bg   = "#1e3530" if dm else "var(--surface)"
     card_bdr  = "#2d4a42" if dm else "var(--border)"
     lbl_color = "#6a9e94" if dm else "var(--muted)"
     dlt_color = "#4a7a6e" if dm else "#6b8079"
+    changed_glow = "#c98a2e"
     for row_start in (0, 5):
         cols = st.columns(5)
-        for ci, (label, val, delta) in enumerate(metrics[row_start:row_start+5]):
+        for ci, (label, val, delta, changed) in enumerate(metrics[row_start:row_start+5]):
             accent = ACCENTS[row_start + ci]
-            delta_html = f"<div style='font-size:.78rem;color:{dlt_color};margin-top:.15rem;'>{delta}</div>" if delta else ""
+            border_color = changed_glow if changed else accent
+            border_width = "3px" if changed else "3px"
+            delta_color = changed_glow if changed else dlt_color
+            delta_html = f"<div style='font-size:.78rem;color:{delta_color};margin-top:.15rem;font-weight:{700 if changed else 400};'>{delta}</div>" if delta else ""
+            extra_shadow = f"box-shadow:0 0 0 2px {changed_glow}33,var(--shadow);" if changed else "box-shadow:var(--shadow);"
             cols[ci].markdown(
                 f"<div style='background:{card_bg};border:1px solid {card_bdr};"
-                f"border-top:3px solid {accent};border-radius:8px;padding:.75rem 1rem;"
-                f"box-shadow:var(--shadow);'>"
+                f"border-top:{border_width} solid {border_color};border-radius:8px;padding:.75rem 1rem;"
+                f"{extra_shadow}'>"
                 f"<div style='font-size:.68rem;font-weight:700;text-transform:uppercase;"
                 f"letter-spacing:.07em;color:{lbl_color};'>{label}</div>"
                 f"<div style='font-size:1.35rem;font-weight:800;color:{accent};margin-top:.25rem;'>{val}</div>"
