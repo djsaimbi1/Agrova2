@@ -778,10 +778,16 @@ sc = scores[sel]
 # ══════════════════════════════════════════════════════════════
 # HEADER
 # ══════════════════════════════════════════════════════════════
-hc1, hc2 = st.columns([3, 1])
+hc1, hc2 = st.columns([4, 1])
 with hc1:
-    st.markdown(f"<h1 style='margin-bottom:0;'>🌾 {T('app_title', lang)}</h1>", unsafe_allow_html=True)
-    st.markdown(f"<p style='color:var(--muted);'>{T('app_sub', lang)}</p>", unsafe_allow_html=True)
+    st.markdown(
+        f"<h1 style='margin-bottom:.3rem; font-size:2.6rem; line-height:1.15;'>🌾 {T('app_title', lang)}</h1>",
+        unsafe_allow_html=True
+    )
+    st.markdown(
+        f"<p style='color:var(--muted); font-size:1.05rem; font-weight:500; margin-top:.2rem; letter-spacing:.01em;'>{T('app_sub', lang)}</p>",
+        unsafe_allow_html=True
+    )
 with hc2:
     st.markdown(
         f"<div style='text-align:right;padding-top:.6rem;'>{pill('📍 ' + selected_state, 'neutral')}</div>",
