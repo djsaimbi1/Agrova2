@@ -872,6 +872,33 @@ with st.container(key="navtabs"):
                 st.rerun()
 
 # ══════════════════════════════════════════════════════════════
+# SCROLL RESET — whenever the active tab changes (nav bar click,
+# or picking a crop from the Top Crops grid), snap the viewport
+# back to the top so the new tab is read from its first section
+# (e.g. Crop Details) instead of wherever the page was previously
+# scrolled to (e.g. down at Planting Guide).
+# ══════════════════════════════════════════════════════════════
+if "prev_active_tab" not in st.session_state:
+    st.session_state.prev_active_tab = st.session_state.active_tab
+if st.session_state.prev_active_tab != st.session_state.active_tab:
+    st.session_state.prev_active_tab = st.session_state.active_tab
+    st.markdown("""<script>
+    (function(){
+      function scrollTop(){
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        var main = document.querySelector('section.main') || document.querySelector('[data-testid="stAppViewBlockContainer"]');
+        if(main){ main.scrollTop = 0; }
+        try{ window.parent.scrollTo(0,0); }catch(e){}
+      }
+      scrollTop();
+      setTimeout(scrollTop, 50);
+      setTimeout(scrollTop, 200);
+    })();
+    </script>""", unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════════════
 # TAB 1 — DASHBOARD
 # ══════════════════════════════════════════════════════════════
 if st.session_state.active_tab == "dashboard":
