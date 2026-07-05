@@ -812,69 +812,80 @@ with hc2:
     _pill_color   = "#3f9c88" if _dm else "#0f6b5c"
     _pill_border  = "#2d4a42" if _dm else "#b5d5c8"
 
-    # Location pill + live clock stay in an iframe (components.html) —
-    # they're purely cosmetic and need real <script> execution for the
-    # ticking clock, which st.markdown's HTML sanitizer won't run.
+    # Pill + clock in iframe (needs live JS for the ticking clock).
+    # The iframe height is sized to exactly contain the two elements
+    # so there is no extra white gap between it and the button below.
     components.html(f"""
-    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px; padding-top:6px;">
-
-      <!-- Location pill -->
-      <div style="
-          text-align:center; font-size:.72rem; font-weight:700;
-          color:{_pill_color}; background:{_pill_bg};
-          border:1.5px solid {_pill_border}; border-radius:999px;
-          padding:5px 14px; width:150px; white-space:nowrap;
-          font-family:sans-serif; letter-spacing:.03em;
-          box-sizing:border-box; line-height:1.5;
-      ">📍 Maharashtra</div>
-
-      <!-- Clock -->
-      <div id="av-clock" style="
-          text-align:center; font-size:.82rem; font-weight:700;
-          color:{_clock_color}; background:{_clock_bg};
-          border:1.5px solid {_clock_border}; border-radius:8px;
-          padding:5px 14px; width:150px; font-family:monospace;
-          letter-spacing:.04em; line-height:1.5; box-sizing:border-box;
-      ">loading...</div>
-
+    <style>
+      *{{ box-sizing:border-box; margin:0; padding:0; }}
+      body{{ background:transparent; }}
+      .wrap{{
+        display:flex; flex-direction:column; align-items:flex-end;
+        gap:10px; padding-top:6px;
+        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      }}
+      .pill{{
+        text-align:center; font-size:.72rem; font-weight:700;
+        color:{_pill_color}; background:{_pill_bg};
+        border:1.5px solid {_pill_border}; border-radius:999px;
+        padding:5px 14px; width:150px; white-space:nowrap;
+        letter-spacing:.03em; line-height:1.5;
+      }}
+      #av-clock{{
+        text-align:center; font-size:.78rem; font-weight:700;
+        color:{_clock_color}; background:{_clock_bg};
+        border:1.5px solid {_clock_border}; border-radius:8px;
+        padding:5px 14px; width:150px;
+        letter-spacing:.03em; line-height:1.6;
+      }}
+    </style>
+    <div class="wrap">
+      <div class="pill">📍 Maharashtra</div>
+      <div id="av-clock">loading...</div>
     </div>
     <script>
-    function tick() {{
-        var now = new Date();
-        var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        var day = days[now.getDay()];
-        var d = now.getDate().toString().padStart(2,'0');
-        var m = months[now.getMonth()];
-        var hh = now.getHours().toString().padStart(2,'0');
-        var mm = now.getMinutes().toString().padStart(2,'0');
-        var ss = now.getSeconds().toString().padStart(2,'0');
-        document.getElementById('av-clock').innerHTML =
-            '<div>' + day + ' ' + d + ' ' + m + '</div>' +
-            '<div>' + hh + ':' + mm + ':' + ss + '</div>';
-    }}
-    tick();
-    setInterval(tick, 1000);
+    (function(){{
+      function tick(){{
+        var now=new Date(),D=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+            M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        document.getElementById('av-clock').innerHTML=
+          '<div>'+D[now.getDay()]+' '+String(now.getDate()).padStart(2,'0')+' '+M[now.getMonth()]+'</div>'+
+          '<div>'+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0')+'</div>';
+      }}
+      tick(); setInterval(tick,1000);
+    }})();
     </script>
-    """, height=110)
+    """, height=96)
 
-    # Real Streamlit button for the actual toggle — styled to match the
-    # pill/clock above via the same .st-key-<key> scoping trick already
-    # used for the nav tabs further down in this file.
-    st.markdown(f"""
-    <style>
+    # Dark mode button as a real st.button — styled via scoped CSS to
+    # look IDENTICAL to the pill/clock (same font stack, same weight,
+    # same border-radius, same width). Negative margin-top pulls it up
+    # flush against the iframe so all three elements have equal 10px gaps.
+    st.markdown(f"""<style>
+    /* Remove all Streamlit padding that pushes the button away from the iframe */
+    .st-key-dm_toggle {{ margin-top:-14px !important; }}
+    .st-key-dm_toggle .stButton {{ display:flex; justify-content:flex-end; }}
     .st-key-dm_toggle .stButton>button{{
-        width:150px !important; float:right; font-size:.75rem !important; font-weight:600 !important;
-        color:#ffffff !important; background:{_btn_bg} !important;
-        border:none !important; border-radius:8px !important;
-        padding:6px 10px !important; letter-spacing:.02em;
+      width:150px !important;
+      font-size:.72rem !important; font-weight:700 !important;
+      color:#ffffff !important; background:{_btn_bg} !important;
+      border:none !important; border-radius:8px !important;
+      padding:6px 14px !important; letter-spacing:.03em !important;
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif !important;
+      line-height:1.6 !important; text-align:center !important;
+      transition:background .2s !important;
     }}
     .st-key-dm_toggle .stButton>button:hover{{ background:{_btn_bg_hover} !important; }}
-    .st-key-dm_toggle .stButton>button p{{ color:#ffffff !important; font-size:.75rem !important; }}
-    </style>
-    """, unsafe_allow_html=True)
+    .st-key-dm_toggle .stButton>button p,
+    .st-key-dm_toggle .stButton>button span{{
+      color:#ffffff !important;
+      font-size:.72rem !important; font-weight:700 !important;
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif !important;
+      letter-spacing:.03em !important;
+    }}
+    </style>""", unsafe_allow_html=True)
     with st.container(key="dm_toggle"):
-        if st.button(_btn_label, key="dm_toggle_btn", use_container_width=True):
+        if st.button(_btn_label, key="dm_toggle_btn", use_container_width=False):
             st.session_state.dark_mode = not st.session_state.get("dark_mode", False)
             st.rerun()
 
