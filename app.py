@@ -85,7 +85,8 @@ hr{border:none !important; border-top:1px solid var(--border) !important; margin
 .av-tone-info{border-top-color:var(--accent3); background:var(--info-bg);}
 
 /* PPT-inspired section labels */
-.av-section{margin:1.8rem 0 .8rem 0; padding-bottom:.5rem;}
+.av-section{margin:1.8rem 0 .8rem 0; padding-bottom:.5rem; animation:av-fadein .28s ease-out;}
+@keyframes av-fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
 .av-section h3{
   margin:0 !important; font-size:.72rem !important; font-weight:800 !important;
   letter-spacing:.12em !important; text-transform:uppercase !important;
@@ -766,6 +767,23 @@ input,textarea{background:#162421 !important; color:#dff0ea !important; border-c
 [data-testid="stSlider"] [data-testid="stTickBar"]{background:#253d36 !important;}
 .av-pill-neutral{background:#1e3530 !important; color:#c8e6de !important; border-color:#2d4a42 !important;}
 .av-pill{color:#c8e6de !important;}
+.av-tone-danger{background:#2c0c09 !important;}
+.av-tone-warn{background:#271c00 !important;}
+.av-tone-ok{background:#0b2418 !important;}
+.av-tone-info{background:#091d2c !important;}
+.av-crop-tile{background:#162421 !important; border-color:#253d36 !important;}
+.av-crop-tile .rank{color:#8ec4b8 !important;}
+.av-crop-tile .name{color:#dff0ea !important;}
+.av-crop-tile .score{color:#3f9c88 !important;}
+.av-crop-tile.sel{background:#1e3530 !important; border-color:#3f9c88 !important;}
+.st-key-navtabs{border-color:#253d36 !important;}
+.st-key-navtabs .stButton>button[kind="secondary"] p,
+.st-key-navtabs .stButton>button[kind="secondary"] span,
+.st-key-navtabs .stButton>button[kind="secondary"] div{color:#9ec4bb !important;}
+.st-key-navtabs .stButton>button[kind="primary"]{background:#162421 !important; box-shadow:0 -3px 0 #3f9c88 inset !important;}
+.st-key-navtabs .stButton>button[kind="primary"] p,
+.st-key-navtabs .stButton>button[kind="primary"] span,
+.st-key-navtabs .stButton>button[kind="primary"] div{color:#3f9c88 !important;}
 </style>""", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
@@ -826,7 +844,6 @@ with st.container(key="navtabs"):
             if st.button(nav_label, key=f"navtab_{nav_key}", use_container_width=True,
                          type="primary" if is_active else "secondary"):
                 st.session_state.active_tab = nav_key
-                st.rerun()
 
 # ══════════════════════════════════════════════════════════════
 # TAB 1 — DASHBOARD
