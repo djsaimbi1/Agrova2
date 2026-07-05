@@ -28,6 +28,8 @@ st.markdown("""
   width:100% !important;
   padding-left:3rem !important;
   padding-right:3rem !important;
+  min-height:100vh !important;
+  box-sizing:border-box !important;
 }
 [data-testid="stAppViewContainer"],
 [data-testid="stAppViewBlockContainer"],
@@ -35,6 +37,7 @@ section.main{
   max-width:100% !important;
   width:100% !important;
   padding:0 !important;
+  min-height:100vh !important;
 }
 /* Light mode — cover every wrapper */
 html,body{background:#f4faf8 !important; min-height:100vh; width:100%;}
@@ -104,6 +107,10 @@ hr{border:none !important; border-top:1px solid var(--border) !important; margin
 .av-progress-fill{height:10px; border-radius:999px;}
 
 .av-crop-tile{border:1px solid var(--border); border-radius:var(--radius-sm); padding:.55rem; text-align:center; background:var(--surface); transition:border-color .22s ease, background-color .22s ease, transform .15s ease;}
+/* Government scheme cards — fixed height + flex so every card in the
+   grid lines up regardless of how long its description text is. */
+.av-card-scheme{min-height:190px; display:flex; flex-direction:column;}
+.av-card-scheme p:last-of-type{margin-top:auto !important; padding-top:.4rem;}
 .av-crop-tile.sel{border-color:var(--brand); background:var(--bg-alt);}
 .av-crop-tile .rank{font-size:.68rem; color:var(--muted); font-weight:700;}
 .av-crop-tile .name{font-size:.82rem; font-weight:700; color:var(--ink);}
@@ -613,9 +620,9 @@ GOV_SCHEMES = [
 # ══════════════════════════════════════════════════════════════
 # CARD / UI HELPERS
 # ══════════════════════════════════════════════════════════════
-def card(title, body, icon="", tone="brand"):
+def card(title, body, icon="", tone="brand", extra_class=""):
     st.markdown(
-        f"<div class='av-card av-tone-{tone}'><h4>{icon} {title}</h4>{body}</div>",
+        f"<div class='av-card av-tone-{tone} {extra_class}'><h4>{icon} {title}</h4>{body}</div>",
         unsafe_allow_html=True
     )
 
@@ -1203,22 +1210,30 @@ elif st.session_state.active_tab == "schemes":
     section(T("gov_section", lang))
     full = GOV_SCHEMES[:-1] if len(GOV_SCHEMES) % 3 != 0 else GOV_SCHEMES
     leftover = GOV_SCHEMES[len(full):]
-    gc = st.columns(3)
-    for i, (name, url, desc_dict) in enumerate(full):
-        with gc[i % 3]:
-            card(name, f"<p>{desc_dict.get(lang, desc_dict['English'])}</p>"
-                 f"<p><a href='{url}' target='_blank' style='color:var(--brand);font-weight:700;'>🔗 {L['apply_now'][lang]}</a></p>",
-                 icon="🏛️", tone="brand")
-    if leftover:
-        lo_cols = st.columns(3)
-        for name, url, desc_dict in leftover:
-            with lo_cols[1]:
-                card(name, f"<p>{desc_dict.get(lang, desc_dict['English'])}</p>"
-                     f"<p><a href='{url}' target='_blank' style='color:var(--brand);font-weight:700;'>🔗 {L['apply_now'][lang]}</a></p>",
-                     icon="🏛️", tone="brand")
-    # Fill remaining viewport height so background shows — this tab is
-    # shorter than the others and was leaving a white gap at the bottom.
-    st.markdown("<div style='min-height:60vh;background:transparent;'></div>", unsafe_allow_html=True)
+
+    def scheme_cell(name, url, desc_dict, extra_style=""):
+        desc = desc_dict.get(lang, desc_dict['English'])
+        return (f"<div class='av-card av-tone-brand av-card-scheme' style='margin:0;{extra_style}'>"
+                f"<h4>🏛️ {name}</h4><p>{desc}</p>"
+                f"<p><a href='{url}' target='_blank' style='color:var(--brand);font-weight:700;'>"
+                f"🔗 {L['apply_now'][lang]}</a></p></div>")
+
+    # Real CSS Grid instead of st.columns — grid rows auto-equalize height,
+    # so cards no longer drift out of alignment or look mismatched in size
+    # when one card's description text wraps to more lines than its neighbor's.
+    cells_html = "".join(scheme_cell(name, url, desc_dict) for name, url, desc_dict in full)
+    if len(leftover) == 1:
+        name, url, desc_dict = leftover[0]
+        cells_html += scheme_cell(name, url, desc_dict, extra_style="grid-column:2;")
+    elif len(leftover) == 2:
+        for i, (name, url, desc_dict) in enumerate(leftover):
+            cells_html += scheme_cell(name, url, desc_dict, extra_style=f"grid-column:{i+1};")
+
+    st.markdown(
+        f"<div style='display:grid;grid-template-columns:repeat(3,1fr);"
+        f"gap:1rem;align-items:stretch;'>{cells_html}</div>",
+        unsafe_allow_html=True
+    )
 
 # ══════════════════════════════════════════════════════════════
 # TAB 5 — CHATBOT
