@@ -24,6 +24,7 @@ st.markdown("""
 /* Full-width — no max-width cap, stretches to any screen ratio */
 .block-container{
   padding-top:3.5rem !important;
+  padding-bottom:4rem !important;
   max-width:100% !important;
   width:100% !important;
   padding-left:3rem !important;
@@ -994,7 +995,7 @@ if st.session_state.active_tab == "dashboard":
                 f"{delta_html}</div>",
                 unsafe_allow_html=True
             )
-        st.markdown("<div style='margin-bottom:.75rem;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
     section(T("crop_loss", lang))
     loss_tone = "danger" if loss_pct > 40 else ("warn" if loss_pct > 15 else "ok")
@@ -1010,21 +1011,24 @@ if st.session_state.active_tab == "dashboard":
 
     section(T("top_crops", lang))
     top10 = sorted_crops[:10]
-    cols = st.columns(5)
-    for i, (crop, score) in enumerate(top10):
-        with cols[i % 5]:
-            is_sel = crop == sel
-            cls = "av-crop-tile sel" if is_sel else "av-crop-tile"
-            st.markdown(
-                f"<div class='{cls}'><div class='rank'>#{i+1}</div>"
-                f"<div class='name'>{CN(crop, lang)}</div>"
-                f"<div class='score'>{score}/100</div></div>",
-                unsafe_allow_html=True
-            )
-            if st.button(CN(crop, lang), key=f"pick_{crop}", use_container_width=True):
-                st.session_state.sel_crop = crop
-                st.session_state.active_tab = "advisor"
-                st.rerun()
+    for row_start in (0, 5):
+        cols = st.columns(5)
+        for ci, (crop, score) in enumerate(top10[row_start:row_start+5]):
+            i = row_start + ci
+            with cols[ci]:
+                is_sel = crop == sel
+                cls = "av-crop-tile sel" if is_sel else "av-crop-tile"
+                st.markdown(
+                    f"<div class='{cls}'><div class='rank'>#{i+1}</div>"
+                    f"<div class='name'>{CN(crop, lang)}</div>"
+                    f"<div class='score'>{score}/100</div></div>",
+                    unsafe_allow_html=True
+                )
+                if st.button(CN(crop, lang), key=f"pick_{crop}", use_container_width=True):
+                    st.session_state.sel_crop = crop
+                    st.session_state.active_tab = "advisor"
+                    st.rerun()
+        st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
 # TAB 2 — CROP ADVISOR
