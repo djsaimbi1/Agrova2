@@ -869,6 +869,7 @@ with st.container(key="navtabs"):
             if st.button(nav_label, key=f"navtab_{nav_key}", use_container_width=True,
                          type="primary" if is_active else "secondary"):
                 st.session_state.active_tab = nav_key
+                st.rerun()
 
 # ══════════════════════════════════════════════════════════════
 # TAB 1 — DASHBOARD
