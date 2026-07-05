@@ -704,6 +704,8 @@ def score_all_crops():
 
 if "sel_crop" not in st.session_state:
     st.session_state.sel_crop = None
+if "active_tab" not in st.session_state:
+    st.session_state.active_tab = "dashboard"
 
 scores = score_all_crops()
 sorted_crops = list(scores.items())
@@ -774,39 +776,46 @@ if gas > 70:
 
 risks, loss_pct = crop_loss_risk(soil, rain, temp, gas, humidity, wind)
 
-tab_dash, tab_advisor, tab_finance, tab_schemes, tab_chat = st.tabs([
-    "📊 " + T("tab_dashboard", lang),
-    "🌾 " + T("tab_advisor", lang),
-    "💧 " + T("tab_finance", lang),
-    "🏛️ " + T("tab_schemes", lang),
-    "💬 " + T("tab_chat", lang),
-])
-
-# ── Force-switch to the Crop Advisor tab after picking a crop ──
-# (self-contained: does NOT depend on the tabRestored/localStorage
-#  logic above, which locks itself after the first manual tab click)
-if st.session_state.get("jump_to_advisor"):
-    st.session_state.jump_to_advisor = False
-    st.markdown("""<script>
-(function(){
-  var tries = 0;
-  var iv = setInterval(function(){
-    tries++;
-    var tabs = document.querySelectorAll('[data-baseweb="tab"]');
-    if(tabs.length > 1){
-      tabs[1].click();
-      clearInterval(iv);
-    } else if(tries > 60){
-      clearInterval(iv);
-    }
-  }, 50);
-})();
-</script>""", unsafe_allow_html=True)
+# ══════════════════════════════════════════════════════════════
+# NAV BAR — real buttons wired to session_state, replacing st.tabs()
+# so the active section can be switched programmatically (e.g. when
+# a crop tile is clicked). st.tabs() has no supported way to be
+# switched from Python, which is why that approach never worked.
+# ══════════════════════════════════════════════════════════════
+NAV_ITEMS = [
+    ("dashboard", "📊 " + T("tab_dashboard", lang)),
+    ("advisor",   "🌾 " + T("tab_advisor", lang)),
+    ("finance",   "💧 " + T("tab_finance", lang)),
+    ("schemes",   "🏛️ " + T("tab_schemes", lang)),
+    ("chat",      "💬 " + T("tab_chat", lang)),
+]
+st.markdown("""<style>
+.stButton>button[kind="secondary"]{
+  background:transparent !important; color:var(--muted) !important;
+  border:none !important; box-shadow:none !important;
+}
+.stButton>button[kind="secondary"]:hover{background:var(--bg-alt) !important; color:var(--brand) !important;}
+.stButton>button[kind="primary"]{
+  background:var(--surface) !important; color:var(--brand) !important;
+  border:none !important; box-shadow:0 -3px 0 var(--brand) inset !important;
+}
+.av-navbar-wrap{border-bottom:1px solid var(--border); margin-bottom:1rem;}
+</style>""", unsafe_allow_html=True)
+st.markdown("<div class='av-navbar-wrap'>", unsafe_allow_html=True)
+nav_cols = st.columns(len(NAV_ITEMS))
+for col, (nav_key, nav_label) in zip(nav_cols, NAV_ITEMS):
+    with col:
+        is_active = st.session_state.active_tab == nav_key
+        if st.button(nav_label, key=f"navtab_{nav_key}", use_container_width=True,
+                     type="primary" if is_active else "secondary"):
+            st.session_state.active_tab = nav_key
+            st.rerun()
+st.markdown("</div>", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
 # TAB 1 — DASHBOARD
 # ══════════════════════════════════════════════════════════════
-with tab_dash:
+if st.session_state.active_tab == "dashboard":
     section(T("live_dash", lang))
     ACCENTS = ["#e63946","#c98a2e","#2176ae","#2d936c","#8b5cf6",
                "#e63946","#c98a2e","#2176ae","#2d936c","#8b5cf6"]
@@ -871,13 +880,13 @@ with tab_dash:
             )
             if st.button(CN(crop, lang), key=f"pick_{crop}", use_container_width=True):
                 st.session_state.sel_crop = crop
-                st.session_state.jump_to_advisor = True
+                st.session_state.active_tab = "advisor"
                 st.rerun()
 
 # ══════════════════════════════════════════════════════════════
 # TAB 2 — CROP ADVISOR
 # ══════════════════════════════════════════════════════════════
-with tab_advisor:
+elif st.session_state.active_tab == "advisor":
     section(f"{T('crop_detail', lang)}: {CN(sel, lang)}")
     dp = st.columns(4)
     dp[0].metric("💧 " + T("water_plan", lang).split(" ")[0], f"{water_need} L/day")
@@ -948,7 +957,7 @@ with tab_advisor:
 # ══════════════════════════════════════════════════════════════
 # TAB 3 — WATER & FINANCE
 # ══════════════════════════════════════════════════════════════
-with tab_finance:
+elif st.session_state.active_tab == "finance":
     section(T("water_plan", lang))
     daily_w  = round((100-rain) * water_need * 0.15, 1)
     weekly_w = round(daily_w * 7, 1)
@@ -1051,7 +1060,7 @@ with tab_finance:
 # ══════════════════════════════════════════════════════════════
 # TAB 4 — GOVERNMENT SCHEMES
 # ══════════════════════════════════════════════════════════════
-with tab_schemes:
+elif st.session_state.active_tab == "schemes":
     section(T("gov_section", lang))
     full = GOV_SCHEMES[:-1] if len(GOV_SCHEMES) % 3 != 0 else GOV_SCHEMES
     leftover = GOV_SCHEMES[len(full):]
@@ -1072,7 +1081,7 @@ with tab_schemes:
 # ══════════════════════════════════════════════════════════════
 # TAB 5 — CHATBOT
 # ══════════════════════════════════════════════════════════════
-with tab_chat:
+elif st.session_state.active_tab == "chat":
     section(T("chatbot_title", lang), T("ask_chat", lang))
     if "messages" not in st.session_state:
         st.session_state.messages = []
