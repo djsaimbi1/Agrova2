@@ -800,10 +800,8 @@ with hc2:
     _pill_color   = "#3f9c88" if _dm else "#0f6b5c"
     _pill_border  = "#2d4a42" if _dm else "#b5d5c8"
 
-    # ── Single iframe — pill, clock, and button all in one flex column ──
-    # All three share the same 10px gap. The button click posts a message
-    # upward; the second zero-height iframe below is the listener that
-    # finds and clicks the hidden real st.button to trigger the rerun.
+    # Pill + clock in iframe (needs JS for the live clock tick).
+    # Height = 6px top padding + 30px pill + 10px gap + 46px clock = 92px.
     components.html(f"""
     <style>
       *{{box-sizing:border-box;margin:0;padding:0;}}
@@ -821,18 +819,10 @@ with hc2:
                  border:1.5px solid {_clock_border};border-radius:8px;
                  padding:5px 14px;width:150px;
                  letter-spacing:.03em;line-height:1.6;}}
-      #dm-btn{{width:150px;font-size:.72rem;font-weight:700;
-               color:#fff;background:{_btn_bg};
-               border:none;border-radius:8px;padding:6px 14px;
-               cursor:pointer;letter-spacing:.03em;line-height:1.6;
-               font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-               text-align:center;transition:background .2s;}}
-      #dm-btn:hover{{background:{_btn_bg_hover};}}
     </style>
     <div class="wrap">
       <div class="pill">📍 Maharashtra</div>
       <div id="av-clock">loading...</div>
-      <button id="dm-btn">{_btn_label}</button>
     </div>
     <script>
     (function(){{
@@ -847,37 +837,54 @@ with hc2:
           String(n.getSeconds()).padStart(2,'0')+'</div>';
       }}
       tick(); setInterval(tick,1000);
-      document.getElementById('dm-btn').addEventListener('click',function(){{
-        window.parent.postMessage({{avDmToggle:true}},'*');
-      }});
     }})();
     </script>
-    """, height=152)
+    """, height=92)
 
-    # Hidden real st.button — completely invisible, triggers Streamlit rerun.
-    st.markdown("""<style>
-    .st-key-dm_real{position:absolute;width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;}
+    # Native st.button — this is the original working button, left exactly
+    # where Streamlit places it (right after the iframe in the same column).
+    # CSS closes the gap to the iframe and styles it identically to the
+    # pill/clock: same width, same font, same right-alignment. Nothing moves,
+    # nothing breaks — it just looks like part of the same stack.
+    st.markdown(f"""<style>
+    .st-key-dm_wrap {{
+        margin-top: -6px !important;   /* close the default Streamlit gap */
+    }}
+    .st-key-dm_wrap .stButton {{
+        display: flex;
+        justify-content: flex-end;
+    }}
+    .st-key-dm_wrap .stButton > button {{
+        width: 150px !important;
+        font-size: .72rem !important;
+        font-weight: 700 !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+        letter-spacing: .03em !important;
+        line-height: 1.6 !important;
+        color: #fff !important;
+        background: {_btn_bg} !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 6px 14px !important;
+        text-align: center !important;
+        transition: background .2s !important;
+    }}
+    .st-key-dm_wrap .stButton > button:hover {{
+        background: {_btn_bg_hover} !important;
+    }}
+    .st-key-dm_wrap .stButton > button p,
+    .st-key-dm_wrap .stButton > button span {{
+        color: #fff !important;
+        font-size: .72rem !important;
+        font-weight: 700 !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+        letter-spacing: .03em !important;
+    }}
     </style>""", unsafe_allow_html=True)
-    with st.container(key="dm_real"):
-        _dm_clicked = st.button("__dm__", key="dm_real_btn")
-
-    # Listener iframe — zero pixel height, no visual impact.
-    # Catches postMessage from the button iframe above and programmatically
-    # clicks the hidden st.button so Streamlit fires a same-session rerun.
-    components.html("""<script>
-    window.addEventListener('message',function(e){
-      if(e.data&&e.data.avDmToggle){
-        var all=window.parent.document.querySelectorAll('button');
-        for(var i=0;i<all.length;i++){
-          if(all[i].innerText.trim()==='__dm__'){all[i].click();break;}
-        }
-      }
-    });
-    </script>""", height=0)
-
-    if _dm_clicked:
-        st.session_state.dark_mode = not _dm
-        st.rerun()
+    with st.container(key="dm_wrap"):
+        if st.button(_btn_label, key="dm_btn"):
+            st.session_state.dark_mode = not _dm
+            st.rerun()
 
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
