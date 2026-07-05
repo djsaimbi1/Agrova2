@@ -850,6 +850,11 @@ with tab_dash:
             )
             if st.button(CN(crop, lang), key=f"pick_{crop}", use_container_width=True):
                 st.session_state.sel_crop = crop
+                # Jump straight to the Crop Advisor tab (index 1 in st.tabs order)
+                st.markdown(
+                    "<script>localStorage.setItem('agrova_active_tab','1');</script>",
+                    unsafe_allow_html=True
+                )
                 st.rerun()
 
 # ══════════════════════════════════════════════════════════════
