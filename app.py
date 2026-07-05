@@ -141,6 +141,15 @@ hr{border:none !important; border-top:1px solid var(--border) !important; margin
 .av-pill-ok{background:var(--ok-bg);color:var(--ok);}
 .av-pill-info{background:var(--info-bg);color:var(--info);}
 
+/* Dark mode toggle button — scoped to its key so it never affects other buttons */
+.st-key-dm_toggle_btn>button{
+  background:#0f6b5c !important; color:#ffffff !important;
+  border:none !important; font-size:.75rem !important; font-weight:600 !important;
+  border-radius:8px !important; padding:6px 10px !important;
+  transition:background .2s ease !important;
+}
+.st-key-dm_toggle_btn>button:hover{background:#0d5c4f !important;}
+
 /* Crop tile buttons — ghost style */
 .av-crop-tile + div .stButton>button{
   background:transparent !important; color:var(--brand) !important;
@@ -796,17 +805,16 @@ with hc2:
         f"{pill('📍 ' + selected_state, 'neutral')}</div>",
         unsafe_allow_html=True
     )
-    # Handle dark mode toggle via query param (no Streamlit button needed)
-    if st.query_params.get("toggle_dm") == "1":
-        st.session_state.dark_mode = not st.session_state.get("dark_mode", False)
-        st.query_params.clear()
-        st.rerun()
     _dm = st.session_state.get("dark_mode", False)
     _clock_bg     = "#1e3530" if _dm else "#e8f6ee"
     _clock_color  = "#3f9c88" if _dm else "#0f6b5c"
     _clock_border = "#2d4a42" if _dm else "#2d936c"
     _btn_bg       = "#2d7a68" if _dm else "#0f6b5c"
     _btn_label    = "☀️ Light Mode" if _dm else "🌙 Dark Mode"
+    # Streamlit native button — always works, no iframe/postMessage needed
+    if st.button(_btn_label, key="dm_toggle_btn", use_container_width=True):
+        st.session_state.dark_mode = not _dm
+        st.rerun()
     components.html(f"""
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px; padding-top:4px;">
       <div id="av-clock" style="
@@ -824,20 +832,6 @@ with hc2:
           line-height:1.5;
           box-sizing:border-box;
       ">loading...</div>
-      <button id="dm-btn" style="
-          width:150px;
-          font-size:.75rem;
-          font-weight:600;
-          color:#ffffff;
-          background:{_btn_bg};
-          border:none;
-          border-radius:8px;
-          padding:6px 10px;
-          cursor:pointer;
-          font-family:sans-serif;
-          letter-spacing:.02em;
-          box-sizing:border-box;
-      ">{_btn_label}</button>
     </div>
     <script>
     function tick() {{
@@ -856,13 +850,8 @@ with hc2:
     }}
     tick();
     setInterval(tick, 1000);
-    document.getElementById('dm-btn').addEventListener('click', function() {{
-        var url = new URL(window.parent.location.href);
-        url.searchParams.set('toggle_dm', '1');
-        window.parent.location.href = url.toString();
-    }});
     </script>
-    """, height=105)
+    """, height=75)
 
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
@@ -894,6 +883,7 @@ input,textarea{background:#162421 !important; color:#dff0ea !important; border-c
 [data-testid="stSlider"] [data-testid="stTickBar"]{background:#253d36 !important;}
 .av-pill-neutral{background:#1e3530 !important; color:#c8e6de !important; border-color:#2d4a42 !important;}
 .av-pill{color:#c8e6de !important;}
+.st-key-dm_toggle_btn>button{background:#2d7a68 !important;}
 .av-tone-danger{background:#2c0c09 !important;}
 .av-tone-warn{background:#271c00 !important;}
 .av-tone-ok{background:#0b2418 !important;}
