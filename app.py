@@ -794,19 +794,19 @@ with hc2:
     components.html(f"""
     <div id="av-clock" style="
         text-align:center;
-        font-size:1.1rem;
+        font-size:.82rem;
         font-weight:700;
         color:{_clock_color};
         background:{_clock_bg};
         border:1.5px solid {_clock_border};
         border-radius:8px;
-        padding:8px 14px;
+        padding:5px 8px;
         width:100%;
         box-sizing:border-box;
         font-family:monospace;
         letter-spacing:.04em;
-        line-height:1.5;
-    ">--</div>
+        line-height:1.45;
+    ">loading...</div>
     <script>
     function tick() {{
         var now = new Date();
@@ -818,12 +818,24 @@ with hc2:
         var hh = now.getHours().toString().padStart(2,'0');
         var mm = now.getMinutes().toString().padStart(2,'0');
         var ss = now.getSeconds().toString().padStart(2,'0');
-        document.getElementById('av-clock').textContent = day + ' ' + d + ' ' + m + '  ' + hh + ':' + mm + ':' + ss;
+        document.getElementById('av-clock').innerHTML =
+            '<div>' + day + ' ' + d + ' ' + m + '</div>' +
+            '<div>' + hh + ':' + mm + ':' + ss + '</div>';
     }}
     tick();
     setInterval(tick, 1000);
     </script>
-    """, height=55)
+    """, height=58)
+    st.markdown("""
+    <style>
+    div[data-testid="stHorizontalBlock"] > div:last-child .stButton > button {
+        font-size:.75rem !important;
+        padding:.25rem .6rem !important;
+        height:auto !important;
+        min-height:0 !important;
+        line-height:1.4 !important;
+    }
+    </style>""", unsafe_allow_html=True)
     if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode", use_container_width=True):
         st.session_state.dark_mode = not _dm
         st.rerun()
