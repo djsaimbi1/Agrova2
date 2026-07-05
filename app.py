@@ -876,7 +876,7 @@ with hc2:
       document.getElementById('dm-btn').addEventListener('click',function(){{
         var u=new URL(window.parent.location.href);
         u.searchParams.set('dm','{_next_dm}');
-        window.parent.location.href=u.toString();
+        window.parent.location.search='?dm={_next_dm}';
       }});
     }})();
     </script>
