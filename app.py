@@ -789,18 +789,6 @@ with hc1:
         unsafe_allow_html=True
     )
 with hc2:
-    # Dark mode toggle — a real Streamlit button (native rerun, no
-    # page navigation). The old approach drove a hidden button inside
-    # a components.html iframe that did window.parent.location.href =
-    # ...?toggle_dm=1 to force a hard browser reload, which Python then
-    # read via st.query_params. A hard reload starts a brand-new
-    # Streamlit session, so session_state.dark_mode was wiped back to
-    # its default *before* the toggle code ran — the switch could only
-    # ever flip on, never back off (and on some Streamlit versions the
-    # iframe's sandboxing blocks that top-level navigation outright, so
-    # the click does nothing at all). A native st.button avoids all of
-    # that: clicking it triggers a normal Streamlit rerun in the *same*
-    # session, so session_state persists correctly every time.
     _dm = st.session_state.get("dark_mode", False)
     _clock_bg     = "#1e3530" if _dm else "#e8f6ee"
     _clock_color  = "#3f9c88" if _dm else "#0f6b5c"
@@ -812,82 +800,84 @@ with hc2:
     _pill_color   = "#3f9c88" if _dm else "#0f6b5c"
     _pill_border  = "#2d4a42" if _dm else "#b5d5c8"
 
-    # Pill + clock in iframe (needs live JS for the ticking clock).
-    # The iframe height is sized to exactly contain the two elements
-    # so there is no extra white gap between it and the button below.
+    # ── Single iframe — pill, clock, and button all in one flex column ──
+    # All three share the same 10px gap. The button click posts a message
+    # upward; the second zero-height iframe below is the listener that
+    # finds and clicks the hidden real st.button to trigger the rerun.
     components.html(f"""
     <style>
-      *{{ box-sizing:border-box; margin:0; padding:0; }}
-      body{{ background:transparent; }}
-      .wrap{{
-        display:flex; flex-direction:column; align-items:flex-end;
-        gap:10px; padding-top:6px;
-        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-      }}
-      .pill{{
-        text-align:center; font-size:.72rem; font-weight:700;
-        color:{_pill_color}; background:{_pill_bg};
-        border:1.5px solid {_pill_border}; border-radius:999px;
-        padding:5px 14px; width:150px; white-space:nowrap;
-        letter-spacing:.03em; line-height:1.5;
-      }}
-      #av-clock{{
-        text-align:center; font-size:.78rem; font-weight:700;
-        color:{_clock_color}; background:{_clock_bg};
-        border:1.5px solid {_clock_border}; border-radius:8px;
-        padding:5px 14px; width:150px;
-        letter-spacing:.03em; line-height:1.6;
-      }}
+      *{{box-sizing:border-box;margin:0;padding:0;}}
+      body{{background:transparent;overflow:hidden;}}
+      .wrap{{display:flex;flex-direction:column;align-items:flex-end;
+             gap:10px;padding-top:6px;
+             font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}}
+      .pill{{text-align:center;font-size:.72rem;font-weight:700;
+             color:{_pill_color};background:{_pill_bg};
+             border:1.5px solid {_pill_border};border-radius:999px;
+             padding:5px 14px;width:150px;white-space:nowrap;
+             letter-spacing:.03em;line-height:1.5;}}
+      #av-clock{{text-align:center;font-size:.78rem;font-weight:700;
+                 color:{_clock_color};background:{_clock_bg};
+                 border:1.5px solid {_clock_border};border-radius:8px;
+                 padding:5px 14px;width:150px;
+                 letter-spacing:.03em;line-height:1.6;}}
+      #dm-btn{{width:150px;font-size:.72rem;font-weight:700;
+               color:#fff;background:{_btn_bg};
+               border:none;border-radius:8px;padding:6px 14px;
+               cursor:pointer;letter-spacing:.03em;line-height:1.6;
+               font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+               text-align:center;transition:background .2s;}}
+      #dm-btn:hover{{background:{_btn_bg_hover};}}
     </style>
     <div class="wrap">
       <div class="pill">📍 Maharashtra</div>
       <div id="av-clock">loading...</div>
+      <button id="dm-btn">{_btn_label}</button>
     </div>
     <script>
     (function(){{
       function tick(){{
-        var now=new Date(),D=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
-            M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var n=new Date(),
+          D=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+          M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         document.getElementById('av-clock').innerHTML=
-          '<div>'+D[now.getDay()]+' '+String(now.getDate()).padStart(2,'0')+' '+M[now.getMonth()]+'</div>'+
-          '<div>'+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0')+'</div>';
+          '<div>'+D[n.getDay()]+' '+String(n.getDate()).padStart(2,'0')+' '+M[n.getMonth()]+'</div>'+
+          '<div>'+String(n.getHours()).padStart(2,'0')+':'+
+          String(n.getMinutes()).padStart(2,'0')+':'+
+          String(n.getSeconds()).padStart(2,'0')+'</div>';
       }}
       tick(); setInterval(tick,1000);
+      document.getElementById('dm-btn').addEventListener('click',function(){{
+        window.parent.postMessage({{avDmToggle:true}},'*');
+      }});
     }})();
     </script>
-    """, height=96)
+    """, height=152)
 
-    # Dark mode button as a real st.button — styled via scoped CSS to
-    # look IDENTICAL to the pill/clock (same font stack, same weight,
-    # same border-radius, same width). Negative margin-top pulls it up
-    # flush against the iframe so all three elements have equal 10px gaps.
-    st.markdown(f"""<style>
-    /* Remove all Streamlit padding that pushes the button away from the iframe */
-    .st-key-dm_toggle {{ margin-top:-14px !important; }}
-    .st-key-dm_toggle .stButton {{ display:flex; justify-content:flex-end; }}
-    .st-key-dm_toggle .stButton>button{{
-      width:150px !important;
-      font-size:.72rem !important; font-weight:700 !important;
-      color:#ffffff !important; background:{_btn_bg} !important;
-      border:none !important; border-radius:8px !important;
-      padding:6px 14px !important; letter-spacing:.03em !important;
-      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif !important;
-      line-height:1.6 !important; text-align:center !important;
-      transition:background .2s !important;
-    }}
-    .st-key-dm_toggle .stButton>button:hover{{ background:{_btn_bg_hover} !important; }}
-    .st-key-dm_toggle .stButton>button p,
-    .st-key-dm_toggle .stButton>button span{{
-      color:#ffffff !important;
-      font-size:.72rem !important; font-weight:700 !important;
-      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif !important;
-      letter-spacing:.03em !important;
-    }}
+    # Hidden real st.button — completely invisible, triggers Streamlit rerun.
+    st.markdown("""<style>
+    .st-key-dm_real{position:absolute;width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;}
     </style>""", unsafe_allow_html=True)
-    with st.container(key="dm_toggle"):
-        if st.button(_btn_label, key="dm_toggle_btn", use_container_width=False):
-            st.session_state.dark_mode = not st.session_state.get("dark_mode", False)
-            st.rerun()
+    with st.container(key="dm_real"):
+        _dm_clicked = st.button("__dm__", key="dm_real_btn")
+
+    # Listener iframe — zero pixel height, no visual impact.
+    # Catches postMessage from the button iframe above and programmatically
+    # clicks the hidden st.button so Streamlit fires a same-session rerun.
+    components.html("""<script>
+    window.addEventListener('message',function(e){
+      if(e.data&&e.data.avDmToggle){
+        var all=window.parent.document.querySelectorAll('button');
+        for(var i=0;i<all.length;i++){
+          if(all[i].innerText.trim()==='__dm__'){all[i].click();break;}
+        }
+      }
+    });
+    </script>""", height=0)
+
+    if _dm_clicked:
+        st.session_state.dark_mode = not _dm
+        st.rerun()
 
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
