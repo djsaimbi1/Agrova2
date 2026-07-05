@@ -958,14 +958,17 @@ elif st.session_state.active_tab == "advisor":
     ]
     rows_html = "".join(
         f"<tr style='background:{'var(--bg-alt)' if i % 2 == 0 else 'transparent'};'>"
-        f"<td style='padding:8px;font-weight:600;'>{stage}</td><td style='padding:8px;'>{act}</td>"
-        f"<td style='padding:8px;color:var(--muted);'>{timing}</td></tr>"
+        f"<td style='padding:8px;font-weight:600;color:var(--ink);'>{stage}</td>"
+        f"<td style='padding:8px;color:var(--ink-soft);'>{act}</td>"
+        f"<td style='padding:8px;color:var(--ink-soft);font-weight:500;'>{timing}</td></tr>"
         for i, (stage, act, timing) in enumerate(cal_rows)
     )
     st.markdown(
         f"<div class='av-card av-tone-brand'><table style='width:100%;border-collapse:collapse;font-size:.85rem;'>"
-        f"<tr style='border-bottom:2px solid var(--border);'><th style='text-align:left;padding:8px;'>Stage</th>"
-        f"<th style='text-align:left;padding:8px;'>Activity</th><th style='text-align:left;padding:8px;'>Timing</th></tr>"
+        f"<tr style='border-bottom:2px solid var(--border);'>"
+        f"<th style='text-align:left;padding:8px;color:var(--ink);font-weight:700;'>Stage</th>"
+        f"<th style='text-align:left;padding:8px;color:var(--ink);font-weight:700;'>Activity</th>"
+        f"<th style='text-align:left;padding:8px;color:var(--ink);font-weight:700;'>Timing</th></tr>"
         f"{rows_html}</table></div>",
         unsafe_allow_html=True
     )
