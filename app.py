@@ -789,10 +789,9 @@ with hc1:
         unsafe_allow_html=True
     )
 with hc2:
-    _dm = st.session_state.get("dark_mode", False)
-    # Handle dark mode toggle via query param
+    # Exact original dark mode mechanism from v8 — query param toggle
     if st.query_params.get("toggle_dm") == "1":
-        st.session_state.dark_mode = not _dm
+        st.session_state.dark_mode = not st.session_state.get("dark_mode", False)
         st.query_params.clear()
         st.rerun()
     _dm = st.session_state.get("dark_mode", False)
@@ -807,33 +806,33 @@ with hc2:
     components.html(f"""
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px; padding-top:6px;">
 
-      <!-- Location pill — same width as clock/button -->
+      <!-- Location pill -->
       <div style="
           text-align:center; font-size:.72rem; font-weight:700;
           color:{_pill_color}; background:{_pill_bg};
           border:1.5px solid {_pill_border}; border-radius:999px;
-          padding:5px 10px; width:140px; white-space:nowrap;
-          font-family:sans-serif; letter-spacing:.03em; box-sizing:border-box;
-          line-height:1.4;
+          padding:5px 14px; width:150px; white-space:nowrap;
+          font-family:sans-serif; letter-spacing:.03em;
+          box-sizing:border-box; line-height:1.5;
       ">📍 Maharashtra</div>
 
       <!-- Clock -->
       <div id="av-clock" style="
-          text-align:center; font-size:.78rem; font-weight:700;
+          text-align:center; font-size:.82rem; font-weight:700;
           color:{_clock_color}; background:{_clock_bg};
           border:1.5px solid {_clock_border}; border-radius:8px;
-          padding:5px 10px; width:140px; font-family:monospace;
+          padding:5px 14px; width:150px; font-family:monospace;
           letter-spacing:.04em; line-height:1.5; box-sizing:border-box;
       ">loading...</div>
 
-      <!-- Dark Mode button — identical size to clock -->
+      <!-- Dark Mode button — same width/padding as clock -->
       <button id="dm-btn" style="
-          width:140px; font-size:.72rem; font-weight:700;
+          width:150px; font-size:.75rem; font-weight:600;
           color:#ffffff; background:{_btn_bg};
           border:none; border-radius:8px;
-          padding:5px 10px; cursor:pointer;
-          font-family:sans-serif; letter-spacing:.03em;
-          box-sizing:border-box; line-height:1.5;
+          padding:6px 10px; cursor:pointer;
+          font-family:sans-serif; letter-spacing:.02em;
+          box-sizing:border-box;
       ">{_btn_label}</button>
 
     </div>
@@ -842,19 +841,25 @@ with hc2:
         var now = new Date();
         var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
         var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var day = days[now.getDay()];
+        var d = now.getDate().toString().padStart(2,'0');
+        var m = months[now.getMonth()];
+        var hh = now.getHours().toString().padStart(2,'0');
+        var mm = now.getMinutes().toString().padStart(2,'0');
+        var ss = now.getSeconds().toString().padStart(2,'0');
         document.getElementById('av-clock').innerHTML =
-            '<div>' + days[now.getDay()] + ' ' + now.getDate().toString().padStart(2,'0') + ' ' + months[now.getMonth()] + '</div>' +
-            '<div>' + now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0') + '</div>';
+            '<div>' + day + ' ' + d + ' ' + m + '</div>' +
+            '<div>' + hh + ':' + mm + ':' + ss + '</div>';
     }}
-    tick(); setInterval(tick, 1000);
+    tick();
+    setInterval(tick, 1000);
     document.getElementById('dm-btn').addEventListener('click', function() {{
         var url = new URL(window.parent.location.href);
         url.searchParams.set('toggle_dm', '1');
         window.parent.location.href = url.toString();
     }});
     </script>
-    """, height=155)
-
+    """, height=160)
 
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
