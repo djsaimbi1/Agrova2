@@ -789,20 +789,32 @@ with hc1:
         unsafe_allow_html=True
     )
 with hc2:
-    # Exact original dark mode mechanism from v8 — query param toggle
-    if st.query_params.get("toggle_dm") == "1":
-        st.session_state.dark_mode = not st.session_state.get("dark_mode", False)
-        st.query_params.clear()
-        st.rerun()
+    # Dark mode toggle — a real Streamlit button (native rerun, no
+    # page navigation). The old approach drove a hidden button inside
+    # a components.html iframe that did window.parent.location.href =
+    # ...?toggle_dm=1 to force a hard browser reload, which Python then
+    # read via st.query_params. A hard reload starts a brand-new
+    # Streamlit session, so session_state.dark_mode was wiped back to
+    # its default *before* the toggle code ran — the switch could only
+    # ever flip on, never back off (and on some Streamlit versions the
+    # iframe's sandboxing blocks that top-level navigation outright, so
+    # the click does nothing at all). A native st.button avoids all of
+    # that: clicking it triggers a normal Streamlit rerun in the *same*
+    # session, so session_state persists correctly every time.
     _dm = st.session_state.get("dark_mode", False)
     _clock_bg     = "#1e3530" if _dm else "#e8f6ee"
     _clock_color  = "#3f9c88" if _dm else "#0f6b5c"
     _clock_border = "#2d4a42" if _dm else "#2d936c"
     _btn_bg       = "#2d7a68" if _dm else "#0f6b5c"
+    _btn_bg_hover = "#25695a" if _dm else "#0a4a40"
     _btn_label    = "☀️ Light Mode" if _dm else "🌙 Dark Mode"
     _pill_bg      = "#1e3530" if _dm else "#e8f6ee"
     _pill_color   = "#3f9c88" if _dm else "#0f6b5c"
     _pill_border  = "#2d4a42" if _dm else "#b5d5c8"
+
+    # Location pill + live clock stay in an iframe (components.html) —
+    # they're purely cosmetic and need real <script> execution for the
+    # ticking clock, which st.markdown's HTML sanitizer won't run.
     components.html(f"""
     <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px; padding-top:6px;">
 
@@ -825,16 +837,6 @@ with hc2:
           letter-spacing:.04em; line-height:1.5; box-sizing:border-box;
       ">loading...</div>
 
-      <!-- Dark Mode button — same width/padding as clock -->
-      <button id="dm-btn" style="
-          width:150px; font-size:.75rem; font-weight:600;
-          color:#ffffff; background:{_btn_bg};
-          border:none; border-radius:8px;
-          padding:6px 10px; cursor:pointer;
-          font-family:sans-serif; letter-spacing:.02em;
-          box-sizing:border-box;
-      ">{_btn_label}</button>
-
     </div>
     <script>
     function tick() {{
@@ -853,13 +855,28 @@ with hc2:
     }}
     tick();
     setInterval(tick, 1000);
-    document.getElementById('dm-btn').addEventListener('click', function() {{
-        var url = new URL(window.parent.location.href);
-        url.searchParams.set('toggle_dm', '1');
-        window.parent.location.href = url.toString();
-    }});
     </script>
-    """, height=160)
+    """, height=110)
+
+    # Real Streamlit button for the actual toggle — styled to match the
+    # pill/clock above via the same .st-key-<key> scoping trick already
+    # used for the nav tabs further down in this file.
+    st.markdown(f"""
+    <style>
+    .st-key-dm_toggle .stButton>button{{
+        width:150px !important; float:right; font-size:.75rem !important; font-weight:600 !important;
+        color:#ffffff !important; background:{_btn_bg} !important;
+        border:none !important; border-radius:8px !important;
+        padding:6px 10px !important; letter-spacing:.02em;
+    }}
+    .st-key-dm_toggle .stButton>button:hover{{ background:{_btn_bg_hover} !important; }}
+    .st-key-dm_toggle .stButton>button p{{ color:#ffffff !important; font-size:.75rem !important; }}
+    </style>
+    """, unsafe_allow_html=True)
+    with st.container(key="dm_toggle"):
+        if st.button(_btn_label, key="dm_toggle_btn", use_container_width=True):
+            st.session_state.dark_mode = not st.session_state.get("dark_mode", False)
+            st.rerun()
 
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
