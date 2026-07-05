@@ -778,7 +778,7 @@ sc = scores[sel]
 # ══════════════════════════════════════════════════════════════
 # HEADER
 # ══════════════════════════════════════════════════════════════
-hc1, hc2 = st.columns([4, 1])
+hc1, hc2 = st.columns([3, 1.6])
 with hc1:
     st.markdown(
         f"<h1 style='margin-bottom:.3rem; font-size:2.6rem; line-height:1.15;'>🌾 {T('app_title', lang)}</h1>",
@@ -790,7 +790,10 @@ with hc1:
     )
 with hc2:
     st.markdown(
-        f"<div style='text-align:right;padding-top:.6rem;'>{pill('📍 ' + selected_state, 'neutral')}</div>",
+        "<style>.av-loc-pill-wrap{overflow:visible !important;}"
+        ".av-loc-pill-wrap .av-pill{white-space:nowrap !important;}</style>"
+        f"<div class='av-loc-pill-wrap' style='text-align:right;padding-top:.6rem;overflow:visible;'>"
+        f"{pill('📍 ' + selected_state, 'neutral')}</div>",
         unsafe_allow_html=True
     )
     # Handle dark mode toggle via query param (no Streamlit button needed)
