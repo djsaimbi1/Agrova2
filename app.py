@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import time
 from datetime import datetime
 
@@ -783,28 +784,41 @@ with hc1:
     st.markdown(f"<p style='color:var(--muted);'>{T('app_sub', lang)}</p>", unsafe_allow_html=True)
 with hc2:
     st.markdown(
-        f"<div style='text-align:right;padding-top:.6rem;'>{pill('📍 ' + selected_state, 'neutral')} "
-        f"<span class='av-pill av-pill-neutral'>"
-        f"<span id='av-live-clock'></span>"
-        f"</span></div>"
-        f"<script>"
-        f"(function(){{"
-        f"  function tick(){{"
-        f"    var now=new Date();"
-        f"    var d=now.getDate().toString().padStart(2,'0');"
-        f"    var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];"
-        f"    var m=months[now.getMonth()];"
-        f"    var hh=now.getHours().toString().padStart(2,'0');"
-        f"    var mm=now.getMinutes().toString().padStart(2,'0');"
-        f"    var ss=now.getSeconds().toString().padStart(2,'0');"
-        f"    var el=document.getElementById('av-live-clock');"
-        f"    if(el) el.textContent=d+' '+m+', '+hh+':'+mm+':'+ss;"
-        f"  }}"
-        f"  tick(); setInterval(tick,1000);"
-        f"}})();"
-        f"</script>",
+        f"<div style='text-align:right;padding-top:.6rem;'>{pill('📍 ' + selected_state, 'neutral')}</div>",
         unsafe_allow_html=True
     )
+    components.html("""
+    <div id="av-clock" style="
+        text-align:right;
+        font-size:1.05rem;
+        font-weight:700;
+        color:#0f6b5c;
+        background:#e8f6ee;
+        border:1.5px solid #2d936c;
+        border-radius:8px;
+        padding:6px 14px;
+        display:inline-block;
+        float:right;
+        font-family:monospace;
+        letter-spacing:.03em;
+    ">--</div>
+    <script>
+    function tick() {
+        var now = new Date();
+        var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var day = days[now.getDay()];
+        var d = now.getDate().toString().padStart(2,'0');
+        var m = months[now.getMonth()];
+        var hh = now.getHours().toString().padStart(2,'0');
+        var mm = now.getMinutes().toString().padStart(2,'0');
+        var ss = now.getSeconds().toString().padStart(2,'0');
+        document.getElementById('av-clock').textContent = day + ' ' + d + ' ' + m + '  ' + hh + ':' + mm + ':' + ss;
+    }
+    tick();
+    setInterval(tick, 1000);
+    </script>
+    """, height=50)
     _dm = st.session_state.get("dark_mode", False)
     if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode", use_container_width=True):
         st.session_state.dark_mode = not _dm
