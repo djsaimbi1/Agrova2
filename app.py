@@ -1044,6 +1044,7 @@ elif st.session_state.active_tab == "advisor":
     st.markdown(bar(sc, "var(--brand)"), unsafe_allow_html=True)
     st.markdown(f"<p style='font-weight:700;color:var(--ink);'>{sc}/100 — {season_label[lang]}</p>", unsafe_allow_html=True)
     card(f"NPK · {npk} kg/ha", "<p>50% at sowing → 25% Day 30 → 25% at flowering.</p>", icon="🧪", tone="brand")
+    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
     section(T("plant_guide", lang))
     pg1, pg2 = st.columns(2)
@@ -1061,6 +1062,7 @@ elif st.session_state.active_tab == "advisor":
              "<p>📏 Mark rows with rope for uniform spacing</p>"
              f"<p>🌾 {L['harvest_note'][lang]}</p>",
              tone="ok")
+    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
     section(T("pest_section", lang) + f": {CN(sel, lang)}")
     pests = PEST_MAP.get(sel, ["Aphids","Fungal Blight","Root Rot"])
@@ -1076,6 +1078,7 @@ elif st.session_state.active_tab == "advisor":
              "<p>🟡 Yellow sticky traps — 10/acre</p>"
              f"<p>⚠️ {hum_note}</p>",
              tone="warn")
+    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
     section(T("calendar_section", lang) + f" — {CN(sel, lang)}")
     cal_rows = [
@@ -1103,6 +1106,7 @@ elif st.session_state.active_tab == "advisor":
         f"{rows_html}</table></div>",
         unsafe_allow_html=True
     )
+    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
 # TAB 3 — WATER & FINANCE
@@ -1126,6 +1130,7 @@ elif st.session_state.active_tab == "finance":
         rainwater = round(rain * farm_size * 100, 0)
         card("Rainwater harvesting", f"<p>Estimated: <strong>{int(rainwater)} L</strong></p>"
              "<p>Pond size: <strong>10×10×2 m</strong></p><p>Saves: <strong>~30% cost</strong></p>", icon="♻️", tone="info")
+    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
     section(T("financial", lang))
     base_yield = round((sc/100) * 8500 * farm_size, 0)
@@ -1148,6 +1153,7 @@ elif st.session_state.active_tab == "finance":
         card("🏆 Net", f"<p>Net profit: <strong style='font-size:1.05rem;'>₹{int(net_profit):,}</strong></p>"
              f"<p>Adj. profit (after loss): <strong>₹{int(adj_profit):,}</strong></p>"
              f"<p>Sell at: <strong>{'APMC Mandi' if market_dist<50 else 'eNAM Online'}</strong></p>", tone="brand")
+    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
     section(T("soil_section", lang))
     raw_ph = "acidic" if ph < 6 else ("alkaline" if ph > 7.5 else "optimal")
@@ -1170,6 +1176,7 @@ elif st.session_state.active_tab == "finance":
         card("🧪 Fertilizer plan", f"<p>Type: <strong>{farm_type}</strong></p>"
              f"<p>Formula: <strong>{fert_formula.get(farm_type,'Integrated')}</strong></p>"
              f"<p>NPK: <strong>{npk} kg/ha</strong></p><p>Applied in 3 splits, + Zinc 25 kg/ha</p>", tone="warn")
+    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
     section(T("risk_section", lang))
     def risk_level(val, high, med):
@@ -1194,6 +1201,7 @@ elif st.session_state.active_tab == "finance":
              f"<p>{T('temp', lang)}: <strong>{t_adv}</strong></p><p>{T('rain', lang)}: <strong>{r_adv}</strong></p>"
              f"<p>{T('wind', lang)}: <strong>{'Use windbreaks' if wind>50 else L['safe'][lang]}</strong></p>"
              f"<p>Harvest in: <strong>{grow_days} days</strong></p>", tone="info")
+    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
     section(T("sustain_section", lang))
     eco = round((carbon_score*0.4) + (max(0,100-fert)*0.3) + (soil_health*0.3), 1)
@@ -1206,6 +1214,7 @@ elif st.session_state.active_tab == "finance":
         card("🌱 Green practices",
              "<p>✅ Drip irrigation (40% water save)</p><p>✅ Crop rotation every season</p>"
              "<p>✅ Vermicompost + biofertilizers</p><p>✅ Solar pump — PM-KUSUM 90% subsidy</p>", tone="ok")
+    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
 # TAB 4 — GOVERNMENT SCHEMES
@@ -1250,7 +1259,7 @@ elif st.session_state.active_tab == "chat":
         st.session_state.chat_key = 0
     if not st.session_state.get("chat_started", False):
         st.markdown("""
-        <div class='av-card av-tone-brand' style='margin-bottom:1rem;'>
+        <div class='av-card av-tone-brand' style='margin-bottom:1.5rem;'>
           <h4>💬 Ask me anything about your farm</h4>
           <p>Try these questions:</p>
           <ul>
@@ -1285,6 +1294,7 @@ elif st.session_state.active_tab == "chat":
             return f"Projected net profit for {CN(sel, lang)} on {farm_size} ha: ₹{int(net_profit):,} (ROI {roi}%)."
         return "I can help with crops, soil, water, pests, crop-loss risk, government schemes, and finances — ask me anything about your farm."
 
+    st.markdown("<div style='margin-bottom:.75rem;'></div>", unsafe_allow_html=True)
     ci1, ci2 = st.columns([5, 1])
     with ci1:
         user_input = st.text_input("", placeholder=T("ask_chat", lang), label_visibility="collapsed",
