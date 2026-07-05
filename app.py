@@ -787,23 +787,28 @@ with hc2:
         f"<div style='text-align:right;padding-top:.6rem;'>{pill('📍 ' + selected_state, 'neutral')}</div>",
         unsafe_allow_html=True
     )
-    components.html("""
+    _dm = st.session_state.get("dark_mode", False)
+    _clock_bg     = "#1e3530" if _dm else "#e8f6ee"
+    _clock_color  = "#3f9c88" if _dm else "#0f6b5c"
+    _clock_border = "#2d4a42" if _dm else "#2d936c"
+    components.html(f"""
     <div id="av-clock" style="
-        text-align:right;
-        font-size:1.05rem;
+        text-align:center;
+        font-size:1.1rem;
         font-weight:700;
-        color:#0f6b5c;
-        background:#e8f6ee;
-        border:1.5px solid #2d936c;
+        color:{_clock_color};
+        background:{_clock_bg};
+        border:1.5px solid {_clock_border};
         border-radius:8px;
-        padding:6px 14px;
-        display:inline-block;
-        float:right;
+        padding:8px 14px;
+        width:100%;
+        box-sizing:border-box;
         font-family:monospace;
-        letter-spacing:.03em;
+        letter-spacing:.04em;
+        line-height:1.5;
     ">--</div>
     <script>
-    function tick() {
+    function tick() {{
         var now = new Date();
         var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
         var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -814,12 +819,11 @@ with hc2:
         var mm = now.getMinutes().toString().padStart(2,'0');
         var ss = now.getSeconds().toString().padStart(2,'0');
         document.getElementById('av-clock').textContent = day + ' ' + d + ' ' + m + '  ' + hh + ':' + mm + ':' + ss;
-    }
+    }}
     tick();
     setInterval(tick, 1000);
     </script>
-    """, height=50)
-    _dm = st.session_state.get("dark_mode", False)
+    """, height=55)
     if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode", use_container_width=True):
         st.session_state.dark_mode = not _dm
         st.rerun()
