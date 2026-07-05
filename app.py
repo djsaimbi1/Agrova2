@@ -112,6 +112,10 @@ hr{border:none !important; border-top:1px solid var(--border) !important; margin
    grid lines up regardless of how long its description text is. */
 .av-card-scheme{min-height:190px; display:flex; flex-direction:column;}
 .av-card-scheme p:last-of-type{margin-top:auto !important; padding-top:.4rem;}
+/* Generic equal-height card grid — used anywhere several info cards sit
+   side by side (Water & Finance tab) so they all match height regardless
+   of how much text each one holds. */
+.av-card-grid{display:flex; flex-direction:column; margin:0 !important;}
 .av-crop-tile.sel{border-color:var(--brand); background:var(--bg-alt);}
 .av-crop-tile .rank{font-size:.68rem; color:var(--muted); font-weight:700;}
 .av-crop-tile .name{font-size:.82rem; font-weight:700; color:var(--ink);}
@@ -627,6 +631,24 @@ def card(title, body, icon="", tone="brand", extra_class=""):
         unsafe_allow_html=True
     )
 
+def card_grid(cards, ncols=3, gap="1rem", bottom_margin="1.5rem"):
+    """Render a row of cards as a CSS Grid instead of st.columns().
+    st.columns() creates independent column stacks with no shared height,
+    so cards with more text end up visibly taller than their neighbors.
+    CSS Grid rows auto-equalize to the tallest cell, so every card in the
+    row always matches — regardless of how much text each one holds.
+    cards: list of (title, body_html, icon, tone) tuples.
+    """
+    cells = "".join(
+        f"<div class='av-card av-tone-{tone} av-card-grid'><h4>{icon} {title}</h4>{body}</div>"
+        for title, body, icon, tone in cards
+    )
+    st.markdown(
+        f"<div style='display:grid;grid-template-columns:repeat({ncols},1fr);"
+        f"gap:{gap};align-items:stretch;margin-bottom:{bottom_margin};'>{cells}</div>",
+        unsafe_allow_html=True
+    )
+
 def section(title, sub=""):
     st.markdown(
         f"<div class='av-section'><h3>{title}</h3>"
@@ -1119,18 +1141,15 @@ elif st.session_state.active_tab == "finance":
     total_w  = round(season_w * farm_size, 1)
     irr_type = "Drip (saves 40% water)" if rain < 40 else ("Sprinkler" if rain < 70 else "Flood irrigation")
     freq     = "Every 3 days" if soil < 40 else "Every 5–7 days"
-    wc1, wc2, wc3 = st.columns(3)
-    with wc1:
-        card(T("rain", lang), f"<p>Daily: <strong>{daily_w} L/ha</strong></p><p>Weekly: <strong>{weekly_w} L/ha</strong></p>"
-             f"<p>Season: <strong>{season_w} L/ha</strong></p><p>Farm total: <strong>{total_w} L</strong></p>", icon="📊", tone="info")
-    with wc2:
-        card(irr_type, f"<p>Frequency: <strong>{freq}</strong></p><p>Best time: <strong>5–7 AM</strong></p>"
-             "<p>PMKSY subsidy: <strong>55–75%</strong></p>", icon="🚿", tone="info")
-    with wc3:
-        rainwater = round(rain * farm_size * 100, 0)
-        card("Rainwater harvesting", f"<p>Estimated: <strong>{int(rainwater)} L</strong></p>"
-             "<p>Pond size: <strong>10×10×2 m</strong></p><p>Saves: <strong>~30% cost</strong></p>", icon="♻️", tone="info")
-    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
+    rainwater = round(rain * farm_size * 100, 0)
+    card_grid([
+        (T("rain", lang), f"<p>Daily: <strong>{daily_w} L/ha</strong></p><p>Weekly: <strong>{weekly_w} L/ha</strong></p>"
+         f"<p>Season: <strong>{season_w} L/ha</strong></p><p>Farm total: <strong>{total_w} L</strong></p>", "📊", "info"),
+        (irr_type, f"<p>Frequency: <strong>{freq}</strong></p><p>Best time: <strong>5–7 AM</strong></p>"
+         "<p>PMKSY subsidy: <strong>55–75%</strong></p>", "🚿", "info"),
+        ("Rainwater harvesting", f"<p>Estimated: <strong>{int(rainwater)} L</strong></p>"
+         "<p>Pond size: <strong>10×10×2 m</strong></p><p>Saves: <strong>~30% cost</strong></p>", "♻️", "info"),
+    ], ncols=3)
 
     section(T("financial", lang))
     base_yield = round((sc/100) * 8500 * farm_size, 0)
@@ -1141,19 +1160,16 @@ elif st.session_state.active_tab == "finance":
     roi        = round((net_profit/input_cost)*100, 1) if input_cost > 0 else 0
     adj_yield  = round(base_yield * (1 - loss_pct/100), 0)
     adj_profit = round(adj_yield * price_kg - input_cost - transport, 0)
-    fc1, fc2, fc3 = st.columns(3)
-    with fc1:
-        card("📈 Revenue", f"<p>Est. yield: <strong>{int(base_yield)} kg</strong></p>"
-             f"<p>After loss risk: <strong>{int(adj_yield)} kg</strong></p>"
-             f"<p>Price: <strong>₹{price_kg}/kg</strong></p><p>Gross: <strong>₹{int(gross_rev):,}</strong></p>", tone="brand")
-    with fc2:
-        card("💸 Cost", f"<p>Input cost: <strong>₹{int(input_cost):,}</strong></p>"
-             f"<p>Transport: <strong>₹{int(transport):,}</strong></p><p>ROI: <strong>{roi}%</strong></p>", tone="brand")
-    with fc3:
-        card("🏆 Net", f"<p>Net profit: <strong style='font-size:1.05rem;'>₹{int(net_profit):,}</strong></p>"
-             f"<p>Adj. profit (after loss): <strong>₹{int(adj_profit):,}</strong></p>"
-             f"<p>Sell at: <strong>{'APMC Mandi' if market_dist<50 else 'eNAM Online'}</strong></p>", tone="brand")
-    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
+    card_grid([
+        ("📈 Revenue", f"<p>Est. yield: <strong>{int(base_yield)} kg</strong></p>"
+         f"<p>After loss risk: <strong>{int(adj_yield)} kg</strong></p>"
+         f"<p>Price: <strong>₹{price_kg}/kg</strong></p><p>Gross: <strong>₹{int(gross_rev):,}</strong></p>", "", "brand"),
+        ("💸 Cost", f"<p>Input cost: <strong>₹{int(input_cost):,}</strong></p>"
+         f"<p>Transport: <strong>₹{int(transport):,}</strong></p><p>ROI: <strong>{roi}%</strong></p>", "", "brand"),
+        ("🏆 Net", f"<p>Net profit: <strong style='font-size:1.05rem;'>₹{int(net_profit):,}</strong></p>"
+         f"<p>Adj. profit (after loss): <strong>₹{int(adj_profit):,}</strong></p>"
+         f"<p>Sell at: <strong>{'APMC Mandi' if market_dist<50 else 'eNAM Online'}</strong></p>", "", "brand"),
+    ], ncols=3)
 
     section(T("soil_section", lang))
     raw_ph = "acidic" if ph < 6 else ("alkaline" if ph > 7.5 else "optimal")
@@ -1166,17 +1182,15 @@ elif st.session_state.active_tab == "finance":
     soil_health = round(max(0, 100 - abs(soil-60) - abs(ph-6.5)*5), 1)
     fert_formula = {"Conventional":"Urea + DAP + MOP","Organic":"Vermicompost + neem cake",
                     "Integrated":"50% chemical + 50% organic","Hydroponic":"Nutrient solution A+B"}
-    sf1, sf2 = st.columns(2)
-    with sf1:
-        card(f"🌍 {T('soil_section', lang)}", f"<p>{T('soil', lang)}: <strong>{soil_note}</strong></p>"
-             f"<p>pH: <strong>{ph_note}</strong></p><p>{T('nitrogen', lang)}: <strong>{n_note}</strong></p>"
-             f"<p>Health score: <strong>{soil_health}/100</strong></p>"
-             f"<p>Carbon credit value: <strong>₹{round(carbon_score*0.5*farm_size*1500,0):,.0f}</strong></p>", tone="warn")
-    with sf2:
-        card("🧪 Fertilizer plan", f"<p>Type: <strong>{farm_type}</strong></p>"
-             f"<p>Formula: <strong>{fert_formula.get(farm_type,'Integrated')}</strong></p>"
-             f"<p>NPK: <strong>{npk} kg/ha</strong></p><p>Applied in 3 splits, + Zinc 25 kg/ha</p>", tone="warn")
-    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
+    card_grid([
+        (f"🌍 {T('soil_section', lang)}", f"<p>{T('soil', lang)}: <strong>{soil_note}</strong></p>"
+         f"<p>pH: <strong>{ph_note}</strong></p><p>{T('nitrogen', lang)}: <strong>{n_note}</strong></p>"
+         f"<p>Health score: <strong>{soil_health}/100</strong></p>"
+         f"<p>Carbon credit value: <strong>₹{round(carbon_score*0.5*farm_size*1500,0):,.0f}</strong></p>", "", "warn"),
+        ("🧪 Fertilizer plan", f"<p>Type: <strong>{farm_type}</strong></p>"
+         f"<p>Formula: <strong>{fert_formula.get(farm_type,'Integrated')}</strong></p>"
+         f"<p>NPK: <strong>{npk} kg/ha</strong></p><p>Applied in 3 splits, + Zinc 25 kg/ha</p>", "", "warn"),
+    ], ncols=2)
 
     section(T("risk_section", lang))
     def risk_level(val, high, med):
@@ -1186,35 +1200,31 @@ elif st.session_state.active_tab == "finance":
     frost_l = "high" if temp < 5 else ("medium" if temp < 12 else "low")
     heat_l = "high" if temp > 42 else ("medium" if temp > 35 else "low")
     gas_l = "danger" if gas > 70 else ("medium" if gas > 40 else "safe")
-    wr1, wr2 = st.columns(2)
-    with wr1:
-        card("⚠️ Risk levels",
-             f"<p>🌊 Flood: {pill(L[flood_l][lang], status_tone(flood_l))}</p>"
-             f"<p>🏜️ Drought: {pill(L[drought_l][lang], status_tone(drought_l))}</p>"
-             f"<p>❄️ Frost: {pill(L[frost_l][lang], status_tone(frost_l))}</p>"
-             f"<p>🔥 Heat: {pill(L[heat_l][lang], status_tone(heat_l))}</p>"
-             f"<p>💨 {T('gas', lang)}: {pill(L[gas_l][lang], status_tone(gas_l))}</p>", tone="info")
-    with wr2:
-        t_adv = "Too hot — use shade nets" if temp > 38 else ("Too cold — use mulching" if temp < 10 else L["optimal"][lang])
-        r_adv = "Waterlogging risk" if rain > 85 else ("Good rainfall" if rain > 60 else "Irrigation needed")
-        card("🌦️ Climate advisory",
-             f"<p>{T('temp', lang)}: <strong>{t_adv}</strong></p><p>{T('rain', lang)}: <strong>{r_adv}</strong></p>"
-             f"<p>{T('wind', lang)}: <strong>{'Use windbreaks' if wind>50 else L['safe'][lang]}</strong></p>"
-             f"<p>Harvest in: <strong>{grow_days} days</strong></p>", tone="info")
-    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
+    t_adv = "Too hot — use shade nets" if temp > 38 else ("Too cold — use mulching" if temp < 10 else L["optimal"][lang])
+    r_adv = "Waterlogging risk" if rain > 85 else ("Good rainfall" if rain > 60 else "Irrigation needed")
+    card_grid([
+        ("⚠️ Risk levels",
+         f"<p>🌊 Flood: {pill(L[flood_l][lang], status_tone(flood_l))}</p>"
+         f"<p>🏜️ Drought: {pill(L[drought_l][lang], status_tone(drought_l))}</p>"
+         f"<p>❄️ Frost: {pill(L[frost_l][lang], status_tone(frost_l))}</p>"
+         f"<p>🔥 Heat: {pill(L[heat_l][lang], status_tone(heat_l))}</p>"
+         f"<p>💨 {T('gas', lang)}: {pill(L[gas_l][lang], status_tone(gas_l))}</p>", "", "info"),
+        ("🌦️ Climate advisory",
+         f"<p>{T('temp', lang)}: <strong>{t_adv}</strong></p><p>{T('rain', lang)}: <strong>{r_adv}</strong></p>"
+         f"<p>{T('wind', lang)}: <strong>{'Use windbreaks' if wind>50 else L['safe'][lang]}</strong></p>"
+         f"<p>Harvest in: <strong>{grow_days} days</strong></p>", "", "info"),
+    ], ncols=2)
 
     section(T("sustain_section", lang))
     eco = round((carbon_score*0.4) + (max(0,100-fert)*0.3) + (soil_health*0.3), 1)
-    ss1, ss2 = st.columns(2)
-    with ss1:
-        card("♻️ Carbon", f"<p>Carbon score: <strong>{carbon_score}/100</strong></p>"
-             f"<p>Eco score: <strong>{eco}/100</strong></p>"
-             f"<p>CO₂ saved: <strong>{round(carbon_score*farm_size*0.3,2)} t</strong></p>", tone="ok")
-    with ss2:
-        card("🌱 Green practices",
-             "<p>✅ Drip irrigation (40% water save)</p><p>✅ Crop rotation every season</p>"
-             "<p>✅ Vermicompost + biofertilizers</p><p>✅ Solar pump — PM-KUSUM 90% subsidy</p>", tone="ok")
-    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
+    card_grid([
+        ("♻️ Carbon", f"<p>Carbon score: <strong>{carbon_score}/100</strong></p>"
+         f"<p>Eco score: <strong>{eco}/100</strong></p>"
+         f"<p>CO₂ saved: <strong>{round(carbon_score*farm_size*0.3,2)} t</strong></p>", "", "ok"),
+        ("🌱 Green practices",
+         "<p>✅ Drip irrigation (40% water save)</p><p>✅ Crop rotation every season</p>"
+         "<p>✅ Vermicompost + biofertilizers</p><p>✅ Solar pump — PM-KUSUM 90% subsidy</p>", "", "ok"),
+    ], ncols=2)
 
 # ══════════════════════════════════════════════════════════════
 # TAB 4 — GOVERNMENT SCHEMES
