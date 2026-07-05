@@ -1069,37 +1069,31 @@ elif st.session_state.active_tab == "advisor":
     st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
     section(T("plant_guide", lang))
-    pg1, pg2 = st.columns(2)
-    with pg1:
-        card("📐 Spacing",
-             f"<p>↔️ Row spacing: <strong>{row_sp} cm</strong></p>"
-             f"<p>↕️ Plant spacing: <strong>{plant_sp} cm</strong></p>"
-             f"<p>⬇️ Sowing depth: <strong>{depth} cm</strong></p>"
-             f"<p>🌰 Seeds/hole: <strong>{seeds_hole}</strong></p>",
-             tone="ok")
-    with pg2:
-        card("📅 Tips",
-             "<p>⏰ Best sowing time: early morning 5–7 AM</p>"
-             "<p>🌱 Seed treatment: Thiram 2g + Bavistin 1g per kg</p>"
-             "<p>📏 Mark rows with rope for uniform spacing</p>"
-             f"<p>🌾 {L['harvest_note'][lang]}</p>",
-             tone="ok")
-    st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
+    card_grid([
+        ("📐 Spacing",
+         f"<p>↔️ Row spacing: <strong>{row_sp} cm</strong></p>"
+         f"<p>↕️ Plant spacing: <strong>{plant_sp} cm</strong></p>"
+         f"<p>⬇️ Sowing depth: <strong>{depth} cm</strong></p>"
+         f"<p>🌰 Seeds/hole: <strong>{seeds_hole}</strong></p>", "", "ok"),
+        ("📅 Tips",
+         "<p>⏰ Best sowing time: early morning 5–7 AM</p>"
+         "<p>🌱 Seed treatment: Thiram 2g + Bavistin 1g per kg</p>"
+         "<p>📏 Mark rows with rope for uniform spacing</p>"
+         f"<p>🌾 {L['harvest_note'][lang]}</p>", "", "ok"),
+    ], ncols=2)
 
     section(T("pest_section", lang) + f": {CN(sel, lang)}")
     pests = PEST_MAP.get(sel, ["Aphids","Fungal Blight","Root Rot"])
-    pc1, pc2 = st.columns(2)
-    with pc1:
-        pest_pills = "".join(pill(p, "danger") for p in pests)
-        card(L.get(pest_risk_level.lower(), L["medium"])[lang], f"<p>{pest_pills}</p>", icon="🐛", tone="danger")
-    with pc2:
-        hum_note = f"{L['danger'][lang]}: {RISK_LABELS['fungal'][lang]}" if humidity > 75 else L["safe"][lang]
-        card("🛡️ Prevention",
-             "<p>🌿 Neem oil 5ml/L every 15 days</p>"
-             "<p>🔵 Trichoderma at sowing</p>"
-             "<p>🟡 Yellow sticky traps — 10/acre</p>"
-             f"<p>⚠️ {hum_note}</p>",
-             tone="warn")
+    pest_pills = "".join(pill(p, "danger") for p in pests)
+    hum_note = f"{L['danger'][lang]}: {RISK_LABELS['fungal'][lang]}" if humidity > 75 else L["safe"][lang]
+    card_grid([
+        (L.get(pest_risk_level.lower(), L["medium"])[lang], f"<p>{pest_pills}</p>", "🐛", "danger"),
+        ("🛡️ Prevention",
+         "<p>🌿 Neem oil 5ml/L every 15 days</p>"
+         "<p>🔵 Trichoderma at sowing</p>"
+         "<p>🟡 Yellow sticky traps — 10/acre</p>"
+         f"<p>⚠️ {hum_note}</p>", "", "warn"),
+    ], ncols=2)
     st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
     section(T("calendar_section", lang) + f" — {CN(sel, lang)}")
