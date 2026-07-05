@@ -65,9 +65,8 @@ p,span,div,td,th,li{color:var(--ink-soft);}
 }
 .stTabs [aria-selected="true"]{background:var(--surface) !important; color:var(--brand) !important; box-shadow:0 -2px 0 var(--brand) inset;}
 
-/* Hide real dark-mode toggle — visual button lives in the clock iframe */
-div[data-testid="stHorizontalBlock"] > div:last-child .stButton[data-testid*="dm_toggle"] > button,
-button[kind="secondary"][data-testid*="dm_toggle"] { display:none !important; }
+/* Hide real dark-mode toggle button — visual one lives in the clock iframe */
+div[data-testid="stHorizontalBlock"] > div:last-child .stButton > button { display:none !important; }
 
 .stButton>button{
   background:var(--brand) !important; color:#ffffff !important; border:none !important;
@@ -854,7 +853,7 @@ with hc2:
         }}
     }});
     </script>
-    """, height=90)
+    """, height=105)
     # Hidden Streamlit button that the iframe button triggers via postMessage
     if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode", key="dm_toggle", help="Toggle dark mode"):
         st.session_state.dark_mode = not _dm
