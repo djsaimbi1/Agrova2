@@ -784,7 +784,25 @@ with hc1:
 with hc2:
     st.markdown(
         f"<div style='text-align:right;padding-top:.6rem;'>{pill('📍 ' + selected_state, 'neutral')} "
-        f"{pill(datetime.now().strftime('%d %b, %H:%M'), 'neutral')}</div>",
+        f"<span class='av-pill av-pill-neutral'>"
+        f"<span id='av-live-clock'></span>"
+        f"</span></div>"
+        f"<script>"
+        f"(function(){{"
+        f"  function tick(){{"
+        f"    var now=new Date();"
+        f"    var d=now.getDate().toString().padStart(2,'0');"
+        f"    var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];"
+        f"    var m=months[now.getMonth()];"
+        f"    var hh=now.getHours().toString().padStart(2,'0');"
+        f"    var mm=now.getMinutes().toString().padStart(2,'0');"
+        f"    var ss=now.getSeconds().toString().padStart(2,'0');"
+        f"    var el=document.getElementById('av-live-clock');"
+        f"    if(el) el.textContent=d+' '+m+', '+hh+':'+mm+':'+ss;"
+        f"  }}"
+        f"  tick(); setInterval(tick,1000);"
+        f"}})();"
+        f"</script>",
         unsafe_allow_html=True
     )
     _dm = st.session_state.get("dark_mode", False)
