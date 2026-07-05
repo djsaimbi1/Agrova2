@@ -5,6 +5,17 @@ from datetime import datetime
 
 st.set_page_config(page_title="AGROVA", layout="wide", page_icon="🌾", initial_sidebar_state="expanded")
 
+# ── Dark mode query-param sync ──────────────────────────────────
+# The header iframe button sets ?dm=1 or ?dm=0. Python reads it
+# here (before any UI renders), stores it in session_state, clears
+# the param, then calls st.rerun() — a Python-side rerun that keeps
+# the session alive, so the toggle works reliably in both directions.
+_dm_param = st.query_params.get("dm")
+if _dm_param is not None:
+    st.session_state.dark_mode = (_dm_param == "1")
+    st.query_params.clear()
+    st.rerun()
+
 # ══════════════════════════════════════════════════════════════
 # DESIGN SYSTEM — single source of truth for color/spacing/type
 # ══════════════════════════════════════════════════════════════
@@ -790,39 +801,63 @@ with hc1:
     )
 with hc2:
     _dm = st.session_state.get("dark_mode", False)
-    _clock_bg     = "#1e3530" if _dm else "#e8f6ee"
-    _clock_color  = "#3f9c88" if _dm else "#0f6b5c"
-    _clock_border = "#2d4a42" if _dm else "#2d936c"
-    _btn_bg       = "#2d7a68" if _dm else "#0f6b5c"
-    _btn_bg_hover = "#25695a" if _dm else "#0a4a40"
-    _btn_label    = "☀️ Light Mode" if _dm else "🌙 Dark Mode"
-    _pill_bg      = "#1e3530" if _dm else "#e8f6ee"
-    _pill_color   = "#3f9c88" if _dm else "#0f6b5c"
-    _pill_border  = "#2d4a42" if _dm else "#b5d5c8"
+    _next_dm   = "0" if _dm else "1"
+    _clock_bg  = "#1e3530" if _dm else "#e8f6ee"
+    _clock_col = "#3f9c88" if _dm else "#0f6b5c"
+    _clock_bdr = "#2d4a42" if _dm else "#2d936c"
+    _btn_bg    = "#2d7a68" if _dm else "#0f6b5c"
+    _btn_hov   = "#25695a" if _dm else "#0a4a40"
+    _btn_lbl   = "☀️ Light Mode" if _dm else "🌙 Dark Mode"
+    _pill_bg   = "#1e3530" if _dm else "#e8f6ee"
+    _pill_col  = "#3f9c88" if _dm else "#0f6b5c"
+    _pill_bdr  = "#2d4a42" if _dm else "#b5d5c8"
 
-    # Pill + clock in iframe (needs JS for the live clock tick).
-    # Height = 6px top padding + 30px pill + 10px gap + 46px clock = 92px.
+    # ── Single self-contained iframe ────────────────────────────
+    # Pill, clock, and Dark Mode button all live here with equal
+    # 10px gaps — no Streamlit widget margins can interfere.
+    # Clicking the button sets ?dm=1 or ?dm=0 in the parent URL;
+    # the Python handler at the top of the file catches it on the
+    # next render, stores it in session_state, clears the param,
+    # and calls st.rerun() — a server-side rerun that keeps the
+    # session alive, so the toggle works reliably both ways.
     components.html(f"""
     <style>
       *{{box-sizing:border-box;margin:0;padding:0;}}
       body{{background:transparent;overflow:hidden;}}
-      .wrap{{display:flex;flex-direction:column;align-items:flex-end;
-             gap:10px;padding-top:6px;
-             font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}}
-      .pill{{text-align:center;font-size:.72rem;font-weight:700;
-             color:{_pill_color};background:{_pill_bg};
-             border:1.5px solid {_pill_border};border-radius:999px;
-             padding:5px 14px;width:150px;white-space:nowrap;
-             letter-spacing:.03em;line-height:1.5;}}
-      #av-clock{{text-align:center;font-size:.78rem;font-weight:700;
-                 color:{_clock_color};background:{_clock_bg};
-                 border:1.5px solid {_clock_border};border-radius:8px;
-                 padding:5px 14px;width:150px;
-                 letter-spacing:.03em;line-height:1.6;}}
+      .wrap{{
+        display:flex;flex-direction:column;align-items:flex-end;
+        gap:10px;padding-top:6px;
+        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      }}
+      .pill{{
+        text-align:center;font-size:.72rem;font-weight:700;
+        color:{_pill_col};background:{_pill_bg};
+        border:1.5px solid {_pill_bdr};border-radius:999px;
+        padding:5px 14px;width:150px;white-space:nowrap;
+        letter-spacing:.03em;line-height:1.5;
+      }}
+      #av-clock{{
+        text-align:center;font-size:.78rem;font-weight:700;
+        color:{_clock_col};background:{_clock_bg};
+        border:1.5px solid {_clock_bdr};border-radius:8px;
+        padding:5px 14px;width:150px;
+        letter-spacing:.03em;line-height:1.6;
+      }}
+      #dm-btn{{
+        width:150px;font-size:.72rem;font-weight:700;
+        color:#fff;background:{_btn_bg};
+        border:none;border-radius:8px;
+        padding:6px 14px;cursor:pointer;
+        letter-spacing:.03em;line-height:1.6;
+        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+        text-align:center;transition:background .2s;
+      }}
+      #dm-btn:hover{{background:{_btn_hov};}}
     </style>
     <div class="wrap">
       <div class="pill">📍 Maharashtra</div>
       <div id="av-clock">loading...</div>
+      <button id="dm-btn">{_btn_lbl}</button>
     </div>
     <script>
     (function(){{
@@ -831,60 +866,21 @@ with hc2:
           D=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
           M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         document.getElementById('av-clock').innerHTML=
-          '<div>'+D[n.getDay()]+' '+String(n.getDate()).padStart(2,'0')+' '+M[n.getMonth()]+'</div>'+
-          '<div>'+String(n.getHours()).padStart(2,'0')+':'+
+          '<div>'+D[n.getDay()]+' '+String(n.getDate()).padStart(2,'0')+
+          ' '+M[n.getMonth()]+'</div><div>'+
+          String(n.getHours()).padStart(2,'0')+':'+
           String(n.getMinutes()).padStart(2,'0')+':'+
           String(n.getSeconds()).padStart(2,'0')+'</div>';
       }}
       tick(); setInterval(tick,1000);
+      document.getElementById('dm-btn').addEventListener('click',function(){{
+        var u=new URL(window.parent.location.href);
+        u.searchParams.set('dm','{_next_dm}');
+        window.parent.location.href=u.toString();
+      }});
     }})();
     </script>
-    """, height=92)
-
-    # Native st.button — this is the original working button, left exactly
-    # where Streamlit places it (right after the iframe in the same column).
-    # CSS closes the gap to the iframe and styles it identically to the
-    # pill/clock: same width, same font, same right-alignment. Nothing moves,
-    # nothing breaks — it just looks like part of the same stack.
-    st.markdown(f"""<style>
-    .st-key-dm_wrap {{
-        margin-top: -6px !important;   /* close the default Streamlit gap */
-    }}
-    .st-key-dm_wrap .stButton {{
-        display: flex;
-        justify-content: flex-end;
-    }}
-    .st-key-dm_wrap .stButton > button {{
-        width: 150px !important;
-        font-size: .72rem !important;
-        font-weight: 700 !important;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-        letter-spacing: .03em !important;
-        line-height: 1.6 !important;
-        color: #fff !important;
-        background: {_btn_bg} !important;
-        border: none !important;
-        border-radius: 8px !important;
-        padding: 6px 14px !important;
-        text-align: center !important;
-        transition: background .2s !important;
-    }}
-    .st-key-dm_wrap .stButton > button:hover {{
-        background: {_btn_bg_hover} !important;
-    }}
-    .st-key-dm_wrap .stButton > button p,
-    .st-key-dm_wrap .stButton > button span {{
-        color: #fff !important;
-        font-size: .72rem !important;
-        font-weight: 700 !important;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-        letter-spacing: .03em !important;
-    }}
-    </style>""", unsafe_allow_html=True)
-    with st.container(key="dm_wrap"):
-        if st.button(_btn_label, key="dm_btn"):
-            st.session_state.dark_mode = not _dm
-            st.rerun()
+    """, height=152)
 
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
