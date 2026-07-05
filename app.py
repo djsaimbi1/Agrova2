@@ -782,6 +782,27 @@ tab_dash, tab_advisor, tab_finance, tab_schemes, tab_chat = st.tabs([
     "💬 " + T("tab_chat", lang),
 ])
 
+# ── Force-switch to the Crop Advisor tab after picking a crop ──
+# (self-contained: does NOT depend on the tabRestored/localStorage
+#  logic above, which locks itself after the first manual tab click)
+if st.session_state.get("jump_to_advisor"):
+    st.session_state.jump_to_advisor = False
+    st.markdown("""<script>
+(function(){
+  var tries = 0;
+  var iv = setInterval(function(){
+    tries++;
+    var tabs = document.querySelectorAll('[data-baseweb="tab"]');
+    if(tabs.length > 1){
+      tabs[1].click();
+      clearInterval(iv);
+    } else if(tries > 60){
+      clearInterval(iv);
+    }
+  }, 50);
+})();
+</script>""", unsafe_allow_html=True)
+
 # ══════════════════════════════════════════════════════════════
 # TAB 1 — DASHBOARD
 # ══════════════════════════════════════════════════════════════
@@ -850,11 +871,7 @@ with tab_dash:
             )
             if st.button(CN(crop, lang), key=f"pick_{crop}", use_container_width=True):
                 st.session_state.sel_crop = crop
-                # Jump straight to the Crop Advisor tab (index 1 in st.tabs order)
-                st.markdown(
-                    "<script>localStorage.setItem('agrova_active_tab','1');</script>",
-                    unsafe_allow_html=True
-                )
+                st.session_state.jump_to_advisor = True
                 st.rerun()
 
 # ══════════════════════════════════════════════════════════════
