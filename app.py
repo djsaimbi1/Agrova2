@@ -1216,6 +1216,9 @@ elif st.session_state.active_tab == "schemes":
                 card(name, f"<p>{desc_dict.get(lang, desc_dict['English'])}</p>"
                      f"<p><a href='{url}' target='_blank' style='color:var(--brand);font-weight:700;'>🔗 {L['apply_now'][lang]}</a></p>",
                      icon="🏛️", tone="brand")
+    # Fill remaining viewport height so background shows — this tab is
+    # shorter than the others and was leaving a white gap at the bottom.
+    st.markdown("<div style='min-height:60vh;background:transparent;'></div>", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
 # TAB 5 — CHATBOT
