@@ -65,6 +65,10 @@ p,span,div,td,th,li{color:var(--ink-soft);}
 }
 .stTabs [aria-selected="true"]{background:var(--surface) !important; color:var(--brand) !important; box-shadow:0 -2px 0 var(--brand) inset;}
 
+/* Hide real dark-mode toggle — visual button lives in the clock iframe */
+div[data-testid="stHorizontalBlock"] > div:last-child .stButton[data-testid*="dm_toggle"] > button,
+button[kind="secondary"][data-testid*="dm_toggle"] { display:none !important; }
+
 .stButton>button{
   background:var(--brand) !important; color:#ffffff !important; border:none !important;
   border-radius:var(--radius-sm) !important; font-weight:600 !important; font-size:.88rem !important;
@@ -791,22 +795,38 @@ with hc2:
     _clock_bg     = "#1e3530" if _dm else "#e8f6ee"
     _clock_color  = "#3f9c88" if _dm else "#0f6b5c"
     _clock_border = "#2d4a42" if _dm else "#2d936c"
+    _btn_bg       = "#2d7a68" if _dm else "#0f6b5c"
+    _btn_label    = "☀️ Light Mode" if _dm else "🌙 Dark Mode"
     components.html(f"""
-    <div style="display:flex; justify-content:flex-end;">
-    <div id="av-clock" style="
-        text-align:center;
-        font-size:.82rem;
-        font-weight:700;
-        color:{_clock_color};
-        background:{_clock_bg};
-        border:1.5px solid {_clock_border};
-        border-radius:8px;
-        padding:5px 14px;
-        width:160px;
-        font-family:monospace;
-        letter-spacing:.04em;
-        line-height:1.45;
-    ">loading...</div>
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px; padding-top:4px;">
+      <div id="av-clock" style="
+          text-align:center;
+          font-size:.82rem;
+          font-weight:700;
+          color:{_clock_color};
+          background:{_clock_bg};
+          border:1.5px solid {_clock_border};
+          border-radius:8px;
+          padding:5px 14px;
+          width:150px;
+          font-family:monospace;
+          letter-spacing:.04em;
+          line-height:1.5;
+      ">loading...</div>
+      <button id="dm-btn"
+        style="
+          width:150px;
+          font-size:.75rem;
+          font-weight:600;
+          color:#ffffff;
+          background:{_btn_bg};
+          border:none;
+          border-radius:8px;
+          padding:5px 10px;
+          cursor:pointer;
+          font-family:sans-serif;
+          letter-spacing:.02em;
+      ">{_btn_label}</button>
     </div>
     <script>
     function tick() {{
@@ -825,23 +845,18 @@ with hc2:
     }}
     tick();
     setInterval(tick, 1000);
+    document.getElementById('dm-btn').addEventListener('click', function() {{
+        var btns = window.parent.document.querySelectorAll('button');
+        for (var i = 0; i < btns.length; i++) {{
+            if (btns[i].innerText.includes('Light Mode') || btns[i].innerText.includes('Dark Mode')) {{
+                if (btns[i].offsetParent !== null) {{ btns[i].click(); break; }}
+            }}
+        }}
+    }});
     </script>
-    """, height=58)
-    st.markdown("""
-    <style>
-    div[data-testid="stHorizontalBlock"] > div:last-child .stButton > button {
-        font-size:.75rem !important;
-        padding:.25rem .6rem !important;
-        height:auto !important;
-        min-height:0 !important;
-        line-height:1.4 !important;
-        width:160px !important;
-        float:right !important;
-        display:block !important;
-        margin-left:auto !important;
-    }
-    </style>""", unsafe_allow_html=True)
-    if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode"):
+    """, height=90)
+    # Hidden Streamlit button that the iframe button triggers via postMessage
+    if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode", key="dm_toggle", help="Toggle dark mode"):
         st.session_state.dark_mode = not _dm
         st.rerun()
 
