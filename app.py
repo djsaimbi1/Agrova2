@@ -792,6 +792,7 @@ with hc2:
     _clock_color  = "#3f9c88" if _dm else "#0f6b5c"
     _clock_border = "#2d4a42" if _dm else "#2d936c"
     components.html(f"""
+    <div style="display:flex; justify-content:flex-end;">
     <div id="av-clock" style="
         text-align:center;
         font-size:.82rem;
@@ -800,13 +801,13 @@ with hc2:
         background:{_clock_bg};
         border:1.5px solid {_clock_border};
         border-radius:8px;
-        padding:5px 8px;
-        width:100%;
-        box-sizing:border-box;
+        padding:5px 14px;
+        width:160px;
         font-family:monospace;
         letter-spacing:.04em;
         line-height:1.45;
     ">loading...</div>
+    </div>
     <script>
     function tick() {{
         var now = new Date();
@@ -834,9 +835,13 @@ with hc2:
         height:auto !important;
         min-height:0 !important;
         line-height:1.4 !important;
+        width:160px !important;
+        float:right !important;
+        display:block !important;
+        margin-left:auto !important;
     }
     </style>""", unsafe_allow_html=True)
-    if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode", use_container_width=True):
+    if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode"):
         st.session_state.dark_mode = not _dm
         st.rerun()
 
