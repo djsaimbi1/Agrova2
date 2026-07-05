@@ -141,16 +141,6 @@ hr{border:none !important; border-top:1px solid var(--border) !important; margin
 .av-pill-ok{background:var(--ok-bg);color:var(--ok);}
 .av-pill-info{background:var(--info-bg);color:var(--info);}
 
-/* Dark mode toggle button — scoped to its key so it never affects other buttons */
-.st-key-dm_toggle_btn>button{
-  background:#0f6b5c !important; color:#ffffff !important;
-  border:none !important; font-size:.68rem !important; font-weight:600 !important;
-  border-radius:8px !important; padding:3px 8px !important; min-height:0 !important;
-  height:28px !important; line-height:1 !important;
-  transition:background .2s ease !important;
-}
-.st-key-dm_toggle_btn>button:hover{background:#0d5c4f !important;}
-
 /* Crop tile buttons — ghost style */
 .av-crop-tile + div .stButton>button{
   background:transparent !important; color:var(--brand) !important;
@@ -711,7 +701,7 @@ with st.sidebar:
         st.rerun()
     st.markdown("---")
 
-    selected_state = st.selectbox("📍 State", INDIAN_STATES)
+    selected_state = st.selectbox("📍 State", INDIAN_STATES, index=INDIAN_STATES.index("Maharashtra"))
     st.markdown("---")
 
     soil     = st.slider(T("soil", lang), 0, 100, 55)
@@ -799,28 +789,53 @@ with hc1:
         unsafe_allow_html=True
     )
 with hc2:
-    st.markdown(
-        "<style>.av-loc-pill-wrap{overflow:visible !important;}"
-        ".av-loc-pill-wrap .av-pill{white-space:nowrap !important;}</style>"
-        f"<div class='av-loc-pill-wrap' style='text-align:right;padding-top:.6rem;overflow:visible;'>"
-        f"{pill('📍 ' + selected_state, 'neutral')}</div>",
-        unsafe_allow_html=True
-    )
+    _dm = st.session_state.get("dark_mode", False)
+    # Handle dark mode toggle via query param
+    if st.query_params.get("toggle_dm") == "1":
+        st.session_state.dark_mode = not _dm
+        st.query_params.clear()
+        st.rerun()
     _dm = st.session_state.get("dark_mode", False)
     _clock_bg     = "#1e3530" if _dm else "#e8f6ee"
     _clock_color  = "#3f9c88" if _dm else "#0f6b5c"
     _clock_border = "#2d4a42" if _dm else "#2d936c"
+    _btn_bg       = "#2d7a68" if _dm else "#0f6b5c"
     _btn_label    = "☀️ Light Mode" if _dm else "🌙 Dark Mode"
-    # Clock first, then Dark Mode button underneath — matching original layout
+    _pill_bg      = "#1e3530" if _dm else "#e8f6ee"
+    _pill_color   = "#3f9c88" if _dm else "#0f6b5c"
+    _pill_border  = "#2d4a42" if _dm else "#b5d5c8"
     components.html(f"""
-    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px; padding-top:2px;">
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px; padding-top:6px;">
+
+      <!-- Location pill — same width as clock/button -->
+      <div style="
+          text-align:center; font-size:.72rem; font-weight:700;
+          color:{_pill_color}; background:{_pill_bg};
+          border:1.5px solid {_pill_border}; border-radius:999px;
+          padding:5px 10px; width:140px; white-space:nowrap;
+          font-family:sans-serif; letter-spacing:.03em; box-sizing:border-box;
+          line-height:1.4;
+      ">📍 Maharashtra</div>
+
+      <!-- Clock -->
       <div id="av-clock" style="
-          text-align:center; font-size:.82rem; font-weight:700;
+          text-align:center; font-size:.78rem; font-weight:700;
           color:{_clock_color}; background:{_clock_bg};
           border:1.5px solid {_clock_border}; border-radius:8px;
-          padding:5px 14px; width:150px; font-family:monospace;
+          padding:5px 10px; width:140px; font-family:monospace;
           letter-spacing:.04em; line-height:1.5; box-sizing:border-box;
       ">loading...</div>
+
+      <!-- Dark Mode button — identical size to clock -->
+      <button id="dm-btn" style="
+          width:140px; font-size:.72rem; font-weight:700;
+          color:#ffffff; background:{_btn_bg};
+          border:none; border-radius:8px;
+          padding:5px 10px; cursor:pointer;
+          font-family:sans-serif; letter-spacing:.03em;
+          box-sizing:border-box; line-height:1.5;
+      ">{_btn_label}</button>
+
     </div>
     <script>
     function tick() {{
@@ -832,12 +847,14 @@ with hc2:
             '<div>' + now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0') + '</div>';
     }}
     tick(); setInterval(tick, 1000);
+    document.getElementById('dm-btn').addEventListener('click', function() {{
+        var url = new URL(window.parent.location.href);
+        url.searchParams.set('toggle_dm', '1');
+        window.parent.location.href = url.toString();
+    }});
     </script>
-    """, height=68)
-    # Dark Mode button — native Streamlit so it reliably updates session_state
-    if st.button(_btn_label, key="dm_toggle_btn", use_container_width=True):
-        st.session_state.dark_mode = not _dm
-        st.rerun()
+    """, height=155)
+
 
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
@@ -869,7 +886,6 @@ input,textarea{background:#162421 !important; color:#dff0ea !important; border-c
 [data-testid="stSlider"] [data-testid="stTickBar"]{background:#253d36 !important;}
 .av-pill-neutral{background:#1e3530 !important; color:#c8e6de !important; border-color:#2d4a42 !important;}
 .av-pill{color:#c8e6de !important;}
-.st-key-dm_toggle_btn>button{background:#2d7a68 !important;}
 .av-tone-danger{background:#2c0c09 !important;}
 .av-tone-warn{background:#271c00 !important;}
 .av-tone-ok{background:#0b2418 !important;}
