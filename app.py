@@ -261,8 +261,8 @@ section[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] [data-base
 section[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] div[class*="indicatorContainer"],
 section[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] div[class*="ValueContainer"],
 section[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] div[class*="control"] {
-  background:rgba(255,255,255,.1) !important;
-  border-color:rgba(255,255,255,.2) !important;
+  background:#0a4a40 !important;
+  border-color:#0a4a40 !important;
 }
 section[data-testid="stSidebar"] .stSlider [data-baseweb="slider"] [role="slider"]{
   background:var(--accent) !important;
