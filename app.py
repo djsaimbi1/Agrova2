@@ -969,23 +969,29 @@ section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,25
 [data-testid="column"],
 [data-testid="column"] > *,
 [data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stVerticalBlockBorderWrapper"] > *,
 .element-container,
 .stMarkdown,
 .block-container,
 .block-container > *,
 section.main,
-section.main > * { background:#0d1a17 !important; }
-/* Restore specific component backgrounds */
-.av-card { background:#162421 !important; }
-.av-crop-tile { background:#162421 !important; }
-.av-crop-tile.sel { background:#1e3530 !important; }
-.stMetric { background:#162421 !important; }
-.av-tone-danger { background:#2c0c09 !important; }
-.av-tone-warn { background:#271c00 !important; }
-.av-tone-ok { background:#0b2418 !important; }
-.av-tone-info { background:#091d2c !important; }
-[data-baseweb="select"]>div { background:#162421 !important; }
-input, textarea { background:#162421 !important; }
+section.main > * {
+  background:#0d1a17 !important;
+  border-color:#0d1a17 !important;
+  outline:none !important;
+  box-shadow:none !important;
+}
+/* Restore specific component backgrounds and borders */
+.av-card { background:#162421 !important; border-color:#253d36 !important; box-shadow:none !important; }
+.av-crop-tile { background:#162421 !important; border-color:#253d36 !important; }
+.av-crop-tile.sel { background:#1e3530 !important; border-color:#3f9c88 !important; }
+.stMetric { background:#162421 !important; border-color:#253d36 !important; }
+.av-tone-danger { background:#2c0c09 !important; border-color:#5c1a15 !important; }
+.av-tone-warn { background:#271c00 !important; border-color:#4a3500 !important; }
+.av-tone-ok { background:#0b2418 !important; border-color:#1a4a30 !important; }
+.av-tone-info { background:#091d2c !important; border-color:#0f3a52 !important; }
+[data-baseweb="select"]>div { background:#162421 !important; border-color:#253d36 !important; }
+input, textarea { background:#162421 !important; border-color:#253d36 !important; }
 .st-key-navtabs{border-color:#253d36 !important;}
 .st-key-navtabs .stButton>button[kind="secondary"] p,
 .st-key-navtabs .stButton>button[kind="secondary"] span,
