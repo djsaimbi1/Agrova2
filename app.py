@@ -289,6 +289,10 @@ section[data-testid="stSidebar"] .stNumberInput button{
 [data-baseweb="select"] div {
   color:#ffffff !important;
   background:#1e3530 !important;
+  border:none !important;
+  outline:none !important;
+  box-shadow:none !important;
+  border-radius:8px !important;
 }
 [data-baseweb="select"] svg { fill:#ffffff !important; }
 /* Dropdown option list */
