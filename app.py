@@ -305,6 +305,27 @@ html[data-av-dark="1"] .stApp>div { background:#0d1a17 !important; }
 html[data-av-dark="1"] .av-card p { color:#b8d8d0 !important; }
 html[data-av-dark="1"] .av-card strong { color:#dff0ea !important; }
 html[data-av-dark="1"] table td, html[data-av-dark="1"] table th { color:#b8d8d0 !important; }
+
+/* DARK MODE PATCH */
+html, body, .stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"],
+section.main,
+.main {
+    background:#081814 !important;
+}
+.block-container,
+.element-container,
+.stContainer,
+.stVerticalBlock,
+.stHorizontalBlock,
+div[data-testid="stVerticalBlockBorderWrapper"]{
+    background:transparent !important;
+}
+[data-testid="stSidebar"],[data-testid="stHeader"],[data-testid="stToolbar"]{
+    background:#081814 !important;
+}
+
 </style>""", unsafe_allow_html=True)
 
 st.markdown("""<script>
