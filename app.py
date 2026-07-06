@@ -68,7 +68,7 @@ button[title="Open settings"] { display:none !important; }
 /* Header stays fully visible and interactive for sidebar arrow */
 /* Persistent dark green header bar — always visible, contains the sidebar toggle */
 header[data-testid="stHeader"] {
-  background:#2d5a4e !important;
+  background:#0a4a40 !important;
   min-height:3rem !important;
   height:3rem !important;
   display:flex !important;
@@ -140,7 +140,7 @@ section.main,section.main>div,.main .block-container,
 [data-testid="stAppViewBlockContainer"]{background:#f4faf8 !important;}
 /* Collapsed sidebar strip */
 [data-testid="stSidebarCollapsedControl"]{background:#0a4a40 !important;}
-header[data-testid="stHeader"]{background:#2d5a4e !important;}
+header[data-testid="stHeader"]{background:#0a4a40 !important;}
 section[data-testid="stSidebar"]{background:linear-gradient(180deg,var(--brand-dark),#0d5347) !important;}
 section[data-testid="stSidebar"] *{color:#dcefe9 !important;}
 section[data-testid="stSidebar"] h1,section[data-testid="stSidebar"] h2,section[data-testid="stSidebar"] h3{color:#ffffff !important;}
@@ -321,7 +321,7 @@ html[data-av-dark="1"] .main,
 html[data-av-dark="1"] [data-testid="stBottom"],
 html[data-av-dark="1"] [data-testid="stDecoration"] { background:#0d1a17 !important; border:none !important; box-shadow:none !important; }
 /* Dark mode header bar — slightly lighter green so arrow stays visible */
-html[data-av-dark="1"] header[data-testid="stHeader"] { background:#1e4a3f !important; border:none !important; box-shadow:none !important; }
+html[data-av-dark="1"] header[data-testid="stHeader"] { background:#0a4a40 !important; border:none !important; box-shadow:none !important; }
 /* Sidebar resize handle — kill the white strip entirely */
 [data-testid="stSidebarResizeHandle"],
 [data-testid="stSidebarResizeHandle"]>* { width:0px !important; min-width:0px !important; background:transparent !important; border:none !important; overflow:hidden !important; }
