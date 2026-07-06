@@ -255,8 +255,12 @@ section[data-testid="stSidebar"] .stButton>button{
   border:1px solid rgba(255,255,255,.25) !important;
 }
 section[data-testid="stSidebar"] .stButton>button:hover{background:rgba(255,255,255,.25) !important;}
-section[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"]>div{
-  background:rgba(255,255,255,.1) !important; border-color:rgba(255,255,255,.2) !important;
+section[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] *,
+section[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"]>div,
+section[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"]>div>div,
+section[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"]>div>div>div {
+  background:#0d2e28 !important;
+  border-color:#1a4a3f !important;
 }
 section[data-testid="stSidebar"] .stSlider [data-baseweb="slider"] [role="slider"]{
   background:var(--accent) !important;
