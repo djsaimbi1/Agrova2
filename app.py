@@ -1389,8 +1389,8 @@ elif st.session_state.active_tab == "advisor":
     rows_html = "".join(
         f"<tr style='background:{'var(--bg-alt)' if i % 2 == 0 else 'transparent'};'>"
         f"<td style='padding:8px;font-weight:600;color:var(--ink);'>{stage}</td>"
-        f"<td style='padding:8px;color:var(--ink-soft);'>{act}</td>"
-        f"<td style='padding:8px;color:var(--ink-soft);font-weight:500;'>{timing}</td></tr>"
+        f"<td style='padding:8px;color:var(--ink);'>{act}</td>"
+        f"<td style='padding:8px;color:var(--ink);font-weight:500;'>{timing}</td></tr>"
         for i, (stage, act, timing) in enumerate(cal_rows)
     )
     st.markdown(
