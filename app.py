@@ -217,13 +217,21 @@ section[data-testid="stSidebar"] .stNumberInput button{
 
 /* Selectbox in main area */
 [data-baseweb="select"]>div{border-radius:var(--radius-sm) !important; border-color:var(--border) !important;}
-/* Landing page — force readable text regardless of system dark mode */
-[data-baseweb="select"] [data-baseweb="select-option"],
-[data-baseweb="select"] input,
+/* Landing page language selector — always white text on dark bg since it sits on a dark card */
+[data-baseweb="select"]>div,
+[data-baseweb="select"] [data-baseweb="select-value"],
 [data-baseweb="select"] [data-value],
-[data-baseweb="select"] span{color:var(--ink) !important; background:var(--surface) !important;}
-[data-baseweb="popover"] [role="option"]{color:var(--ink) !important; background:var(--surface) !important;}
-[data-baseweb="popover"] [role="option"]:hover{background:var(--bg-alt) !important;}
+[data-baseweb="select"] input,
+[data-baseweb="select"] span,
+[data-baseweb="select"] p {
+  color:#ffffff !important;
+  background:#1e2d28 !important;
+}
+[data-baseweb="select"] svg { fill:#ffffff !important; }
+/* Dropdown options list */
+[data-baseweb="popover"] [role="option"]{color:#ffffff !important; background:#1e2d28 !important;}
+[data-baseweb="popover"] [role="option"]:hover{background:#2d4a42 !important; color:#ffffff !important;}
+[data-baseweb="menu"] { background:#1e2d28 !important; }
 
 /* ── DARK MODE — watches Streamlit's own --background-color CSS var ── */
 html[data-av-dark="1"]{
