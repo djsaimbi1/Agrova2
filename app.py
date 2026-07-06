@@ -5,6 +5,10 @@ from datetime import datetime
 
 st.set_page_config(page_title="AGROVA", layout="wide", page_icon="🌾", initial_sidebar_state="expanded")
 
+# Ensure dark_mode always exists in session state
+if "dark_mode" not in st.session_state:
+    st.session_state.dark_mode = False
+
 # ── Dark mode query-param sync ──────────────────────────────────
 # The header iframe button sets ?dm=1 or ?dm=0. Python reads it
 # here (before any UI renders), stores it in session_state, clears
