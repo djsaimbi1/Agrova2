@@ -225,7 +225,7 @@ hr{border:none !important; border-top:1px solid var(--border) !important; margin
 .av-chat-user{background:var(--bg-alt); border-radius:var(--radius-sm); padding:.6rem .9rem; margin:.35rem 0; font-size:.88rem;}
 .av-chat-bot{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:.6rem .9rem; margin:.35rem 0; font-size:.88rem;}
 
-.av-hero{background:linear-gradient(135deg,var(--brand-dark) 0%,var(--brand) 60%,var(--brand-light) 100%); border-radius:20px; padding:2.8rem 2rem; text-align:center; color:#fff; margin-bottom:1.4rem; box-shadow:var(--shadow-lg); position:relative; overflow:hidden;}
+.av-hero{background:linear-gradient(135deg,var(--brand-dark) 0%,var(--brand) 60%,var(--brand-light) 100%); border-radius:20px; padding:2rem 2rem; text-align:center; color:#fff; margin-bottom:1.4rem; box-shadow:var(--shadow-lg); position:relative; overflow:hidden; max-width:680px; margin-left:auto; margin-right:auto;}
 .av-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:rgba(255,255,255,.05);border-radius:50%;}
 .av-hero::after{content:'';position:absolute;bottom:-30px;left:-30px;width:120px;height:120px;background:rgba(201,138,46,.12);border-radius:50%;}
 .av-hero h1,.av-hero h1 *{color:#ffffff !important; font-size:4rem !important; letter-spacing:-.02em; margin:0 !important; font-weight:800 !important;}
