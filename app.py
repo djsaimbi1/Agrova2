@@ -256,12 +256,26 @@ html[data-av-dark="1"]{
   --ok-bg:#0b2418; --warn-bg:#271c00; --danger-bg:#2c0c09; --info-bg:#091d2c;
   --accent2:#ff6b6b;
 }
-html[data-av-dark="1"],html[data-av-dark="1"] body { background:#0d1a17 !important; }
-/* Sidebar resize handle — the white strip between sidebar and content */
+/* Full outer shell dark */
+html[data-av-dark="1"],
+html[data-av-dark="1"] body,
+html[data-av-dark="1"] #root,
+html[data-av-dark="1"] .stApp,
+html[data-av-dark="1"] .stApp>div,
+html[data-av-dark="1"] [data-testid="stAppViewContainer"],
+html[data-av-dark="1"] [data-testid="stAppViewContainer"]>div,
+html[data-av-dark="1"] [data-testid="stAppViewBlockContainer"],
+html[data-av-dark="1"] section.main,
+html[data-av-dark="1"] section.main>div,
+html[data-av-dark="1"] .main,
+html[data-av-dark="1"] header[data-testid="stHeader"],
+html[data-av-dark="1"] [data-testid="stBottom"],
+html[data-av-dark="1"] [data-testid="stDecoration"] { background:#0d1a17 !important; border:none !important; box-shadow:none !important; }
+/* Sidebar resize handle — kill the white strip entirely */
+[data-testid="stSidebarResizeHandle"],
+[data-testid="stSidebarResizeHandle"]>* { width:0px !important; min-width:0px !important; background:transparent !important; border:none !important; overflow:hidden !important; }
 html[data-av-dark="1"] [data-testid="stSidebarResizeHandle"],
-html[data-av-dark="1"] [data-testid="stSidebarResizeHandle"]>* { background:#0d1a17 !important; border:none !important; }
-[data-testid="stSidebarResizeHandle"] { background:#d7e6e1 !important; width:1px !important; }
-html[data-av-dark="1"] [data-testid="stSidebarResizeHandle"] { background:#253d36 !important; width:1px !important; }
+html[data-av-dark="1"] [data-testid="stSidebarResizeHandle"]>* { width:0px !important; min-width:0px !important; background:#0d1a17 !important; border:none !important; overflow:hidden !important; }
 /* Kill the white right-side scrollbar/decoration strip */
 html[data-av-dark="1"] [data-testid="stDecoration"],
 html[data-av-dark="1"] [data-testid="stStatusWidget"],
@@ -957,37 +971,42 @@ with hc2:
 
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
-html,body,.stApp,.main,.block-container{background:#0d1a17 !important;}
-header[data-testid="stHeader"]{background:#0d1a17 !important;}
-[data-testid="stColorBlock"],[data-testid="stToolbarActionButtonIcon"],
-[data-testid="stMainMenuButton"],[data-testid="stToolbarActions"]{display:none !important;}
+/* ── FULL DARK BACKGROUND — every outer shell ── */
+html, body, #root,
+.stApp, .stApp>div, .stApp>div>div, .stApp>div>div>div,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewContainer"]>div,
+[data-testid="stAppViewBlockContainer"],
+section.main, section.main>div,
+.main, header[data-testid="stHeader"],
+[data-testid="stBottom"],
+[data-testid="stDecoration"] {
+  background:#0d1a17 !important;
+  border:none !important;
+  box-shadow:none !important;
+}
+/* ── INNER WRAPPERS — transparent so #0d1a17 shows through ── */
+.block-container,
+.element-container,
+.stContainer,
+.stVerticalBlock,
+.stHorizontalBlock,
+div[data-testid="stVerticalBlockBorderWrapper"],
+div[data-testid="stVerticalBlockBorderWrapper"]>*,
+[data-testid="stMainBlockContainer"],
+[data-testid="stForm"],
+[data-testid="stExpander"],
+[data-testid="stExpanderDetails"] {
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+  outline:none !important;
+}
+/* ── SIDEBAR ── */
 section[data-testid="stSidebar"]{display:flex !important; visibility:visible !important; background:linear-gradient(180deg,#071410,#0c1e1a) !important;}
 [data-testid="stSidebarCollapsedControl"]{display:flex !important; visibility:visible !important; pointer-events:all !important; background:#071410 !important;}
-/* Kill every border/shadow on every container — the white vertical line */
-[data-testid="stAppViewContainer"],
-[data-testid="stAppViewBlockContainer"],
-[data-testid="stMainBlockContainer"],
-[data-testid="stSidebarContent"],
-[data-testid="stForm"],
-[data-testid="stNotification"],
-[data-testid="stExpander"],
-[data-testid="stExpanderDetails"],
-[data-testid="stSidebarResizeHandle"],
-[data-testid="stSidebarResizeHandle"]>*,
-section.main,
-.main .block-container,
-[data-testid="stVerticalBlockBorderWrapper"],
-[data-testid="stBottom"] {
-  border:none !important;
-  border-right:none !important;
-  border-left:none !important;
-  border-top:none !important;
-  border-bottom:none !important;
-  outline:none !important;
-  box-shadow:none !important;
-  background:#0d1a17 !important;
-}
-[data-testid="stSidebarResizeHandle"]{width:0px !important; min-width:0px !important; overflow:hidden !important;}
+[data-testid="stSidebarResizeHandle"],[data-testid="stSidebarResizeHandle"]>*{width:0px !important; min-width:0px !important; background:#0d1a17 !important; border:none !important; overflow:hidden !important;}
+[data-testid="stColorBlock"],[data-testid="stToolbarActionButtonIcon"],[data-testid="stMainMenuButton"],[data-testid="stToolbarActions"]{display:none !important;}
 /* Toolbar icons (share, star, pen, github, dots) — make them clearly visible */
 header[data-testid="stHeader"] button,
 header[data-testid="stHeader"] a,
@@ -1039,11 +1058,17 @@ section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,25
 .av-crop-tile .score{color:#3f9c88 !important;}
 .av-crop-tile.sel{background:#1e3530 !important; border-color:#3f9c88 !important;}
 /* Outer containers — solid dark background */
-html, body, .stApp,
+html, body, #root,
+.stApp, .stApp>div, .stApp>div>div, .stApp>div>div>div,
 [data-testid="stAppViewContainer"],
+[data-testid="stAppViewContainer"]>div,
 [data-testid="stAppViewBlockContainer"],
-section.main, .main {
+section.main, section.main>div,
+.main, header[data-testid="stHeader"],
+[data-testid="stBottom"], [data-testid="stDecoration"] {
   background:#0d1a17 !important;
+  border:none !important;
+  box-shadow:none !important;
 }
 /* Inner wrappers — transparent so parent dark bg shows through, border killed */
 .block-container,
@@ -1052,7 +1077,11 @@ section.main, .main {
 .stVerticalBlock,
 .stHorizontalBlock,
 div[data-testid="stVerticalBlockBorderWrapper"],
-div[data-testid="stVerticalBlockBorderWrapper"] > * {
+div[data-testid="stVerticalBlockBorderWrapper"] > *,
+[data-testid="stMainBlockContainer"],
+[data-testid="stForm"],
+[data-testid="stExpander"],
+[data-testid="stExpanderDetails"] {
   background:transparent !important;
   border:none !important;
   box-shadow:none !important;
