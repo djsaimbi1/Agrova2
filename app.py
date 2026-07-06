@@ -228,7 +228,7 @@ hr{border:none !important; border-top:1px solid var(--border) !important; margin
 .av-hero{background:linear-gradient(135deg,var(--brand-dark) 0%,var(--brand) 60%,var(--brand-light) 100%); border-radius:20px; padding:2.8rem 2rem; text-align:center; color:#fff; margin-bottom:1.4rem; box-shadow:var(--shadow-lg); position:relative; overflow:hidden;}
 .av-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:rgba(255,255,255,.05);border-radius:50%;}
 .av-hero::after{content:'';position:absolute;bottom:-30px;left:-30px;width:120px;height:120px;background:rgba(201,138,46,.12);border-radius:50%;}
-.av-hero h1,.av-hero h1 *{color:#ffffff !important; font-size:2.8rem !important; letter-spacing:-.01em; margin:0 !important; font-weight:800 !important;}
+.av-hero h1,.av-hero h1 *{color:#ffffff !important; font-size:4rem !important; letter-spacing:-.02em; margin:0 !important; font-weight:800 !important;}
 .av-hero p{color:#c8e6de !important; font-size:1rem !important; margin-top:.6rem !important;}
 /* Gold accent stripe below hero title */
 .av-hero-accent{display:inline-block;width:48px;height:3px;background:var(--accent);border-radius:2px;margin:.7rem auto .5rem;}
@@ -279,16 +279,30 @@ section[data-testid="stSidebar"] .stNumberInput button{
 /* Selectbox in main area */
 [data-baseweb="select"]>div{border-radius:var(--radius-sm) !important; border-color:var(--border) !important;}
 /* Landing page language selector — always white text on dark bg since it sits on a dark card */
+[data-baseweb="select"],
 [data-baseweb="select"]>div,
 [data-baseweb="select"] [data-baseweb="select-value"],
 [data-baseweb="select"] [data-value],
 [data-baseweb="select"] input,
 [data-baseweb="select"] span,
-[data-baseweb="select"] p {
+[data-baseweb="select"] p,
+[data-baseweb="select"] div {
   color:#ffffff !important;
-  background:#1e2d28 !important;
+  background:#1e3530 !important;
 }
 [data-baseweb="select"] svg { fill:#ffffff !important; }
+/* Dropdown option list */
+[data-baseweb="menu"],
+[data-baseweb="menu"] li,
+[data-baseweb="menu"] [role="option"] {
+  background:#1e3530 !important;
+  color:#ffffff !important;
+}
+[data-baseweb="menu"] [aria-selected="true"],
+[data-baseweb="menu"] [role="option"]:hover {
+  background:#2d5a4e !important;
+  color:#ffffff !important;
+}
 /* Dropdown options list */
 [data-baseweb="popover"] [role="option"]{color:#ffffff !important; background:#1e2d28 !important;}
 [data-baseweb="popover"] [role="option"]:hover{background:#2d4a42 !important; color:#ffffff !important;}
