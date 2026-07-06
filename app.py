@@ -1575,9 +1575,10 @@ elif st.session_state.active_tab == "chat":
         _input_cost = round(farm_size * 18000, 0)
         _net_profit = round(_gross_rev - _input_cost, 0)
         _roi = round((_net_profit / _input_cost) * 100, 1) if _input_cost > 0 else 0
+        _season_label = L_SEASON_K if crop_season == "Kharif" else (L_SEASON_R if crop_season == "Rabi" else L_SEASON_A)
         if any(w in ql for w in ["crop","fasal","grow","sow","best"]):
             return (f"Top pick for your inputs: **{CN(sel, lang)}** ({sc}/100). "
-                    f"{season_label[lang]}. Water need: {water_need} L/day, harvest in {grow_days} days.")
+                    f"{_season_label[lang]}. Water need: {water_need} L/day, harvest in {grow_days} days.")
         if any(w in ql for w in ["water","irrigation","pani"]):
             return f"Daily water need for {CN(sel, lang)}: ~{_daily_w} L/ha. Recommended: {_irr_type}, at 5–7 AM."
         if any(w in ql for w in ["soil","mitti","ph"]):
