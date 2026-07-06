@@ -1386,11 +1386,13 @@ elif st.session_state.active_tab == "advisor":
         ("Harvest", "Cut + dry + store", f"Day {grow_days}"),
         ("Post-harvest", "Grade + sell", "Within 3 days"),
     ]
+    _row_alt  = "#1e3530" if _dm else "#e8f5f0"
+    _row_text = "#dff0ea" if _dm else "#0f2e26"
     rows_html = "".join(
-        f"<tr style='background:{'var(--bg-alt)' if i % 2 == 0 else 'transparent'};'>"
-        f"<td style='padding:8px;font-weight:600;color:var(--ink);'>{stage}</td>"
-        f"<td style='padding:8px;color:var(--ink);'>{act}</td>"
-        f"<td style='padding:8px;color:var(--ink);font-weight:500;'>{timing}</td></tr>"
+        f"<tr style='background:{_row_alt if i % 2 == 0 else 'transparent'};'>"
+        f"<td style='padding:8px;font-weight:600;color:{_row_text};'>{stage}</td>"
+        f"<td style='padding:8px;color:{_row_text};'>{act}</td>"
+        f"<td style='padding:8px;color:{_row_text};font-weight:500;'>{timing}</td></tr>"
         for i, (stage, act, timing) in enumerate(cal_rows)
     )
     st.markdown(
