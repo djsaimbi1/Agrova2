@@ -271,6 +271,24 @@ html[data-av-dark="1"] ::-webkit-scrollbar-thumb { background:#253d36 !important
 html[data-av-dark="1"] *:not(svg):not(path):not(circle):not(rect):not(img):not(.av-card):not(.av-tone-danger):not(.av-tone-warn):not(.av-tone-ok):not(.av-tone-info):not(.av-hero):not(.av-progress-fill):not(.av-crop-tile):not(.stButton>button):not([class*="av-pill"]) {
   background-color:#0d1a17 !important;
 }
+html[data-av-dark="1"] [data-testid="stVerticalBlockBorderWrapper"],
+html[data-av-dark="1"] [data-testid="stVerticalBlockBorderWrapper"]>div,
+html[data-av-dark="1"] [data-testid="stVerticalBlock"],
+html[data-av-dark="1"] [data-testid="stHorizontalBlock"],
+html[data-av-dark="1"] [data-testid="column"],
+html[data-av-dark="1"] .element-container,
+html[data-av-dark="1"] .stMarkdown {
+  background:#0d1a17 !important;
+  background-color:#0d1a17 !important;
+  border:none !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+  outline:none !important;
+}
+html[data-av-dark="1"] [data-testid="stVerticalBlockBorderWrapper"]::before,
+html[data-av-dark="1"] [data-testid="stVerticalBlockBorderWrapper"]::after {
+  display:none !important;
+}
 html[data-av-dark="1"] .av-card { background:#162421 !important; }
 html[data-av-dark="1"] .av-tone-danger { background:#2c0c09 !important; }
 html[data-av-dark="1"] .av-tone-warn { background:#271c00 !important; }
@@ -337,6 +355,14 @@ st.markdown("""<script>
     '.main','.block-container'
   ];
 
+  var blockSelectors = [
+    '[data-testid="stVerticalBlockBorderWrapper"]',
+    '[data-testid="stVerticalBlock"]',
+    '[data-testid="stHorizontalBlock"]',
+    '[data-testid="column"]',
+    '.element-container','.stMarkdown'
+  ];
+
   function paintOuter(dark){
     var color = dark ? DARK : LIGHT;
     document.querySelectorAll(outerSelectors.join(',')).forEach(function(el){
@@ -346,6 +372,15 @@ st.markdown("""<script>
       el.style.setProperty('width', '100%', 'important');
       el.style.setProperty('min-height', '100vh', 'important');
     });
+    if(dark){
+      document.querySelectorAll(blockSelectors.join(',')).forEach(function(el){
+        el.style.setProperty('background', DARK, 'important');
+        el.style.setProperty('background-color', DARK, 'important');
+        el.style.setProperty('border', 'none', 'important');
+        el.style.setProperty('box-shadow', 'none', 'important');
+        el.style.setProperty('outline', 'none', 'important');
+      });
+    }
     document.body.style.setProperty('background', color, 'important');
     html.style.setProperty('background', color, 'important');
     html.style.setProperty('min-height', '100vh', 'important');
