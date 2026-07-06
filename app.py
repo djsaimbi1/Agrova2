@@ -56,6 +56,19 @@ section.main{
   padding:0 !important;
   min-height:100vh !important;
 }
+/* ── Hide Streamlit chrome that clutters the UI ───────────────────── */
+/* White square / color block in top-right */
+[data-testid="stColorBlock"],
+[data-testid="stToolbarActionButtonIcon"],
+header [data-testid="stToolbar"] { display:none !important; }
+/* Hide the three-dot deploy/settings menu & GitHub/share icons */
+[data-testid="stMainMenuButton"],
+button[title="View app in fullscreen"],
+button[title="Open settings"],
+[data-testid="stActionButtonIcon"] { display:none !important; }
+/* Keep only the Share button if you want it; to hide everything: */
+header[data-testid="stHeader"] { visibility:hidden !important; height:0 !important; }
+
 /* Light mode — cover every wrapper */
 html,body{background:#f4faf8 !important; min-height:100vh; width:100%;}
 .stApp,.stApp>div,.stApp>div>div,.stApp>div>div>div,
@@ -72,6 +85,9 @@ section[data-testid="stSidebar"] label{color:#b7d9cf !important; font-weight:500
 
 h1,h2,h3,h4{color:var(--ink) !important; font-weight:700 !important; letter-spacing:-.01em;}
 p,span,div,td,th,li{color:var(--ink-soft);}
+/* Adaptive text — elements with an explicit background get forced contrast */
+[style*="background:#0"],[style*="background:rgb(0"]{color:#f0faf7 !important;}
+[style*="background:#f"],[style*="background:#e"],[style*="background:#d"],[style*="background:rgb(2"]{color:#16302b !important;}
 
 .stTabs [data-baseweb="tab-list"]{gap:4px; border-bottom:1px solid var(--border);}
 .stTabs [data-baseweb="tab"]{
@@ -875,7 +891,9 @@ with hc2:
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
 html,body,.stApp,.main,.block-container{background:#0d1a17 !important;}
-header[data-testid="stHeader"]{background:#0d1a17 !important;}
+header[data-testid="stHeader"]{background:#0d1a17 !important; visibility:hidden !important; height:0 !important;}
+[data-testid="stColorBlock"],[data-testid="stToolbarActionButtonIcon"],
+header[data-testid="stHeader"] [data-testid="stToolbar"],[data-testid="stMainMenuButton"]{display:none !important;}
 /* Toolbar icons (share, star, pen, github, dots) — make them clearly visible */
 header[data-testid="stHeader"] button,
 header[data-testid="stHeader"] a,
