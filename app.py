@@ -257,6 +257,11 @@ html[data-av-dark="1"]{
   --accent2:#ff6b6b;
 }
 html[data-av-dark="1"],html[data-av-dark="1"] body { background:#0d1a17 !important; }
+/* Sidebar resize handle — the white strip between sidebar and content */
+html[data-av-dark="1"] [data-testid="stSidebarResizeHandle"],
+html[data-av-dark="1"] [data-testid="stSidebarResizeHandle"]>* { background:#0d1a17 !important; border:none !important; }
+[data-testid="stSidebarResizeHandle"] { background:#d7e6e1 !important; width:1px !important; }
+html[data-av-dark="1"] [data-testid="stSidebarResizeHandle"] { background:#253d36 !important; width:1px !important; }
 /* Kill the white right-side scrollbar/decoration strip */
 html[data-av-dark="1"] [data-testid="stDecoration"],
 html[data-av-dark="1"] [data-testid="stStatusWidget"],
@@ -327,6 +332,7 @@ st.markdown("""<script>
     '[data-testid="stAppViewContainer"]>div',
     '[data-testid="stAppViewContainer"]>div>div',
     '[data-testid="stAppViewBlockContainer"]',
+    '[data-testid="stSidebarResizeHandle"]',
     'section.main','section.main>div','section.main>div>div',
     '.main','.block-container'
   ];
