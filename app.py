@@ -1540,11 +1540,11 @@ elif st.session_state.active_tab == "finance":
     r_adv = "Waterlogging risk" if rain > 85 else ("Good rainfall" if rain > 60 else "Irrigation needed")
     card_grid([
         ("⚠️ Risk levels",
-         f"<p>🌊 Flood: {pill(L[flood_l][lang], status_tone(flood_l))}</p>"
-         f"<p>🏜️ Drought: {pill(L[drought_l][lang], status_tone(drought_l))}</p>"
-         f"<p>❄️ Frost: {pill(L[frost_l][lang], status_tone(frost_l))}</p>"
-         f"<p>🔥 Heat: {pill(L[heat_l][lang], status_tone(heat_l))}</p>"
-         f"<p>💨 {T('gas', lang)}: {pill(L[gas_l][lang], status_tone(gas_l))}</p>", "", "info"),
+         f"<p>🌊 Flood: <span style='color:var(--ink);'>{L[flood_l][lang]}</span></p>"
+         f"<p>🏜️ Drought: <span style='color:var(--ink);'>{L[drought_l][lang]}</span></p>"
+         f"<p>❄️ Frost: <span style='color:var(--ink);'>{L[frost_l][lang]}</span></p>"
+         f"<p>🔥 Heat: <span style='color:var(--ink);'>{L[heat_l][lang]}</span></p>"
+         f"<p>💨 {T('gas', lang)}: <span style='color:var(--ink);'>{L[gas_l][lang]}</span></p>", "", "info"),
         ("🌦️ Climate advisory",
          f"<p>{T('temp', lang)}: <strong>{t_adv}</strong></p><p>{T('rain', lang)}: <strong>{r_adv}</strong></p>"
          f"<p>{T('wind', lang)}: <strong>{'Use windbreaks' if wind>50 else L['safe'][lang]}</strong></p>"
