@@ -876,9 +876,19 @@ if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
 html,body,.stApp,.main,.block-container{background:#0d1a17 !important;}
 header[data-testid="stHeader"]{background:#0d1a17 !important;}
+/* Toolbar icons (share, star, pen, github, dots) — make them clearly visible */
+header[data-testid="stHeader"] button,
+header[data-testid="stHeader"] a,
+header[data-testid="stHeader"] svg,
+header[data-testid="stHeader"] [data-testid="stToolbar"] *,
+header[data-testid="stHeader"] [data-testid="stDecoration"],
+[data-testid="stToolbar"] button,[data-testid="stToolbar"] svg,
+[data-testid="stToolbar"] path {
+  color:#dff0ea !important; fill:#dff0ea !important; stroke:#dff0ea !important; opacity:1 !important;
+}
 section[data-testid="stSidebar"]{background:linear-gradient(180deg,#071410,#0c1e1a) !important;}
 .av-card{background:#162421 !important; border-color:#253d36 !important;}
-.av-card p,.av-card li,.av-card td,.av-card th{color:#9ec4bb !important;}
+.av-card p,.av-card li,.av-card td,.av-card th{color:#c8e6de !important;}
 .av-card h4{color:#dff0ea !important;}
 .av-card strong{color:#dff0ea !important;}
 .stMetric{background:#162421 !important; border-color:#253d36 !important;}
@@ -888,7 +898,9 @@ section[data-testid="stSidebar"]{background:linear-gradient(180deg,#071410,#0c1e
 .stTabs [data-baseweb="tab-list"]{background:#0d1a17 !important; border-color:#253d36 !important;}
 .stTabs [data-baseweb="tab"]{color:#6a9e94 !important;}
 .stTabs [aria-selected="true"]{background:#162421 !important; color:#3f9c88 !important;}
-.stMarkdown p,.stMarkdown li,.stMarkdown span{color:#9ec4bb !important;}
+/* Body text — bumped to bright cream so it's easy on the eyes */
+.stMarkdown p,.stMarkdown li,.stMarkdown span{color:#c8e6de !important;}
+p, li, span, td, th, label { color:#c8e6de !important; }
 h1,h2,h3,h4{color:#dff0ea !important;}
 strong{color:#dff0ea !important;}
 section[data-testid="stSidebar"] *{color:#dcefe9 !important;}
@@ -897,7 +909,9 @@ section[data-testid="stSidebar"] label{color:#b7d9cf !important;}
 [data-baseweb="select"]>div{background:#162421 !important; border-color:#253d36 !important; color:#dff0ea !important;}
 input,textarea{background:#162421 !important; color:#dff0ea !important; border-color:#253d36 !important;}
 section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,255,.1) !important; color:#dff0ea !important; border-color:rgba(255,255,255,.2) !important;}
-.stButton>button{background:#2d7a68 !important; color:#fff !important;}
+/* All buttons dark-styled, including the Light Mode toggle */
+.stButton>button{background:#2d7a68 !important; color:#fff !important; border:none !important;}
+.stButton>button p,.stButton>button span,.stButton>button div{color:#fff !important;}
 .av-section h3{color:#e63946 !important;}
 .av-progress-track{background:#1f3a30 !important;}
 [data-testid="stSlider"] [data-testid="stTickBar"]{background:#253d36 !important;}
