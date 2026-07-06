@@ -5,6 +5,10 @@ from datetime import datetime
 
 st.set_page_config(page_title="AGROVA", layout="wide", page_icon="🌾", initial_sidebar_state="expanded")
 
+# Ensure dark_mode always exists in session state
+if "dark_mode" not in st.session_state:
+    st.session_state.dark_mode = False
+
 # ── Dark mode query-param sync ──────────────────────────────────
 # The header iframe button sets ?dm=1 or ?dm=0. Python reads it
 # here (before any UI renders), stores it in session_state, clears
@@ -52,6 +56,32 @@ section.main{
   padding:0 !important;
   min-height:100vh !important;
 }
+/* ── Hide only specific Streamlit chrome, never the sidebar ──────── */
+[data-testid="stColorBlock"],
+[data-testid="stToolbarActionButtonIcon"],
+[data-testid="stMainMenuButton"],
+[data-testid="stActionButtonIcon"],
+[data-testid="stToolbarActions"],
+button[title="View app in fullscreen"],
+button[title="Open settings"] { display:none !important; }
+
+/* Header stays fully visible and interactive for sidebar arrow */
+header[data-testid="stHeader"] {
+  background:transparent !important;
+}
+/* Sidebar collapse/expand arrow — always visible and clickable */
+[data-testid="stSidebarCollapsedControl"] {
+  display:flex !important;
+  visibility:visible !important;
+  pointer-events:all !important;
+  background:#0a4a40 !important;
+}
+/* Sidebar itself — always visible */
+section[data-testid="stSidebar"] {
+  display:flex !important;
+  visibility:visible !important;
+}
+
 /* Light mode — cover every wrapper */
 html,body{background:#f4faf8 !important; min-height:100vh; width:100%;}
 .stApp,.stApp>div,.stApp>div>div,.stApp>div>div>div,
@@ -68,6 +98,9 @@ section[data-testid="stSidebar"] label{color:#b7d9cf !important; font-weight:500
 
 h1,h2,h3,h4{color:var(--ink) !important; font-weight:700 !important; letter-spacing:-.01em;}
 p,span,div,td,th,li{color:var(--ink-soft);}
+/* Adaptive text — elements with an explicit background get forced contrast */
+[style*="background:#0"],[style*="background:rgb(0"]{color:#f0faf7 !important;}
+[style*="background:#f"],[style*="background:#e"],[style*="background:#d"],[style*="background:rgb(2"]{color:#16302b !important;}
 
 .stTabs [data-baseweb="tab-list"]{gap:4px; border-bottom:1px solid var(--border);}
 .stTabs [data-baseweb="tab"]{
@@ -83,6 +116,14 @@ p,span,div,td,th,li{color:var(--ink-soft);}
 }
 .stButton>button:hover{background:var(--brand-dark) !important; color:#ffffff !important;}
 .stButton>button p,.stButton>button span,.stButton>button div{color:#ffffff !important;}
+
+/* Dark mode toggle — compact, left-aligned under subtitle */
+div[data-testid="stHorizontalBlock"] > div:first-child .st-key-dm_toggle > button {
+  font-size:.75rem !important;
+  padding:.3rem .9rem !important;
+  width:auto !important;
+  display:inline-block !important;
+}
 
 .stMetric{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:.7rem .9rem;}
 .stMetric label{color:var(--muted) !important; font-weight:600 !important; font-size:.72rem !important; text-transform:uppercase; letter-spacing:.04em;}
@@ -174,8 +215,13 @@ section[data-testid="stSidebar"] .stSlider [data-baseweb="slider"] [role="slider
 }
 section[data-testid="stSidebar"] .stSlider [data-testid="stTickBar"]{background:rgba(255,255,255,.2) !important;}
 section[data-testid="stSidebar"] .stNumberInput input{
-  background:rgba(255,255,255,.1) !important; border-color:rgba(255,255,255,.2) !important;
-  color:#fff !important;
+  background:rgba(255,255,255,.18) !important; border-color:rgba(255,255,255,.35) !important;
+  color:#ffffff !important; font-weight:600 !important;
+}
+/* +/- stepper buttons */
+section[data-testid="stSidebar"] .stNumberInput button{
+  background:rgba(255,255,255,.2) !important; color:#ffffff !important;
+  border-color:rgba(255,255,255,.3) !important;
 }
 
 /* Links inside cards */
@@ -184,13 +230,21 @@ section[data-testid="stSidebar"] .stNumberInput input{
 
 /* Selectbox in main area */
 [data-baseweb="select"]>div{border-radius:var(--radius-sm) !important; border-color:var(--border) !important;}
-/* Landing page — force readable text regardless of system dark mode */
-[data-baseweb="select"] [data-baseweb="select-option"],
-[data-baseweb="select"] input,
+/* Landing page language selector — always white text on dark bg since it sits on a dark card */
+[data-baseweb="select"]>div,
+[data-baseweb="select"] [data-baseweb="select-value"],
 [data-baseweb="select"] [data-value],
-[data-baseweb="select"] span{color:var(--ink) !important; background:var(--surface) !important;}
-[data-baseweb="popover"] [role="option"]{color:var(--ink) !important; background:var(--surface) !important;}
-[data-baseweb="popover"] [role="option"]:hover{background:var(--bg-alt) !important;}
+[data-baseweb="select"] input,
+[data-baseweb="select"] span,
+[data-baseweb="select"] p {
+  color:#ffffff !important;
+  background:#1e2d28 !important;
+}
+[data-baseweb="select"] svg { fill:#ffffff !important; }
+/* Dropdown options list */
+[data-baseweb="popover"] [role="option"]{color:#ffffff !important; background:#1e2d28 !important;}
+[data-baseweb="popover"] [role="option"]:hover{background:#2d4a42 !important; color:#ffffff !important;}
+[data-baseweb="menu"] { background:#1e2d28 !important; }
 
 /* ── DARK MODE — watches Streamlit's own --background-color CSS var ── */
 html[data-av-dark="1"]{
@@ -203,6 +257,17 @@ html[data-av-dark="1"]{
   --accent2:#ff6b6b;
 }
 html[data-av-dark="1"],html[data-av-dark="1"] body { background:#0d1a17 !important; }
+/* Sidebar resize handle — the white strip between sidebar and content */
+html[data-av-dark="1"] [data-testid="stSidebarResizeHandle"],
+html[data-av-dark="1"] [data-testid="stSidebarResizeHandle"]>* { background:#0d1a17 !important; border:none !important; }
+[data-testid="stSidebarResizeHandle"] { background:#d7e6e1 !important; width:1px !important; }
+html[data-av-dark="1"] [data-testid="stSidebarResizeHandle"] { background:#253d36 !important; width:1px !important; }
+/* Kill the white right-side scrollbar/decoration strip */
+html[data-av-dark="1"] [data-testid="stDecoration"],
+html[data-av-dark="1"] [data-testid="stStatusWidget"],
+html[data-av-dark="1"] ::-webkit-scrollbar-track { background:#0d1a17 !important; }
+html[data-av-dark="1"] ::-webkit-scrollbar { background:#0d1a17 !important; }
+html[data-av-dark="1"] ::-webkit-scrollbar-thumb { background:#253d36 !important; border-radius:4px; }
 html[data-av-dark="1"] *:not(svg):not(path):not(circle):not(rect):not(img):not(.av-card):not(.av-tone-danger):not(.av-tone-warn):not(.av-tone-ok):not(.av-tone-info):not(.av-hero):not(.av-progress-fill):not(.av-crop-tile):not(.stButton>button):not([class*="av-pill"]) {
   background-color:#0d1a17 !important;
 }
@@ -267,6 +332,7 @@ st.markdown("""<script>
     '[data-testid="stAppViewContainer"]>div',
     '[data-testid="stAppViewContainer"]>div>div',
     '[data-testid="stAppViewBlockContainer"]',
+    '[data-testid="stSidebarResizeHandle"]',
     'section.main','section.main>div','section.main>div>div',
     '.main','.block-container'
   ];
@@ -329,15 +395,16 @@ st.markdown("""<script>
     saveTabs();
     restoreTab();
   }, 400);
-  // Re-wire after each rerun (Streamlit replaces DOM nodes)
+  // Re-wire after each rerun AND instantly repaint so no white flash
   new MutationObserver(function(){
     saveTabs();
     if(!tabRestored) restoreTab();
+    paintOuter(isDark);  // repaint immediately on every DOM change
   }).observe(document.body, {childList:true, subtree:true});
 
   detect();
   new MutationObserver(detect).observe(html, {attributes:true, attributeFilter:['style']});
-  setInterval(function(){ detect(); paintOuter(isDark); }, 300);
+  setInterval(function(){ detect(); paintOuter(isDark); }, 100);
   window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', detect);
 })();
 </script>""", unsafe_allow_html=True)
@@ -796,30 +863,19 @@ with hc1:
         unsafe_allow_html=True
     )
     st.markdown(
-        f"<p style='color:var(--muted); font-size:1.05rem; font-weight:500; margin-top:.2rem; letter-spacing:.01em;'>{T('app_sub', lang)}</p>",
+        f"<p style='color:var(--muted); font-size:1.05rem; font-weight:500; margin-top:.2rem; margin-bottom:.6rem; letter-spacing:.01em;'>{T('app_sub', lang)}</p>",
         unsafe_allow_html=True
     )
+
 with hc2:
     _dm = st.session_state.get("dark_mode", False)
-    _next_dm   = "0" if _dm else "1"
     _clock_bg  = "#1e3530" if _dm else "#e8f6ee"
     _clock_col = "#3f9c88" if _dm else "#0f6b5c"
     _clock_bdr = "#2d4a42" if _dm else "#2d936c"
-    _btn_bg    = "#2d7a68" if _dm else "#0f6b5c"
-    _btn_hov   = "#25695a" if _dm else "#0a4a40"
-    _btn_lbl   = "☀️ Light Mode" if _dm else "🌙 Dark Mode"
     _pill_bg   = "#1e3530" if _dm else "#e8f6ee"
     _pill_col  = "#3f9c88" if _dm else "#0f6b5c"
     _pill_bdr  = "#2d4a42" if _dm else "#b5d5c8"
 
-    # ── Single self-contained iframe ────────────────────────────
-    # Pill, clock, and Dark Mode button all live here with equal
-    # 10px gaps — no Streamlit widget margins can interfere.
-    # Clicking the button sets ?dm=1 or ?dm=0 in the parent URL;
-    # the Python handler at the top of the file catches it on the
-    # next render, stores it in session_state, clears the param,
-    # and calls st.rerun() — a server-side rerun that keeps the
-    # session alive, so the toggle works reliably both ways.
     components.html(f"""
     <style>
       *{{box-sizing:border-box;margin:0;padding:0;}}
@@ -843,21 +899,10 @@ with hc2:
         padding:5px 14px;width:150px;
         letter-spacing:.03em;line-height:1.6;
       }}
-      #dm-btn{{
-        width:150px;font-size:.72rem;font-weight:700;
-        color:#fff;background:{_btn_bg};
-        border:none;border-radius:8px;
-        padding:6px 14px;cursor:pointer;
-        letter-spacing:.03em;line-height:1.6;
-        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-        text-align:center;transition:background .2s;
-      }}
-      #dm-btn:hover{{background:{_btn_hov};}}
     </style>
     <div class="wrap">
-      <div class="pill">📍 Maharashtra</div>
+      <div class="pill">📍 {selected_state}</div>
       <div id="av-clock">loading...</div>
-      <button id="dm-btn">{_btn_lbl}</button>
     </div>
     <script>
     (function(){{
@@ -873,22 +918,53 @@ with hc2:
           String(n.getSeconds()).padStart(2,'0')+'</div>';
       }}
       tick(); setInterval(tick,1000);
-      document.getElementById('dm-btn').addEventListener('click',function(){{
-        var u=new URL(window.parent.location.href);
-        u.searchParams.set('dm','{_next_dm}');
-        window.parent.location.href=u.toString();
-      }});
     }})();
     </script>
-    """, height=152)
+    """, height=105)
 
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
 html,body,.stApp,.main,.block-container{background:#0d1a17 !important;}
 header[data-testid="stHeader"]{background:#0d1a17 !important;}
+[data-testid="stColorBlock"],[data-testid="stToolbarActionButtonIcon"],
+[data-testid="stMainMenuButton"],[data-testid="stToolbarActions"]{display:none !important;}
+section[data-testid="stSidebar"]{display:flex !important; visibility:visible !important; background:linear-gradient(180deg,#071410,#0c1e1a) !important;}
+[data-testid="stSidebarCollapsedControl"]{display:flex !important; visibility:visible !important; pointer-events:all !important; background:#071410 !important;}
+/* Kill every border/shadow on every container — the white vertical line */
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"],
+[data-testid="stMainBlockContainer"],
+[data-testid="stSidebarContent"],
+[data-testid="stForm"],
+[data-testid="stNotification"],
+[data-testid="stExpander"],
+[data-testid="stExpanderDetails"],
+section.main,
+.main .block-container,
+[data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stBottom"] {
+  border:none !important;
+  border-right:none !important;
+  border-left:none !important;
+  border-top:none !important;
+  border-bottom:none !important;
+  outline:none !important;
+  box-shadow:none !important;
+  background:#0d1a17 !important;
+}
+/* Toolbar icons (share, star, pen, github, dots) — make them clearly visible */
+header[data-testid="stHeader"] button,
+header[data-testid="stHeader"] a,
+header[data-testid="stHeader"] svg,
+header[data-testid="stHeader"] [data-testid="stToolbar"] *,
+header[data-testid="stHeader"] [data-testid="stDecoration"],
+[data-testid="stToolbar"] button,[data-testid="stToolbar"] svg,
+[data-testid="stToolbar"] path {
+  color:#dff0ea !important; fill:#dff0ea !important; stroke:#dff0ea !important; opacity:1 !important;
+}
 section[data-testid="stSidebar"]{background:linear-gradient(180deg,#071410,#0c1e1a) !important;}
 .av-card{background:#162421 !important; border-color:#253d36 !important;}
-.av-card p,.av-card li,.av-card td,.av-card th{color:#9ec4bb !important;}
+.av-card p,.av-card li,.av-card td,.av-card th{color:#c8e6de !important;}
 .av-card h4{color:#dff0ea !important;}
 .av-card strong{color:#dff0ea !important;}
 .stMetric{background:#162421 !important; border-color:#253d36 !important;}
@@ -898,7 +974,9 @@ section[data-testid="stSidebar"]{background:linear-gradient(180deg,#071410,#0c1e
 .stTabs [data-baseweb="tab-list"]{background:#0d1a17 !important; border-color:#253d36 !important;}
 .stTabs [data-baseweb="tab"]{color:#6a9e94 !important;}
 .stTabs [aria-selected="true"]{background:#162421 !important; color:#3f9c88 !important;}
-.stMarkdown p,.stMarkdown li,.stMarkdown span{color:#9ec4bb !important;}
+/* Body text — bumped to bright cream so it's easy on the eyes */
+.stMarkdown p,.stMarkdown li,.stMarkdown span{color:#c8e6de !important;}
+p, li, span, td, th, label { color:#c8e6de !important; }
 h1,h2,h3,h4{color:#dff0ea !important;}
 strong{color:#dff0ea !important;}
 section[data-testid="stSidebar"] *{color:#dcefe9 !important;}
@@ -906,7 +984,10 @@ section[data-testid="stSidebar"] h1,section[data-testid="stSidebar"] h2{color:#f
 section[data-testid="stSidebar"] label{color:#b7d9cf !important;}
 [data-baseweb="select"]>div{background:#162421 !important; border-color:#253d36 !important; color:#dff0ea !important;}
 input,textarea{background:#162421 !important; color:#dff0ea !important; border-color:#253d36 !important;}
-.stButton>button{background:#2d7a68 !important; color:#fff !important;}
+section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,255,.1) !important; color:#dff0ea !important; border-color:rgba(255,255,255,.2) !important;}
+/* All buttons dark-styled, including the Light Mode toggle */
+.stButton>button{background:#2d7a68 !important; color:#fff !important; border:none !important;}
+.stButton>button p,.stButton>button span,.stButton>button div{color:#fff !important;}
 .av-section h3{color:#e63946 !important;}
 .av-progress-track{background:#1f3a30 !important;}
 [data-testid="stSlider"] [data-testid="stTickBar"]{background:#253d36 !important;}
@@ -921,6 +1002,43 @@ input,textarea{background:#162421 !important; color:#dff0ea !important; border-c
 .av-crop-tile .name{color:#dff0ea !important;}
 .av-crop-tile .score{color:#3f9c88 !important;}
 .av-crop-tile.sel{background:#1e3530 !important; border-color:#3f9c88 !important;}
+/* Dark ALL wrappers — no white gaps or borders anywhere */
+.stApp, .stApp > *, .main, .main > *,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewContainer"] > *,
+[data-testid="stAppViewBlockContainer"],
+[data-testid="stAppViewBlockContainer"] > *,
+[data-testid="stVerticalBlock"],
+[data-testid="stVerticalBlock"] > *,
+[data-testid="stHorizontalBlock"],
+[data-testid="stHorizontalBlock"] > *,
+[data-testid="column"],
+[data-testid="column"] > *,
+[data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stVerticalBlockBorderWrapper"] > *,
+.element-container,
+.stMarkdown,
+.block-container,
+.block-container > *,
+section.main,
+section.main > * {
+  background:#0d1a17 !important;
+  border-color:#0d1a17 !important;
+  border:none !important;
+  outline:none !important;
+  box-shadow:none !important;
+}
+/* Restore specific component backgrounds and borders */
+.av-card { background:#162421 !important; border-color:#253d36 !important; box-shadow:none !important; }
+.av-crop-tile { background:#162421 !important; border-color:#253d36 !important; }
+.av-crop-tile.sel { background:#1e3530 !important; border-color:#3f9c88 !important; }
+.stMetric { background:#162421 !important; border-color:#253d36 !important; }
+.av-tone-danger { background:#2c0c09 !important; border-color:#5c1a15 !important; }
+.av-tone-warn { background:#271c00 !important; border-color:#4a3500 !important; }
+.av-tone-ok { background:#0b2418 !important; border-color:#1a4a30 !important; }
+.av-tone-info { background:#091d2c !important; border-color:#0f3a52 !important; }
+[data-baseweb="select"]>div { background:#162421 !important; border-color:#253d36 !important; }
+input, textarea { background:#162421 !important; border-color:#253d36 !important; }
 .st-key-navtabs{border-color:#253d36 !important;}
 .st-key-navtabs .stButton>button[kind="secondary"] p,
 .st-key-navtabs .stButton>button[kind="secondary"] span,
@@ -938,6 +1056,19 @@ if gas > 70:
          icon="☠️", tone="danger")
 
 risks, loss_pct = crop_loss_risk(soil, rain, temp, gas, humidity, wind)
+
+# ── Dark Mode toggle — sits between subtitle and nav tabs ──────
+st.markdown("<div style='height:.2rem'></div>", unsafe_allow_html=True)
+_dm = st.session_state.get("dark_mode", False)
+_dm_cols = st.columns([1, 2, 1])
+with _dm_cols[1]:
+    if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode",
+                 key="dm_toggle", use_container_width=True):
+        st.session_state.dark_mode = not _dm
+        st.rerun()
+st.markdown("<div style='height:.2rem'></div>", unsafe_allow_html=True)
+st.markdown("<hr style='margin:.4rem 0 .8rem 0;border-top:1px solid var(--border);border-bottom:none;'>",
+            unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
 # NAV BAR — real buttons wired to session_state, replacing st.tabs()
@@ -1404,3 +1535,5 @@ elif st.session_state.active_tab == "chat":
         st.rerun()
     # Fill remaining viewport height so background shows — no white gap on tall/16:9 screens
     st.markdown("<div style='min-height:60vh;background:transparent;'></div>", unsafe_allow_html=True)
+
+# Modified placeholder for app(4) dark mode improvements
