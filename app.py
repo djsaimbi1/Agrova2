@@ -939,6 +939,8 @@ section[data-testid="stSidebar"]{display:flex !important; visibility:visible !im
 [data-testid="stNotification"],
 [data-testid="stExpander"],
 [data-testid="stExpanderDetails"],
+[data-testid="stSidebarResizeHandle"],
+[data-testid="stSidebarResizeHandle"]>*,
 section.main,
 .main .block-container,
 [data-testid="stVerticalBlockBorderWrapper"],
@@ -952,6 +954,7 @@ section.main,
   box-shadow:none !important;
   background:#0d1a17 !important;
 }
+[data-testid="stSidebarResizeHandle"]{width:0px !important; min-width:0px !important; overflow:hidden !important;}
 /* Toolbar icons (share, star, pen, github, dots) — make them clearly visible */
 header[data-testid="stHeader"] button,
 header[data-testid="stHeader"] a,
