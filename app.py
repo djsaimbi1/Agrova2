@@ -1563,13 +1563,25 @@ elif st.session_state.active_tab == "chat":
 
     def chat_answer(q, lang):
         ql = q.lower()
+        # compute needed values inline (these vars only exist in other tab blocks)
+        _daily_w  = round((100 - rain) * water_need * 0.15, 1)
+        _irr_type = "Drip (saves 40% water)" if rain < 40 else ("Sprinkler" if rain < 70 else "Flood irrigation")
+        _raw_soil = "very dry" if soil < 20 else ("dry" if soil < 40 else ("optimal" if soil < 70 else "waterlogged"))
+        _soil_note = {"very dry": "Irrigate now!", "dry": L["low"][lang], "optimal": L["optimal"][lang], "waterlogged": "Drain now!"}[_raw_soil]
+        _raw_ph   = "acidic" if ph < 5.5 else ("alkaline" if ph > 7.5 else "optimal")
+        _ph_note  = {"acidic": "Add lime, 2–3 bags/acre", "alkaline": "Add gypsum, 200 kg/acre", "optimal": L["optimal"][lang]}[_raw_ph]
+        _soil_health = round(max(0, 100 - abs(soil - 60) - abs(ph - 6.5) * 5), 1)
+        _gross_rev = round(farm_size * price_kg * grow_days * 0.8, 0)
+        _input_cost = round(farm_size * 18000, 0)
+        _net_profit = round(_gross_rev - _input_cost, 0)
+        _roi = round((_net_profit / _input_cost) * 100, 1) if _input_cost > 0 else 0
         if any(w in ql for w in ["crop","fasal","grow","sow","best"]):
             return (f"Top pick for your inputs: **{CN(sel, lang)}** ({sc}/100). "
                     f"{season_label[lang]}. Water need: {water_need} L/day, harvest in {grow_days} days.")
         if any(w in ql for w in ["water","irrigation","pani"]):
-            return f"Daily water need for {CN(sel, lang)}: ~{daily_w} L/ha. Recommended: {irr_type}, at 5–7 AM."
+            return f"Daily water need for {CN(sel, lang)}: ~{_daily_w} L/ha. Recommended: {_irr_type}, at 5–7 AM."
         if any(w in ql for w in ["soil","mitti","ph"]):
-            return f"Soil status: {soil_note}. pH status: {ph_note}. Health score: {soil_health}/100."
+            return f"Soil status: {_soil_note}. pH status: {_ph_note}. Health score: {_soil_health}/100."
         if any(w in ql for w in ["pest","keeda","disease"]):
             return f"Watch for: {', '.join(PEST_MAP.get(sel, ['Aphids','Blight']))}. Neem oil 5ml/L every 15 days is the first line of defense."
         if any(w in ql for w in ["loss","nuksan","damage"]):
@@ -1577,7 +1589,7 @@ elif st.session_state.active_tab == "chat":
         if any(w in ql for w in ["scheme","yojana","subsidy","pm-kisan","pmfby"]):
             return "Key schemes: PM-KISAN (₹6000/yr), KCC (4% loans), PMFBY (2% premium insurance), PMKSY (drip subsidy). See the Govt Schemes tab."
         if any(w in ql for w in ["profit","money","finance","paisa"]):
-            return f"Projected net profit for {CN(sel, lang)} on {farm_size} ha: ₹{int(net_profit):,} (ROI {roi}%)."
+            return f"Projected net profit for {CN(sel, lang)} on {farm_size} ha: ₹{int(_net_profit):,} (ROI {_roi}%)."
         return "I can help with crops, soil, water, pests, crop-loss risk, government schemes, and finances — ask me anything about your farm."
 
     st.markdown("<div style='margin-bottom:.75rem;'></div>", unsafe_allow_html=True)
