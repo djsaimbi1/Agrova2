@@ -83,19 +83,25 @@ header[data-testid="stHeader"] {
   fill:#ffffff !important;
   opacity:1 !important;
 }
-/* Sidebar collapse << button (sidebar open) — light mode: dark arrow, always visible */
+/* Sidebar collapse << button (sidebar open) — dark green bg, white arrow, always visible */
 [data-testid="stSidebarCollapseButton"],
-[data-testid="stSidebarCollapseButton"] button,
 [data-testid="collapsedControl"] {
   opacity:1 !important;
   visibility:visible !important;
   display:flex !important;
   pointer-events:all !important;
+  background:#0a4a40 !important;
+  border-radius:0 6px 6px 0 !important;
+  padding:4px !important;
+}
+[data-testid="stSidebarCollapseButton"] button {
+  background:#0a4a40 !important;
+  opacity:1 !important;
 }
 [data-testid="stSidebarCollapseButton"] svg,
 [data-testid="stSidebarCollapseButton"] button svg {
-  color:#0a4a40 !important;
-  fill:#0a4a40 !important;
+  color:#ffffff !important;
+  fill:#ffffff !important;
   opacity:1 !important;
 }
 /* Sidebar itself — always visible */
@@ -337,9 +343,10 @@ html[data-av-dark="1"] [data-testid="stSidebarCollapsedControl"],
 html[data-av-dark="1"] [data-testid="stSidebarCollapsedControl"]>* { background:#071410 !important; }
 html[data-av-dark="1"] [data-testid="stSidebarCollapsedControl"] svg,
 html[data-av-dark="1"] [data-testid="stSidebarCollapsedControl"] button { color:#dff0ea !important; fill:#dff0ea !important; opacity:1 !important; }
-/* Dark mode: collapse << button — light arrow, always visible */
+/* Dark mode: collapse << button — dark bg, light arrow, always visible */
 html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"],
-html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"] button { opacity:1 !important; visibility:visible !important; }
+html[data-av-dark="1"] [data-testid="collapsedControl"] { background:#071410 !important; opacity:1 !important; visibility:visible !important; border-radius:0 6px 6px 0 !important; padding:4px !important; }
+html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"] button { background:#071410 !important; opacity:1 !important; }
 html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"] svg,
 html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"] button svg { color:#dff0ea !important; fill:#dff0ea !important; opacity:1 !important; }
 html[data-av-dark="1"] section[data-testid="stSidebar"],
