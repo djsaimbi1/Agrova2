@@ -906,6 +906,24 @@ html,body,.stApp,.main,.block-container{background:#0d1a17 !important;}
 header[data-testid="stHeader"]{background:#0d1a17 !important; visibility:hidden !important; height:0 !important;}
 [data-testid="stColorBlock"],[data-testid="stToolbarActionButtonIcon"],
 header[data-testid="stHeader"] [data-testid="stToolbar"],[data-testid="stMainMenuButton"]{display:none !important;}
+/* Kill every border/shadow on every container — the white vertical line */
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"],
+[data-testid="stMainBlockContainer"],
+[data-testid="stSidebarContent"],
+section.main,
+.main .block-container,
+[data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stBottom"] {
+  border:none !important;
+  border-right:none !important;
+  border-left:none !important;
+  border-top:none !important;
+  border-bottom:none !important;
+  outline:none !important;
+  box-shadow:none !important;
+  background:#0d1a17 !important;
+}
 /* Toolbar icons (share, star, pen, github, dots) — make them clearly visible */
 header[data-testid="stHeader"] button,
 header[data-testid="stHeader"] a,
@@ -956,6 +974,43 @@ section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,25
 .av-crop-tile .name{color:#dff0ea !important;}
 .av-crop-tile .score{color:#3f9c88 !important;}
 .av-crop-tile.sel{background:#1e3530 !important; border-color:#3f9c88 !important;}
+/* Dark ALL wrappers — no white gaps or borders anywhere */
+.stApp, .stApp > *, .main, .main > *,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewContainer"] > *,
+[data-testid="stAppViewBlockContainer"],
+[data-testid="stAppViewBlockContainer"] > *,
+[data-testid="stVerticalBlock"],
+[data-testid="stVerticalBlock"] > *,
+[data-testid="stHorizontalBlock"],
+[data-testid="stHorizontalBlock"] > *,
+[data-testid="column"],
+[data-testid="column"] > *,
+[data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stVerticalBlockBorderWrapper"] > *,
+.element-container,
+.stMarkdown,
+.block-container,
+.block-container > *,
+section.main,
+section.main > * {
+  background:#0d1a17 !important;
+  border-color:#0d1a17 !important;
+  border:none !important;
+  outline:none !important;
+  box-shadow:none !important;
+}
+/* Restore specific component backgrounds and borders */
+.av-card { background:#162421 !important; border-color:#253d36 !important; box-shadow:none !important; }
+.av-crop-tile { background:#162421 !important; border-color:#253d36 !important; }
+.av-crop-tile.sel { background:#1e3530 !important; border-color:#3f9c88 !important; }
+.stMetric { background:#162421 !important; border-color:#253d36 !important; }
+.av-tone-danger { background:#2c0c09 !important; border-color:#5c1a15 !important; }
+.av-tone-warn { background:#271c00 !important; border-color:#4a3500 !important; }
+.av-tone-ok { background:#0b2418 !important; border-color:#1a4a30 !important; }
+.av-tone-info { background:#091d2c !important; border-color:#0f3a52 !important; }
+[data-baseweb="select"]>div { background:#162421 !important; border-color:#253d36 !important; }
+input, textarea { background:#162421 !important; border-color:#253d36 !important; }
 .st-key-navtabs{border-color:#253d36 !important;}
 .st-key-navtabs .stButton>button[kind="secondary"] p,
 .st-key-navtabs .stButton>button[kind="secondary"] span,
