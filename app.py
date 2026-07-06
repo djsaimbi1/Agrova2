@@ -56,28 +56,28 @@ section.main{
   padding:0 !important;
   min-height:100vh !important;
 }
-/* ── Hide Streamlit chrome that clutters the UI ───────────────────── */
-/* White square / color block in top-right */
-[data-testid="stColorBlock"],
-[data-testid="stToolbarActionButtonIcon"],
-header [data-testid="stToolbar"] { display:none !important; }
-/* Hide Streamlit toolbar buttons but keep sidebar collapse arrow visible */
+/* ── Hide only specific Streamlit chrome, never the sidebar ──────── */
 [data-testid="stColorBlock"],
 [data-testid="stToolbarActionButtonIcon"],
 [data-testid="stMainMenuButton"],
-[data-testid="stToolbar"],
+[data-testid="stActionButtonIcon"],
+[data-testid="stToolbarActions"],
 button[title="View app in fullscreen"],
-button[title="Open settings"],
-[data-testid="stActionButtonIcon"] { display:none !important; }
-/* Make header transparent but NOT hidden — sidebar arrow lives in it */
+button[title="Open settings"] { display:none !important; }
+
+/* Header stays fully visible and interactive for sidebar arrow */
 header[data-testid="stHeader"] {
   background:transparent !important;
-  pointer-events:none !important;
 }
-/* But keep the sidebar collapse button clickable */
-[data-testid="stSidebarCollapsedControl"],
-[data-testid="stSidebarCollapsedControl"] * {
+/* Sidebar collapse/expand arrow — always visible and clickable */
+[data-testid="stSidebarCollapsedControl"] {
+  display:flex !important;
+  visibility:visible !important;
   pointer-events:all !important;
+  background:#0a4a40 !important;
+}
+/* Sidebar itself — always visible */
+section[data-testid="stSidebar"] {
   display:flex !important;
   visibility:visible !important;
 }
@@ -918,11 +918,9 @@ if st.session_state.get("dark_mode", False):
 html,body,.stApp,.main,.block-container{background:#0d1a17 !important;}
 header[data-testid="stHeader"]{background:#0d1a17 !important;}
 [data-testid="stColorBlock"],[data-testid="stToolbarActionButtonIcon"],
-header[data-testid="stHeader"] [data-testid="stToolbar"],[data-testid="stMainMenuButton"]{display:none !important;}
-[data-testid="stSidebarCollapsedControl"],[data-testid="stSidebarCollapsedControl"] *{
-  pointer-events:all !important; display:flex !important; visibility:visible !important;
-  background:#071410 !important; color:#3f9c88 !important;
-}
+[data-testid="stMainMenuButton"],[data-testid="stToolbarActions"]{display:none !important;}
+section[data-testid="stSidebar"]{display:flex !important; visibility:visible !important; background:linear-gradient(180deg,#071410,#0c1e1a) !important;}
+[data-testid="stSidebarCollapsedControl"]{display:flex !important; visibility:visible !important; pointer-events:all !important; background:#071410 !important;}
 /* Kill every border/shadow on every container — the white vertical line */
 [data-testid="stAppViewContainer"],
 [data-testid="stAppViewBlockContainer"],
