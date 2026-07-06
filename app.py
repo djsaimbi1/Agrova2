@@ -88,6 +88,14 @@ p,span,div,td,th,li{color:var(--ink-soft);}
 .stButton>button:hover{background:var(--brand-dark) !important; color:#ffffff !important;}
 .stButton>button p,.stButton>button span,.stButton>button div{color:#ffffff !important;}
 
+/* Dark mode toggle — compact, left-aligned under subtitle */
+div[data-testid="stHorizontalBlock"] > div:first-child .st-key-dm_toggle > button {
+  font-size:.75rem !important;
+  padding:.3rem .9rem !important;
+  width:auto !important;
+  display:inline-block !important;
+}
+
 .stMetric{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:.7rem .9rem;}
 .stMetric label{color:var(--muted) !important; font-weight:600 !important; font-size:.72rem !important; text-transform:uppercase; letter-spacing:.04em;}
 .stMetric [data-testid="stMetricValue"]{color:var(--ink) !important; font-weight:700 !important;}
@@ -800,30 +808,23 @@ with hc1:
         unsafe_allow_html=True
     )
     st.markdown(
-        f"<p style='color:var(--muted); font-size:1.05rem; font-weight:500; margin-top:.2rem; letter-spacing:.01em;'>{T('app_sub', lang)}</p>",
+        f"<p style='color:var(--muted); font-size:1.05rem; font-weight:500; margin-top:.2rem; margin-bottom:.6rem; letter-spacing:.01em;'>{T('app_sub', lang)}</p>",
         unsafe_allow_html=True
     )
+    _dm = st.session_state.get("dark_mode", False)
+    if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode", key="dm_toggle"):
+        st.session_state.dark_mode = not _dm
+        st.rerun()
+
 with hc2:
     _dm = st.session_state.get("dark_mode", False)
-    _next_dm   = "0" if _dm else "1"
     _clock_bg  = "#1e3530" if _dm else "#e8f6ee"
     _clock_col = "#3f9c88" if _dm else "#0f6b5c"
     _clock_bdr = "#2d4a42" if _dm else "#2d936c"
-    _btn_bg    = "#2d7a68" if _dm else "#0f6b5c"
-    _btn_hov   = "#25695a" if _dm else "#0a4a40"
-    _btn_lbl   = "☀️ Light Mode" if _dm else "🌙 Dark Mode"
     _pill_bg   = "#1e3530" if _dm else "#e8f6ee"
     _pill_col  = "#3f9c88" if _dm else "#0f6b5c"
     _pill_bdr  = "#2d4a42" if _dm else "#b5d5c8"
 
-    # ── Single self-contained iframe ────────────────────────────
-    # Pill, clock, and Dark Mode button all live here with equal
-    # 10px gaps — no Streamlit widget margins can interfere.
-    # Clicking the button sets ?dm=1 or ?dm=0 in the parent URL;
-    # the Python handler at the top of the file catches it on the
-    # next render, stores it in session_state, clears the param,
-    # and calls st.rerun() — a server-side rerun that keeps the
-    # session alive, so the toggle works reliably both ways.
     components.html(f"""
     <style>
       *{{box-sizing:border-box;margin:0;padding:0;}}
@@ -847,21 +848,10 @@ with hc2:
         padding:5px 14px;width:150px;
         letter-spacing:.03em;line-height:1.6;
       }}
-      #dm-btn{{
-        width:150px;font-size:.72rem;font-weight:700;
-        color:#fff;background:{_btn_bg};
-        border:none;border-radius:8px;
-        padding:6px 14px;cursor:pointer;
-        letter-spacing:.03em;line-height:1.6;
-        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-        text-align:center;transition:background .2s;
-      }}
-      #dm-btn:hover{{background:{_btn_hov};}}
     </style>
     <div class="wrap">
-      <div class="pill">📍 Maharashtra</div>
+      <div class="pill">📍 {selected_state}</div>
       <div id="av-clock">loading...</div>
-      <button id="dm-btn">{_btn_lbl}</button>
     </div>
     <script>
     (function(){{
@@ -877,14 +867,9 @@ with hc2:
           String(n.getSeconds()).padStart(2,'0')+'</div>';
       }}
       tick(); setInterval(tick,1000);
-      document.getElementById('dm-btn').addEventListener('click',function(){{
-        var u=new URL(window.parent.location.href);
-        u.searchParams.set('dm','{_next_dm}');
-        window.parent.location.href=u.toString();
-      }});
     }})();
     </script>
-    """, height=152)
+    """, height=105)
 
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
