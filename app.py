@@ -76,6 +76,15 @@ header[data-testid="stHeader"] {
   pointer-events:all !important;
   background:#0a4a40 !important;
 }
+/* Collapse button inside open sidebar — force always visible (Streamlit hides it until hover) */
+[data-testid="stSidebarCollapseButton"],
+[data-testid="stSidebarCollapseButton"] button,
+[data-testid="collapsedControl"] {
+  opacity:1 !important;
+  visibility:visible !important;
+  display:flex !important;
+  pointer-events:all !important;
+}
 /* Sidebar itself — always visible */
 section[data-testid="stSidebar"] {
   display:flex !important;
