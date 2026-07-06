@@ -1364,7 +1364,7 @@ elif st.session_state.active_tab == "advisor":
 
     section(T("pest_section", lang) + f": {CN(sel, lang)}")
     pests = PEST_MAP.get(sel, ["Aphids","Fungal Blight","Root Rot"])
-    pest_pills = "".join(f"<p>{pill(p, 'danger')}</p>" for p in pests)
+    pest_pills = "".join(f"<p style='margin:.25rem 0;color:var(--ink);'>{p}</p>" for p in pests)
     hum_note = f"{L['danger'][lang]}: {RISK_LABELS['fungal'][lang]}" if humidity > 75 else L["safe"][lang]
     card_grid([
         (L.get(pest_risk_level.lower(), L["medium"])[lang], f"<p>{pest_pills}</p>", "🐛", "danger"),
