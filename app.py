@@ -69,14 +69,21 @@ button[title="Open settings"] { display:none !important; }
 header[data-testid="stHeader"] {
   background:transparent !important;
 }
-/* Sidebar collapse/expand arrow — always visible and clickable */
+/* Sidebar expand >> button (sidebar collapsed) — light mode: dark green bg, white arrow */
 [data-testid="stSidebarCollapsedControl"] {
   display:flex !important;
   visibility:visible !important;
   pointer-events:all !important;
   background:#0a4a40 !important;
+  border-radius:0 6px 6px 0 !important;
 }
-/* Collapse button inside open sidebar — force always visible (Streamlit hides it until hover) */
+[data-testid="stSidebarCollapsedControl"] svg,
+[data-testid="stSidebarCollapsedControl"] button {
+  color:#ffffff !important;
+  fill:#ffffff !important;
+  opacity:1 !important;
+}
+/* Sidebar collapse << button (sidebar open) — light mode: dark arrow, always visible */
 [data-testid="stSidebarCollapseButton"],
 [data-testid="stSidebarCollapseButton"] button,
 [data-testid="collapsedControl"] {
@@ -84,6 +91,12 @@ header[data-testid="stHeader"] {
   visibility:visible !important;
   display:flex !important;
   pointer-events:all !important;
+}
+[data-testid="stSidebarCollapseButton"] svg,
+[data-testid="stSidebarCollapseButton"] button svg {
+  color:#0a4a40 !important;
+  fill:#0a4a40 !important;
+  opacity:1 !important;
 }
 /* Sidebar itself — always visible */
 section[data-testid="stSidebar"] {
@@ -319,8 +332,16 @@ html[data-av-dark="1"] .av-chat-user { background:#172820 !important; }
 html[data-av-dark="1"] .av-chat-bot { background:#162421 !important; }
 html[data-av-dark="1"] .stMetric { background:#1e3530 !important; }
 html[data-av-dark="1"] .stButton>button { background:#2d7a68 !important; }
+/* Dark mode: expand >> button — dark bg, light arrow */
 html[data-av-dark="1"] [data-testid="stSidebarCollapsedControl"],
 html[data-av-dark="1"] [data-testid="stSidebarCollapsedControl"]>* { background:#071410 !important; }
+html[data-av-dark="1"] [data-testid="stSidebarCollapsedControl"] svg,
+html[data-av-dark="1"] [data-testid="stSidebarCollapsedControl"] button { color:#dff0ea !important; fill:#dff0ea !important; opacity:1 !important; }
+/* Dark mode: collapse << button — light arrow, always visible */
+html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"],
+html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"] button { opacity:1 !important; visibility:visible !important; }
+html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"] svg,
+html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"] button svg { color:#dff0ea !important; fill:#dff0ea !important; opacity:1 !important; }
 html[data-av-dark="1"] section[data-testid="stSidebar"],
 html[data-av-dark="1"] section[data-testid="stSidebar"]>div { background:linear-gradient(180deg,#071410,#0c1e1a) !important; }
 html[data-av-dark="1"] section[data-testid="stSidebar"]{ background:linear-gradient(180deg,#071410,#0c1e1a) !important; }
