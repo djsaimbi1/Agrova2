@@ -105,19 +105,17 @@ header[data-testid="stHeader"] [data-testid="stSidebarCollapseButton"] svg {
   fill:#ffffff !important;
   opacity:1 !important;
 }
-/* Sidebar collapse << button (sidebar open) — dark green bg, white arrow, always visible */
+/* Sidebar collapse << button (sidebar open) — no background, arrow always visible */
 [data-testid="stSidebarCollapseButton"],
 [data-testid="collapsedControl"] {
   opacity:1 !important;
   visibility:visible !important;
   display:flex !important;
   pointer-events:all !important;
-  background:#0a4a40 !important;
-  border-radius:0 6px 6px 0 !important;
-  padding:4px !important;
+  background:transparent !important;
 }
 [data-testid="stSidebarCollapseButton"] button {
-  background:#0a4a40 !important;
+  background:transparent !important;
   opacity:1 !important;
 }
 [data-testid="stSidebarCollapseButton"] svg,
@@ -368,8 +366,8 @@ html[data-av-dark="1"] [data-testid="stSidebarCollapsedControl"] svg,
 html[data-av-dark="1"] [data-testid="stSidebarCollapsedControl"] button { color:#dff0ea !important; fill:#dff0ea !important; opacity:1 !important; }
 /* Dark mode: collapse << button — dark bg, light arrow, always visible */
 html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"],
-html[data-av-dark="1"] [data-testid="collapsedControl"] { background:#071410 !important; opacity:1 !important; visibility:visible !important; border-radius:0 6px 6px 0 !important; padding:4px !important; }
-html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"] button { background:#071410 !important; opacity:1 !important; }
+html[data-av-dark="1"] [data-testid="collapsedControl"] { background:transparent !important; opacity:1 !important; visibility:visible !important; }
+html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"] button { background:transparent !important; opacity:1 !important; }
 html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"] svg,
 html[data-av-dark="1"] [data-testid="stSidebarCollapseButton"] button svg { color:#dff0ea !important; fill:#dff0ea !important; opacity:1 !important; }
 html[data-av-dark="1"] section[data-testid="stSidebar"],
