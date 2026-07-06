@@ -202,10 +202,14 @@ section[data-testid="stSidebar"] .stSlider [data-baseweb="slider"] [role="slider
 }
 section[data-testid="stSidebar"] .stSlider [data-testid="stTickBar"]{background:rgba(255,255,255,.2) !important;}
 section[data-testid="stSidebar"] .stNumberInput input{
-  background:rgba(255,255,255,.15) !important; border-color:rgba(255,255,255,.25) !important;
-  color:#16302b !important;
+  background:rgba(255,255,255,.18) !important; border-color:rgba(255,255,255,.35) !important;
+  color:#ffffff !important; font-weight:600 !important;
 }
-/* Dark mode: number input in sidebar gets light text */
+/* +/- stepper buttons */
+section[data-testid="stSidebar"] .stNumberInput button{
+  background:rgba(255,255,255,.2) !important; color:#ffffff !important;
+  border-color:rgba(255,255,255,.3) !important;
+}
 
 /* Links inside cards */
 .av-card a{text-decoration:none;}
