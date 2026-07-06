@@ -906,6 +906,24 @@ html,body,.stApp,.main,.block-container{background:#0d1a17 !important;}
 header[data-testid="stHeader"]{background:#0d1a17 !important; visibility:hidden !important; height:0 !important;}
 [data-testid="stColorBlock"],[data-testid="stToolbarActionButtonIcon"],
 header[data-testid="stHeader"] [data-testid="stToolbar"],[data-testid="stMainMenuButton"]{display:none !important;}
+/* Kill every border/shadow on every container — the white vertical line */
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"],
+[data-testid="stMainBlockContainer"],
+[data-testid="stSidebarContent"],
+section.main,
+.main .block-container,
+[data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stBottom"] {
+  border:none !important;
+  border-right:none !important;
+  border-left:none !important;
+  border-top:none !important;
+  border-bottom:none !important;
+  outline:none !important;
+  box-shadow:none !important;
+  background:#0d1a17 !important;
+}
 /* Toolbar icons (share, star, pen, github, dots) — make them clearly visible */
 header[data-testid="stHeader"] button,
 header[data-testid="stHeader"] a,
@@ -956,7 +974,7 @@ section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,25
 .av-crop-tile .name{color:#dff0ea !important;}
 .av-crop-tile .score{color:#3f9c88 !important;}
 .av-crop-tile.sel{background:#1e3530 !important; border-color:#3f9c88 !important;}
-/* Dark ALL wrappers — no white gaps anywhere */
+/* Dark ALL wrappers — no white gaps or borders anywhere */
 .stApp, .stApp > *, .main, .main > *,
 [data-testid="stAppViewContainer"],
 [data-testid="stAppViewContainer"] > *,
@@ -978,6 +996,7 @@ section.main,
 section.main > * {
   background:#0d1a17 !important;
   border-color:#0d1a17 !important;
+  border:none !important;
   outline:none !important;
   box-shadow:none !important;
 }
