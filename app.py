@@ -202,14 +202,10 @@ section[data-testid="stSidebar"] .stSlider [data-baseweb="slider"] [role="slider
 }
 section[data-testid="stSidebar"] .stSlider [data-testid="stTickBar"]{background:rgba(255,255,255,.2) !important;}
 section[data-testid="stSidebar"] .stNumberInput input{
-  background:rgba(255,255,255,.18) !important; border-color:rgba(255,255,255,.35) !important;
-  color:#ffffff !important; font-weight:600 !important;
+  background:rgba(255,255,255,.15) !important; border-color:rgba(255,255,255,.25) !important;
+  color:#16302b !important;
 }
-/* +/- stepper buttons */
-section[data-testid="stSidebar"] .stNumberInput button{
-  background:rgba(255,255,255,.2) !important; color:#ffffff !important;
-  border-color:rgba(255,255,255,.3) !important;
-}
+/* Dark mode: number input in sidebar gets light text */
 
 /* Links inside cards */
 .av-card a{text-decoration:none;}
@@ -217,21 +213,13 @@ section[data-testid="stSidebar"] .stNumberInput button{
 
 /* Selectbox in main area */
 [data-baseweb="select"]>div{border-radius:var(--radius-sm) !important; border-color:var(--border) !important;}
-/* Landing page language selector — always white text on dark bg since it sits on a dark card */
-[data-baseweb="select"]>div,
-[data-baseweb="select"] [data-baseweb="select-value"],
-[data-baseweb="select"] [data-value],
+/* Landing page — force readable text regardless of system dark mode */
+[data-baseweb="select"] [data-baseweb="select-option"],
 [data-baseweb="select"] input,
-[data-baseweb="select"] span,
-[data-baseweb="select"] p {
-  color:#ffffff !important;
-  background:#1e2d28 !important;
-}
-[data-baseweb="select"] svg { fill:#ffffff !important; }
-/* Dropdown options list */
-[data-baseweb="popover"] [role="option"]{color:#ffffff !important; background:#1e2d28 !important;}
-[data-baseweb="popover"] [role="option"]:hover{background:#2d4a42 !important; color:#ffffff !important;}
-[data-baseweb="menu"] { background:#1e2d28 !important; }
+[data-baseweb="select"] [data-value],
+[data-baseweb="select"] span{color:var(--ink) !important; background:var(--surface) !important;}
+[data-baseweb="popover"] [role="option"]{color:var(--ink) !important; background:var(--surface) !important;}
+[data-baseweb="popover"] [role="option"]:hover{background:var(--bg-alt) !important;}
 
 /* ── DARK MODE — watches Streamlit's own --background-color CSS var ── */
 html[data-av-dark="1"]{
@@ -956,36 +944,6 @@ section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,25
 .av-crop-tile .name{color:#dff0ea !important;}
 .av-crop-tile .score{color:#3f9c88 !important;}
 .av-crop-tile.sel{background:#1e3530 !important; border-color:#3f9c88 !important;}
-/* Dark ALL wrappers — no white gaps anywhere */
-.stApp, .stApp > *, .main, .main > *,
-[data-testid="stAppViewContainer"],
-[data-testid="stAppViewContainer"] > *,
-[data-testid="stAppViewBlockContainer"],
-[data-testid="stAppViewBlockContainer"] > *,
-[data-testid="stVerticalBlock"],
-[data-testid="stVerticalBlock"] > *,
-[data-testid="stHorizontalBlock"],
-[data-testid="stHorizontalBlock"] > *,
-[data-testid="column"],
-[data-testid="column"] > *,
-[data-testid="stVerticalBlockBorderWrapper"],
-.element-container,
-.stMarkdown,
-.block-container,
-.block-container > *,
-section.main,
-section.main > * { background:#0d1a17 !important; }
-/* Restore specific component backgrounds */
-.av-card { background:#162421 !important; }
-.av-crop-tile { background:#162421 !important; }
-.av-crop-tile.sel { background:#1e3530 !important; }
-.stMetric { background:#162421 !important; }
-.av-tone-danger { background:#2c0c09 !important; }
-.av-tone-warn { background:#271c00 !important; }
-.av-tone-ok { background:#0b2418 !important; }
-.av-tone-info { background:#091d2c !important; }
-[data-baseweb="select"]>div { background:#162421 !important; }
-input, textarea { background:#162421 !important; }
 .st-key-navtabs{border-color:#253d36 !important;}
 .st-key-navtabs .stButton>button[kind="secondary"] p,
 .st-key-navtabs .stButton>button[kind="secondary"] span,
