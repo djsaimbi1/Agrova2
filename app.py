@@ -186,9 +186,10 @@ section[data-testid="stSidebar"] .stSlider [data-baseweb="slider"] [role="slider
 }
 section[data-testid="stSidebar"] .stSlider [data-testid="stTickBar"]{background:rgba(255,255,255,.2) !important;}
 section[data-testid="stSidebar"] .stNumberInput input{
-  background:rgba(255,255,255,.1) !important; border-color:rgba(255,255,255,.2) !important;
-  color:#fff !important;
+  background:rgba(255,255,255,.15) !important; border-color:rgba(255,255,255,.25) !important;
+  color:#16302b !important;
 }
+/* Dark mode: number input in sidebar gets light text */
 
 /* Links inside cards */
 .av-card a{text-decoration:none;}
@@ -895,6 +896,7 @@ section[data-testid="stSidebar"] h1,section[data-testid="stSidebar"] h2{color:#f
 section[data-testid="stSidebar"] label{color:#b7d9cf !important;}
 [data-baseweb="select"]>div{background:#162421 !important; border-color:#253d36 !important; color:#dff0ea !important;}
 input,textarea{background:#162421 !important; color:#dff0ea !important; border-color:#253d36 !important;}
+section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,255,.1) !important; color:#dff0ea !important; border-color:rgba(255,255,255,.2) !important;}
 .stButton>button{background:#2d7a68 !important; color:#fff !important;}
 .av-section h3{color:#e63946 !important;}
 .av-progress-track{background:#1f3a30 !important;}
