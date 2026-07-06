@@ -873,12 +873,37 @@ def status_tone(level):
 # LANGUAGE SELECTION SCREEN
 # ══════════════════════════════════════════════════════════════
 if "lang" not in st.session_state:
-    st.markdown(
-        "<div class='av-hero'><h1>🌾 AGROVA</h1>"
-        "<div class='av-hero-accent'></div>"
-        "<p>AI-Powered Precision Farming Intelligence — 50 crops, 22 Indian languages</p></div>",
-        unsafe_allow_html=True
-    )
+    st.markdown("""
+    <div class='av-hero'>
+      <h1>🌾 AGROVA</h1>
+      <div class='av-hero-accent'></div>
+      <p>AI-Powered Precision Farming Intelligence — 50 crops, 22 Indian languages</p>
+      <div style='display:flex;justify-content:center;gap:1.2rem;flex-wrap:wrap;margin-top:1.4rem;'>
+        <div style='background:rgba(255,255,255,.12);border-radius:12px;padding:.6rem 1.1rem;text-align:center;min-width:90px;'>
+          <div style='font-size:1.5rem;font-weight:800;color:#fff;'>50</div>
+          <div style='font-size:.72rem;color:#c8e6de;letter-spacing:.04em;'>CROPS</div>
+        </div>
+        <div style='background:rgba(255,255,255,.12);border-radius:12px;padding:.6rem 1.1rem;text-align:center;min-width:90px;'>
+          <div style='font-size:1.5rem;font-weight:800;color:#fff;'>22</div>
+          <div style='font-size:.72rem;color:#c8e6de;letter-spacing:.04em;'>LANGUAGES</div>
+        </div>
+        <div style='background:rgba(255,255,255,.12);border-radius:12px;padding:.6rem 1.1rem;text-align:center;min-width:90px;'>
+          <div style='font-size:1.5rem;font-weight:800;color:#fff;'>5</div>
+          <div style='font-size:.72rem;color:#c8e6de;letter-spacing:.04em;'>AI MODULES</div>
+        </div>
+        <div style='background:rgba(255,255,255,.12);border-radius:12px;padding:.6rem 1.1rem;text-align:center;min-width:90px;'>
+          <div style='font-size:1.5rem;font-weight:800;color:#fff;'>FREE</div>
+          <div style='font-size:.72rem;color:#c8e6de;letter-spacing:.04em;'>FOR FARMERS</div>
+        </div>
+      </div>
+    </div>
+    <div style='display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;margin:.8rem auto 1.2rem;max-width:680px;'>
+      <div style='background:#e8f5f0;border-radius:10px;padding:.5rem .9rem;font-size:.82rem;color:#0a4a40;font-weight:600;'>📊 Crop Loss Risk Estimator</div>
+      <div style='background:#e8f5f0;border-radius:10px;padding:.5rem .9rem;font-size:.82rem;color:#0a4a40;font-weight:600;'>💧 Water & Finance Planner</div>
+      <div style='background:#e8f5f0;border-radius:10px;padding:.5rem .9rem;font-size:.82rem;color:#0a4a40;font-weight:600;'>🏛️ Govt Scheme Finder</div>
+      <div style='background:#e8f5f0;border-radius:10px;padding:.5rem .9rem;font-size:.82rem;color:#0a4a40;font-weight:600;'>🤖 Ask AGROVA AI</div>
+    </div>
+    """, unsafe_allow_html=True)
     c1, c2, c3 = st.columns([1, 1.4, 1])
     with c2:
         opts = [f"{k} · {v}" for k, v in LANG_NAMES.items()]
