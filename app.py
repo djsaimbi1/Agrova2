@@ -56,6 +56,19 @@ section.main{
   padding:0 !important;
   min-height:100vh !important;
 }
+/* ── Hide Streamlit chrome that clutters the UI ───────────────────── */
+/* White square / color block in top-right */
+[data-testid="stColorBlock"],
+[data-testid="stToolbarActionButtonIcon"],
+header [data-testid="stToolbar"] { display:none !important; }
+/* Hide the three-dot deploy/settings menu & GitHub/share icons */
+[data-testid="stMainMenuButton"],
+button[title="View app in fullscreen"],
+button[title="Open settings"],
+[data-testid="stActionButtonIcon"] { display:none !important; }
+/* Keep only the Share button if you want it; to hide everything: */
+header[data-testid="stHeader"] { visibility:hidden !important; height:0 !important; }
+
 /* Light mode — cover every wrapper */
 html,body{background:#f4faf8 !important; min-height:100vh; width:100%;}
 .stApp,.stApp>div,.stApp>div>div,.stApp>div>div>div,
@@ -72,6 +85,9 @@ section[data-testid="stSidebar"] label{color:#b7d9cf !important; font-weight:500
 
 h1,h2,h3,h4{color:var(--ink) !important; font-weight:700 !important; letter-spacing:-.01em;}
 p,span,div,td,th,li{color:var(--ink-soft);}
+/* Adaptive text — elements with an explicit background get forced contrast */
+[style*="background:#0"],[style*="background:rgb(0"]{color:#f0faf7 !important;}
+[style*="background:#f"],[style*="background:#e"],[style*="background:#d"],[style*="background:rgb(2"]{color:#16302b !important;}
 
 .stTabs [data-baseweb="tab-list"]{gap:4px; border-bottom:1px solid var(--border);}
 .stTabs [data-baseweb="tab"]{
@@ -186,10 +202,14 @@ section[data-testid="stSidebar"] .stSlider [data-baseweb="slider"] [role="slider
 }
 section[data-testid="stSidebar"] .stSlider [data-testid="stTickBar"]{background:rgba(255,255,255,.2) !important;}
 section[data-testid="stSidebar"] .stNumberInput input{
-  background:rgba(255,255,255,.15) !important; border-color:rgba(255,255,255,.25) !important;
-  color:#16302b !important;
+  background:rgba(255,255,255,.18) !important; border-color:rgba(255,255,255,.35) !important;
+  color:#ffffff !important; font-weight:600 !important;
 }
-/* Dark mode: number input in sidebar gets light text */
+/* +/- stepper buttons */
+section[data-testid="stSidebar"] .stNumberInput button{
+  background:rgba(255,255,255,.2) !important; color:#ffffff !important;
+  border-color:rgba(255,255,255,.3) !important;
+}
 
 /* Links inside cards */
 .av-card a{text-decoration:none;}
@@ -197,13 +217,21 @@ section[data-testid="stSidebar"] .stNumberInput input{
 
 /* Selectbox in main area */
 [data-baseweb="select"]>div{border-radius:var(--radius-sm) !important; border-color:var(--border) !important;}
-/* Landing page — force readable text regardless of system dark mode */
-[data-baseweb="select"] [data-baseweb="select-option"],
-[data-baseweb="select"] input,
+/* Landing page language selector — always white text on dark bg since it sits on a dark card */
+[data-baseweb="select"]>div,
+[data-baseweb="select"] [data-baseweb="select-value"],
 [data-baseweb="select"] [data-value],
-[data-baseweb="select"] span{color:var(--ink) !important; background:var(--surface) !important;}
-[data-baseweb="popover"] [role="option"]{color:var(--ink) !important; background:var(--surface) !important;}
-[data-baseweb="popover"] [role="option"]:hover{background:var(--bg-alt) !important;}
+[data-baseweb="select"] input,
+[data-baseweb="select"] span,
+[data-baseweb="select"] p {
+  color:#ffffff !important;
+  background:#1e2d28 !important;
+}
+[data-baseweb="select"] svg { fill:#ffffff !important; }
+/* Dropdown options list */
+[data-baseweb="popover"] [role="option"]{color:#ffffff !important; background:#1e2d28 !important;}
+[data-baseweb="popover"] [role="option"]:hover{background:#2d4a42 !important; color:#ffffff !important;}
+[data-baseweb="menu"] { background:#1e2d28 !important; }
 
 /* ── DARK MODE — watches Streamlit's own --background-color CSS var ── */
 html[data-av-dark="1"]{
@@ -875,10 +903,22 @@ with hc2:
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
 html,body,.stApp,.main,.block-container{background:#0d1a17 !important;}
-header[data-testid="stHeader"]{background:#0d1a17 !important;}
+header[data-testid="stHeader"]{background:#0d1a17 !important; visibility:hidden !important; height:0 !important;}
+[data-testid="stColorBlock"],[data-testid="stToolbarActionButtonIcon"],
+header[data-testid="stHeader"] [data-testid="stToolbar"],[data-testid="stMainMenuButton"]{display:none !important;}
+/* Toolbar icons (share, star, pen, github, dots) — make them clearly visible */
+header[data-testid="stHeader"] button,
+header[data-testid="stHeader"] a,
+header[data-testid="stHeader"] svg,
+header[data-testid="stHeader"] [data-testid="stToolbar"] *,
+header[data-testid="stHeader"] [data-testid="stDecoration"],
+[data-testid="stToolbar"] button,[data-testid="stToolbar"] svg,
+[data-testid="stToolbar"] path {
+  color:#dff0ea !important; fill:#dff0ea !important; stroke:#dff0ea !important; opacity:1 !important;
+}
 section[data-testid="stSidebar"]{background:linear-gradient(180deg,#071410,#0c1e1a) !important;}
 .av-card{background:#162421 !important; border-color:#253d36 !important;}
-.av-card p,.av-card li,.av-card td,.av-card th{color:#9ec4bb !important;}
+.av-card p,.av-card li,.av-card td,.av-card th{color:#c8e6de !important;}
 .av-card h4{color:#dff0ea !important;}
 .av-card strong{color:#dff0ea !important;}
 .stMetric{background:#162421 !important; border-color:#253d36 !important;}
@@ -888,7 +928,9 @@ section[data-testid="stSidebar"]{background:linear-gradient(180deg,#071410,#0c1e
 .stTabs [data-baseweb="tab-list"]{background:#0d1a17 !important; border-color:#253d36 !important;}
 .stTabs [data-baseweb="tab"]{color:#6a9e94 !important;}
 .stTabs [aria-selected="true"]{background:#162421 !important; color:#3f9c88 !important;}
-.stMarkdown p,.stMarkdown li,.stMarkdown span{color:#9ec4bb !important;}
+/* Body text — bumped to bright cream so it's easy on the eyes */
+.stMarkdown p,.stMarkdown li,.stMarkdown span{color:#c8e6de !important;}
+p, li, span, td, th, label { color:#c8e6de !important; }
 h1,h2,h3,h4{color:#dff0ea !important;}
 strong{color:#dff0ea !important;}
 section[data-testid="stSidebar"] *{color:#dcefe9 !important;}
@@ -897,7 +939,9 @@ section[data-testid="stSidebar"] label{color:#b7d9cf !important;}
 [data-baseweb="select"]>div{background:#162421 !important; border-color:#253d36 !important; color:#dff0ea !important;}
 input,textarea{background:#162421 !important; color:#dff0ea !important; border-color:#253d36 !important;}
 section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,255,.1) !important; color:#dff0ea !important; border-color:rgba(255,255,255,.2) !important;}
-.stButton>button{background:#2d7a68 !important; color:#fff !important;}
+/* All buttons dark-styled, including the Light Mode toggle */
+.stButton>button{background:#2d7a68 !important; color:#fff !important; border:none !important;}
+.stButton>button p,.stButton>button span,.stButton>button div{color:#fff !important;}
 .av-section h3{color:#e63946 !important;}
 .av-progress-track{background:#1f3a30 !important;}
 [data-testid="stSlider"] [data-testid="stTickBar"]{background:#253d36 !important;}
@@ -912,6 +956,36 @@ section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,25
 .av-crop-tile .name{color:#dff0ea !important;}
 .av-crop-tile .score{color:#3f9c88 !important;}
 .av-crop-tile.sel{background:#1e3530 !important; border-color:#3f9c88 !important;}
+/* Dark ALL wrappers — no white gaps anywhere */
+.stApp, .stApp > *, .main, .main > *,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewContainer"] > *,
+[data-testid="stAppViewBlockContainer"],
+[data-testid="stAppViewBlockContainer"] > *,
+[data-testid="stVerticalBlock"],
+[data-testid="stVerticalBlock"] > *,
+[data-testid="stHorizontalBlock"],
+[data-testid="stHorizontalBlock"] > *,
+[data-testid="column"],
+[data-testid="column"] > *,
+[data-testid="stVerticalBlockBorderWrapper"],
+.element-container,
+.stMarkdown,
+.block-container,
+.block-container > *,
+section.main,
+section.main > * { background:#0d1a17 !important; }
+/* Restore specific component backgrounds */
+.av-card { background:#162421 !important; }
+.av-crop-tile { background:#162421 !important; }
+.av-crop-tile.sel { background:#1e3530 !important; }
+.stMetric { background:#162421 !important; }
+.av-tone-danger { background:#2c0c09 !important; }
+.av-tone-warn { background:#271c00 !important; }
+.av-tone-ok { background:#0b2418 !important; }
+.av-tone-info { background:#091d2c !important; }
+[data-baseweb="select"]>div { background:#162421 !important; }
+input, textarea { background:#162421 !important; }
 .st-key-navtabs{border-color:#253d36 !important;}
 .st-key-navtabs .stButton>button[kind="secondary"] p,
 .st-key-navtabs .stButton>button[kind="secondary"] span,
