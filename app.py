@@ -1217,7 +1217,7 @@ st.markdown("""<style>
 .st-key-navtabs .stButton>button[kind="secondary"] div{
   color:var(--ink-soft) !important; font-weight:600 !important;
 }
-.st-key-navtabs .stButton>button[kind="secondary"]:hover{background:var(--bg-alt) !important;}
+.st-key-navtabs .stButton>button[kind="secondary"]:hover{background:#c8e6de !important;}
 .st-key-navtabs .stButton>button[kind="primary"]{
   background:#c8e6de !important; border:none !important;
   box-shadow:0 -3px 0 var(--brand) inset !important;
