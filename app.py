@@ -956,36 +956,6 @@ section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,25
 .av-crop-tile .name{color:#dff0ea !important;}
 .av-crop-tile .score{color:#3f9c88 !important;}
 .av-crop-tile.sel{background:#1e3530 !important; border-color:#3f9c88 !important;}
-/* Dark ALL wrappers — no white gaps anywhere */
-.stApp, .stApp > *, .main, .main > *,
-[data-testid="stAppViewContainer"],
-[data-testid="stAppViewContainer"] > *,
-[data-testid="stAppViewBlockContainer"],
-[data-testid="stAppViewBlockContainer"] > *,
-[data-testid="stVerticalBlock"],
-[data-testid="stVerticalBlock"] > *,
-[data-testid="stHorizontalBlock"],
-[data-testid="stHorizontalBlock"] > *,
-[data-testid="column"],
-[data-testid="column"] > *,
-[data-testid="stVerticalBlockBorderWrapper"],
-.element-container,
-.stMarkdown,
-.block-container,
-.block-container > *,
-section.main,
-section.main > * { background:#0d1a17 !important; }
-/* Restore specific component backgrounds */
-.av-card { background:#162421 !important; }
-.av-crop-tile { background:#162421 !important; }
-.av-crop-tile.sel { background:#1e3530 !important; }
-.stMetric { background:#162421 !important; }
-.av-tone-danger { background:#2c0c09 !important; }
-.av-tone-warn { background:#271c00 !important; }
-.av-tone-ok { background:#0b2418 !important; }
-.av-tone-info { background:#091d2c !important; }
-[data-baseweb="select"]>div { background:#162421 !important; }
-input, textarea { background:#162421 !important; }
 .st-key-navtabs{border-color:#253d36 !important;}
 .st-key-navtabs .stButton>button[kind="secondary"] p,
 .st-key-navtabs .stButton>button[kind="secondary"] span,
