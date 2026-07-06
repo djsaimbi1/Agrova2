@@ -56,6 +56,32 @@ section.main{
   padding:0 !important;
   min-height:100vh !important;
 }
+/* ── Hide only specific Streamlit chrome, never the sidebar ──────── */
+[data-testid="stColorBlock"],
+[data-testid="stToolbarActionButtonIcon"],
+[data-testid="stMainMenuButton"],
+[data-testid="stActionButtonIcon"],
+[data-testid="stToolbarActions"],
+button[title="View app in fullscreen"],
+button[title="Open settings"] { display:none !important; }
+
+/* Header stays fully visible and interactive for sidebar arrow */
+header[data-testid="stHeader"] {
+  background:transparent !important;
+}
+/* Sidebar collapse/expand arrow — always visible and clickable */
+[data-testid="stSidebarCollapsedControl"] {
+  display:flex !important;
+  visibility:visible !important;
+  pointer-events:all !important;
+  background:#0a4a40 !important;
+}
+/* Sidebar itself — always visible */
+section[data-testid="stSidebar"] {
+  display:flex !important;
+  visibility:visible !important;
+}
+
 /* Light mode — cover every wrapper */
 html,body{background:#f4faf8 !important; min-height:100vh; width:100%;}
 .stApp,.stApp>div,.stApp>div>div,.stApp>div>div>div,
@@ -72,6 +98,9 @@ section[data-testid="stSidebar"] label{color:#b7d9cf !important; font-weight:500
 
 h1,h2,h3,h4{color:var(--ink) !important; font-weight:700 !important; letter-spacing:-.01em;}
 p,span,div,td,th,li{color:var(--ink-soft);}
+/* Adaptive text — elements with an explicit background get forced contrast */
+[style*="background:#0"],[style*="background:rgb(0"]{color:#f0faf7 !important;}
+[style*="background:#f"],[style*="background:#e"],[style*="background:#d"],[style*="background:rgb(2"]{color:#16302b !important;}
 
 .stTabs [data-baseweb="tab-list"]{gap:4px; border-bottom:1px solid var(--border);}
 .stTabs [data-baseweb="tab"]{
@@ -186,10 +215,14 @@ section[data-testid="stSidebar"] .stSlider [data-baseweb="slider"] [role="slider
 }
 section[data-testid="stSidebar"] .stSlider [data-testid="stTickBar"]{background:rgba(255,255,255,.2) !important;}
 section[data-testid="stSidebar"] .stNumberInput input{
-  background:rgba(255,255,255,.15) !important; border-color:rgba(255,255,255,.25) !important;
-  color:#16302b !important;
+  background:rgba(255,255,255,.18) !important; border-color:rgba(255,255,255,.35) !important;
+  color:#ffffff !important; font-weight:600 !important;
 }
-/* Dark mode: number input in sidebar gets light text */
+/* +/- stepper buttons */
+section[data-testid="stSidebar"] .stNumberInput button{
+  background:rgba(255,255,255,.2) !important; color:#ffffff !important;
+  border-color:rgba(255,255,255,.3) !important;
+}
 
 /* Links inside cards */
 .av-card a{text-decoration:none;}
@@ -197,13 +230,21 @@ section[data-testid="stSidebar"] .stNumberInput input{
 
 /* Selectbox in main area */
 [data-baseweb="select"]>div{border-radius:var(--radius-sm) !important; border-color:var(--border) !important;}
-/* Landing page — force readable text regardless of system dark mode */
-[data-baseweb="select"] [data-baseweb="select-option"],
-[data-baseweb="select"] input,
+/* Landing page language selector — always white text on dark bg since it sits on a dark card */
+[data-baseweb="select"]>div,
+[data-baseweb="select"] [data-baseweb="select-value"],
 [data-baseweb="select"] [data-value],
-[data-baseweb="select"] span{color:var(--ink) !important; background:var(--surface) !important;}
-[data-baseweb="popover"] [role="option"]{color:var(--ink) !important; background:var(--surface) !important;}
-[data-baseweb="popover"] [role="option"]:hover{background:var(--bg-alt) !important;}
+[data-baseweb="select"] input,
+[data-baseweb="select"] span,
+[data-baseweb="select"] p {
+  color:#ffffff !important;
+  background:#1e2d28 !important;
+}
+[data-baseweb="select"] svg { fill:#ffffff !important; }
+/* Dropdown options list */
+[data-baseweb="popover"] [role="option"]{color:#ffffff !important; background:#1e2d28 !important;}
+[data-baseweb="popover"] [role="option"]:hover{background:#2d4a42 !important; color:#ffffff !important;}
+[data-baseweb="menu"] { background:#1e2d28 !important; }
 
 /* ── DARK MODE — watches Streamlit's own --background-color CSS var ── */
 html[data-av-dark="1"]{
@@ -216,6 +257,12 @@ html[data-av-dark="1"]{
   --accent2:#ff6b6b;
 }
 html[data-av-dark="1"],html[data-av-dark="1"] body { background:#0d1a17 !important; }
+/* Kill the white right-side scrollbar/decoration strip */
+html[data-av-dark="1"] [data-testid="stDecoration"],
+html[data-av-dark="1"] [data-testid="stStatusWidget"],
+html[data-av-dark="1"] ::-webkit-scrollbar-track { background:#0d1a17 !important; }
+html[data-av-dark="1"] ::-webkit-scrollbar { background:#0d1a17 !important; }
+html[data-av-dark="1"] ::-webkit-scrollbar-thumb { background:#253d36 !important; border-radius:4px; }
 html[data-av-dark="1"] *:not(svg):not(path):not(circle):not(rect):not(img):not(.av-card):not(.av-tone-danger):not(.av-tone-warn):not(.av-tone-ok):not(.av-tone-info):not(.av-hero):not(.av-progress-fill):not(.av-crop-tile):not(.stButton>button):not([class*="av-pill"]) {
   background-color:#0d1a17 !important;
 }
@@ -342,15 +389,16 @@ st.markdown("""<script>
     saveTabs();
     restoreTab();
   }, 400);
-  // Re-wire after each rerun (Streamlit replaces DOM nodes)
+  // Re-wire after each rerun AND instantly repaint so no white flash
   new MutationObserver(function(){
     saveTabs();
     if(!tabRestored) restoreTab();
+    paintOuter(isDark);  // repaint immediately on every DOM change
   }).observe(document.body, {childList:true, subtree:true});
 
   detect();
   new MutationObserver(detect).observe(html, {attributes:true, attributeFilter:['style']});
-  setInterval(function(){ detect(); paintOuter(isDark); }, 300);
+  setInterval(function(){ detect(); paintOuter(isDark); }, 100);
   window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', detect);
 })();
 </script>""", unsafe_allow_html=True)
@@ -876,6 +924,32 @@ if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
 html,body,.stApp,.main,.block-container{background:#0d1a17 !important;}
 header[data-testid="stHeader"]{background:#0d1a17 !important;}
+[data-testid="stColorBlock"],[data-testid="stToolbarActionButtonIcon"],
+[data-testid="stMainMenuButton"],[data-testid="stToolbarActions"]{display:none !important;}
+section[data-testid="stSidebar"]{display:flex !important; visibility:visible !important; background:linear-gradient(180deg,#071410,#0c1e1a) !important;}
+[data-testid="stSidebarCollapsedControl"]{display:flex !important; visibility:visible !important; pointer-events:all !important; background:#071410 !important;}
+/* Kill every border/shadow on every container — the white vertical line */
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"],
+[data-testid="stMainBlockContainer"],
+[data-testid="stSidebarContent"],
+[data-testid="stForm"],
+[data-testid="stNotification"],
+[data-testid="stExpander"],
+[data-testid="stExpanderDetails"],
+section.main,
+.main .block-container,
+[data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stBottom"] {
+  border:none !important;
+  border-right:none !important;
+  border-left:none !important;
+  border-top:none !important;
+  border-bottom:none !important;
+  outline:none !important;
+  box-shadow:none !important;
+  background:#0d1a17 !important;
+}
 /* Toolbar icons (share, star, pen, github, dots) — make them clearly visible */
 header[data-testid="stHeader"] button,
 header[data-testid="stHeader"] a,
@@ -926,6 +1000,43 @@ section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,25
 .av-crop-tile .name{color:#dff0ea !important;}
 .av-crop-tile .score{color:#3f9c88 !important;}
 .av-crop-tile.sel{background:#1e3530 !important; border-color:#3f9c88 !important;}
+/* Dark ALL wrappers — no white gaps or borders anywhere */
+.stApp, .stApp > *, .main, .main > *,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewContainer"] > *,
+[data-testid="stAppViewBlockContainer"],
+[data-testid="stAppViewBlockContainer"] > *,
+[data-testid="stVerticalBlock"],
+[data-testid="stVerticalBlock"] > *,
+[data-testid="stHorizontalBlock"],
+[data-testid="stHorizontalBlock"] > *,
+[data-testid="column"],
+[data-testid="column"] > *,
+[data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stVerticalBlockBorderWrapper"] > *,
+.element-container,
+.stMarkdown,
+.block-container,
+.block-container > *,
+section.main,
+section.main > * {
+  background:#0d1a17 !important;
+  border-color:#0d1a17 !important;
+  border:none !important;
+  outline:none !important;
+  box-shadow:none !important;
+}
+/* Restore specific component backgrounds and borders */
+.av-card { background:#162421 !important; border-color:#253d36 !important; box-shadow:none !important; }
+.av-crop-tile { background:#162421 !important; border-color:#253d36 !important; }
+.av-crop-tile.sel { background:#1e3530 !important; border-color:#3f9c88 !important; }
+.stMetric { background:#162421 !important; border-color:#253d36 !important; }
+.av-tone-danger { background:#2c0c09 !important; border-color:#5c1a15 !important; }
+.av-tone-warn { background:#271c00 !important; border-color:#4a3500 !important; }
+.av-tone-ok { background:#0b2418 !important; border-color:#1a4a30 !important; }
+.av-tone-info { background:#091d2c !important; border-color:#0f3a52 !important; }
+[data-baseweb="select"]>div { background:#162421 !important; border-color:#253d36 !important; }
+input, textarea { background:#162421 !important; border-color:#253d36 !important; }
 .st-key-navtabs{border-color:#253d36 !important;}
 .st-key-navtabs .stButton>button[kind="secondary"] p,
 .st-key-navtabs .stButton>button[kind="secondary"] span,
@@ -1409,3 +1520,5 @@ elif st.session_state.active_tab == "chat":
         st.rerun()
     # Fill remaining viewport height so background shows — no white gap on tall/16:9 screens
     st.markdown("<div style='min-height:60vh;background:transparent;'></div>", unsafe_allow_html=True)
+
+# Modified placeholder for app(4) dark mode improvements
