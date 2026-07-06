@@ -1513,3 +1513,5 @@ elif st.session_state.active_tab == "chat":
         st.rerun()
     # Fill remaining viewport height so background shows — no white gap on tall/16:9 screens
     st.markdown("<div style='min-height:60vh;background:transparent;'></div>", unsafe_allow_html=True)
+
+# Modified placeholder for app(4) dark mode improvements
