@@ -61,13 +61,26 @@ section.main{
 [data-testid="stColorBlock"],
 [data-testid="stToolbarActionButtonIcon"],
 header [data-testid="stToolbar"] { display:none !important; }
-/* Hide the three-dot deploy/settings menu & GitHub/share icons */
+/* Hide Streamlit toolbar buttons but keep sidebar collapse arrow visible */
+[data-testid="stColorBlock"],
+[data-testid="stToolbarActionButtonIcon"],
 [data-testid="stMainMenuButton"],
+[data-testid="stToolbar"],
 button[title="View app in fullscreen"],
 button[title="Open settings"],
 [data-testid="stActionButtonIcon"] { display:none !important; }
-/* Keep only the Share button if you want it; to hide everything: */
-header[data-testid="stHeader"] { visibility:hidden !important; height:0 !important; }
+/* Make header transparent but NOT hidden — sidebar arrow lives in it */
+header[data-testid="stHeader"] {
+  background:transparent !important;
+  pointer-events:none !important;
+}
+/* But keep the sidebar collapse button clickable */
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stSidebarCollapsedControl"] * {
+  pointer-events:all !important;
+  display:flex !important;
+  visibility:visible !important;
+}
 
 /* Light mode — cover every wrapper */
 html,body{background:#f4faf8 !important; min-height:100vh; width:100%;}
@@ -903,14 +916,22 @@ with hc2:
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
 html,body,.stApp,.main,.block-container{background:#0d1a17 !important;}
-header[data-testid="stHeader"]{background:#0d1a17 !important; visibility:hidden !important; height:0 !important;}
+header[data-testid="stHeader"]{background:#0d1a17 !important;}
 [data-testid="stColorBlock"],[data-testid="stToolbarActionButtonIcon"],
 header[data-testid="stHeader"] [data-testid="stToolbar"],[data-testid="stMainMenuButton"]{display:none !important;}
+[data-testid="stSidebarCollapsedControl"],[data-testid="stSidebarCollapsedControl"] *{
+  pointer-events:all !important; display:flex !important; visibility:visible !important;
+  background:#071410 !important; color:#3f9c88 !important;
+}
 /* Kill every border/shadow on every container — the white vertical line */
 [data-testid="stAppViewContainer"],
 [data-testid="stAppViewBlockContainer"],
 [data-testid="stMainBlockContainer"],
 [data-testid="stSidebarContent"],
+[data-testid="stForm"],
+[data-testid="stNotification"],
+[data-testid="stExpander"],
+[data-testid="stExpanderDetails"],
 section.main,
 .main .block-container,
 [data-testid="stVerticalBlockBorderWrapper"],
