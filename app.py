@@ -1160,7 +1160,7 @@ input, textarea { background:#162421 !important; border-color:#253d36 !important
 .st-key-navtabs .stButton>button[kind="secondary"] p,
 .st-key-navtabs .stButton>button[kind="secondary"] span,
 .st-key-navtabs .stButton>button[kind="secondary"] div{color:#9ec4bb !important;}
-.st-key-navtabs .stButton>button[kind="primary"]{background:#162421 !important; box-shadow:0 -3px 0 #3f9c88 inset !important;}
+.st-key-navtabs .stButton>button[kind="primary"]{background:#1e3530 !important; box-shadow:0 -3px 0 #3f9c88 inset !important;}
 .st-key-navtabs .stButton>button[kind="primary"] p,
 .st-key-navtabs .stButton>button[kind="primary"] span,
 .st-key-navtabs .stButton>button[kind="primary"] div{color:#3f9c88 !important;}
@@ -1219,7 +1219,7 @@ st.markdown("""<style>
 }
 .st-key-navtabs .stButton>button[kind="secondary"]:hover{background:var(--bg-alt) !important;}
 .st-key-navtabs .stButton>button[kind="primary"]{
-  background:var(--surface) !important; border:none !important;
+  background:#c8e6de !important; border:none !important;
   box-shadow:0 -3px 0 var(--brand) inset !important;
 }
 .st-key-navtabs .stButton>button[kind="primary"] p,
