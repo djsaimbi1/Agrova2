@@ -298,12 +298,20 @@ section[data-testid="stSidebar"] .stNumberInput button{
 /* Dropdown option list */
 [data-baseweb="menu"],
 [data-baseweb="menu"] li,
-[data-baseweb="menu"] [role="option"] {
+[data-baseweb="menu"] [role="option"],
+[data-baseweb="menu"] [role="option"] *,
+[data-baseweb="popover"],
+[data-baseweb="popover"] li,
+[data-baseweb="popover"] [role="option"],
+[data-baseweb="popover"] [role="option"] *,
+ul[data-baseweb="menu"] li,
+ul[data-baseweb="menu"] li * {
   background:#1e3530 !important;
   color:#ffffff !important;
 }
 [data-baseweb="menu"] [aria-selected="true"],
-[data-baseweb="menu"] [role="option"]:hover {
+[data-baseweb="menu"] [role="option"]:hover,
+[data-baseweb="popover"] [role="option"]:hover {
   background:#2d5a4e !important;
   color:#ffffff !important;
 }
