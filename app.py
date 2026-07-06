@@ -56,19 +56,6 @@ section.main{
   padding:0 !important;
   min-height:100vh !important;
 }
-/* ── Hide Streamlit chrome that clutters the UI ───────────────────── */
-/* White square / color block in top-right */
-[data-testid="stColorBlock"],
-[data-testid="stToolbarActionButtonIcon"],
-header [data-testid="stToolbar"] { display:none !important; }
-/* Hide the three-dot deploy/settings menu & GitHub/share icons */
-[data-testid="stMainMenuButton"],
-button[title="View app in fullscreen"],
-button[title="Open settings"],
-[data-testid="stActionButtonIcon"] { display:none !important; }
-/* Keep only the Share button if you want it; to hide everything: */
-header[data-testid="stHeader"] { visibility:hidden !important; height:0 !important; }
-
 /* Light mode — cover every wrapper */
 html,body{background:#f4faf8 !important; min-height:100vh; width:100%;}
 .stApp,.stApp>div,.stApp>div>div,.stApp>div>div>div,
@@ -85,9 +72,6 @@ section[data-testid="stSidebar"] label{color:#b7d9cf !important; font-weight:500
 
 h1,h2,h3,h4{color:var(--ink) !important; font-weight:700 !important; letter-spacing:-.01em;}
 p,span,div,td,th,li{color:var(--ink-soft);}
-/* Adaptive text — elements with an explicit background get forced contrast */
-[style*="background:#0"],[style*="background:rgb(0"]{color:#f0faf7 !important;}
-[style*="background:#f"],[style*="background:#e"],[style*="background:#d"],[style*="background:rgb(2"]{color:#16302b !important;}
 
 .stTabs [data-baseweb="tab-list"]{gap:4px; border-bottom:1px solid var(--border);}
 .stTabs [data-baseweb="tab"]{
@@ -891,22 +875,10 @@ with hc2:
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
 html,body,.stApp,.main,.block-container{background:#0d1a17 !important;}
-header[data-testid="stHeader"]{background:#0d1a17 !important; visibility:hidden !important; height:0 !important;}
-[data-testid="stColorBlock"],[data-testid="stToolbarActionButtonIcon"],
-header[data-testid="stHeader"] [data-testid="stToolbar"],[data-testid="stMainMenuButton"]{display:none !important;}
-/* Toolbar icons (share, star, pen, github, dots) — make them clearly visible */
-header[data-testid="stHeader"] button,
-header[data-testid="stHeader"] a,
-header[data-testid="stHeader"] svg,
-header[data-testid="stHeader"] [data-testid="stToolbar"] *,
-header[data-testid="stHeader"] [data-testid="stDecoration"],
-[data-testid="stToolbar"] button,[data-testid="stToolbar"] svg,
-[data-testid="stToolbar"] path {
-  color:#dff0ea !important; fill:#dff0ea !important; stroke:#dff0ea !important; opacity:1 !important;
-}
+header[data-testid="stHeader"]{background:#0d1a17 !important;}
 section[data-testid="stSidebar"]{background:linear-gradient(180deg,#071410,#0c1e1a) !important;}
 .av-card{background:#162421 !important; border-color:#253d36 !important;}
-.av-card p,.av-card li,.av-card td,.av-card th{color:#c8e6de !important;}
+.av-card p,.av-card li,.av-card td,.av-card th{color:#9ec4bb !important;}
 .av-card h4{color:#dff0ea !important;}
 .av-card strong{color:#dff0ea !important;}
 .stMetric{background:#162421 !important; border-color:#253d36 !important;}
@@ -916,9 +888,7 @@ section[data-testid="stSidebar"]{background:linear-gradient(180deg,#071410,#0c1e
 .stTabs [data-baseweb="tab-list"]{background:#0d1a17 !important; border-color:#253d36 !important;}
 .stTabs [data-baseweb="tab"]{color:#6a9e94 !important;}
 .stTabs [aria-selected="true"]{background:#162421 !important; color:#3f9c88 !important;}
-/* Body text — bumped to bright cream so it's easy on the eyes */
-.stMarkdown p,.stMarkdown li,.stMarkdown span{color:#c8e6de !important;}
-p, li, span, td, th, label { color:#c8e6de !important; }
+.stMarkdown p,.stMarkdown li,.stMarkdown span{color:#9ec4bb !important;}
 h1,h2,h3,h4{color:#dff0ea !important;}
 strong{color:#dff0ea !important;}
 section[data-testid="stSidebar"] *{color:#dcefe9 !important;}
@@ -927,9 +897,7 @@ section[data-testid="stSidebar"] label{color:#b7d9cf !important;}
 [data-baseweb="select"]>div{background:#162421 !important; border-color:#253d36 !important; color:#dff0ea !important;}
 input,textarea{background:#162421 !important; color:#dff0ea !important; border-color:#253d36 !important;}
 section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,255,.1) !important; color:#dff0ea !important; border-color:rgba(255,255,255,.2) !important;}
-/* All buttons dark-styled, including the Light Mode toggle */
-.stButton>button{background:#2d7a68 !important; color:#fff !important; border:none !important;}
-.stButton>button p,.stButton>button span,.stButton>button div{color:#fff !important;}
+.stButton>button{background:#2d7a68 !important; color:#fff !important;}
 .av-section h3{color:#e63946 !important;}
 .av-progress-track{background:#1f3a30 !important;}
 [data-testid="stSlider"] [data-testid="stTickBar"]{background:#253d36 !important;}
