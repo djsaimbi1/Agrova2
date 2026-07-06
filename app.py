@@ -1026,10 +1026,29 @@ section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,25
 section.main,
 section.main > * {
   background:#0d1a17 !important;
-  border-color:#0d1a17 !important;
   border:none !important;
+  border-color:transparent !important;
   outline:none !important;
   box-shadow:none !important;
+}
+/* Nuclear: kill the border wrapper pseudo-elements too */
+[data-testid="stVerticalBlockBorderWrapper"]::before,
+[data-testid="stVerticalBlockBorderWrapper"]::after,
+[data-testid="stVerticalBlock"]::before,
+[data-testid="stVerticalBlock"]::after {
+  display:none !important;
+  border:none !important;
+  background:transparent !important;
+}
+/* Also target any div with a white/light border inline style */
+div[style*="border"][style*="#fff"],
+div[style*="border"][style*="white"],
+div[style*="border"][style*="rgb(255"],
+div[style*="border-left"],
+div[style*="border-right"] {
+  border:none !important;
+  border-left:none !important;
+  border-right:none !important;
 }
 /* Restore specific component backgrounds and borders */
 .av-card { background:#162421 !important; border-color:#253d36 !important; box-shadow:none !important; }
