@@ -271,17 +271,15 @@ html[data-av-dark="1"] ::-webkit-scrollbar-thumb { background:#253d36 !important
 html[data-av-dark="1"] *:not(svg):not(path):not(circle):not(rect):not(img):not(.av-card):not(.av-tone-danger):not(.av-tone-warn):not(.av-tone-ok):not(.av-tone-info):not(.av-hero):not(.av-progress-fill):not(.av-crop-tile):not(.stButton>button):not([class*="av-pill"]) {
   background-color:#0d1a17 !important;
 }
-html[data-av-dark="1"] [data-testid="stVerticalBlockBorderWrapper"],
-html[data-av-dark="1"] [data-testid="stVerticalBlockBorderWrapper"]>div,
-html[data-av-dark="1"] [data-testid="stVerticalBlock"],
-html[data-av-dark="1"] [data-testid="stHorizontalBlock"],
-html[data-av-dark="1"] [data-testid="column"],
+html[data-av-dark="1"] .block-container,
 html[data-av-dark="1"] .element-container,
-html[data-av-dark="1"] .stMarkdown {
-  background:#0d1a17 !important;
-  background-color:#0d1a17 !important;
+html[data-av-dark="1"] .stContainer,
+html[data-av-dark="1"] .stVerticalBlock,
+html[data-av-dark="1"] .stHorizontalBlock,
+html[data-av-dark="1"] div[data-testid="stVerticalBlockBorderWrapper"],
+html[data-av-dark="1"] div[data-testid="stVerticalBlockBorderWrapper"]>* {
+  background:transparent !important;
   border:none !important;
-  border-color:transparent !important;
   box-shadow:none !important;
   outline:none !important;
 }
@@ -1040,50 +1038,25 @@ section[data-testid="stSidebar"] .stNumberInput input{background:rgba(255,255,25
 .av-crop-tile .name{color:#dff0ea !important;}
 .av-crop-tile .score{color:#3f9c88 !important;}
 .av-crop-tile.sel{background:#1e3530 !important; border-color:#3f9c88 !important;}
-/* Dark ALL wrappers — no white gaps or borders anywhere */
-.stApp, .stApp > *, .main, .main > *,
+/* Outer containers — solid dark background */
+html, body, .stApp,
 [data-testid="stAppViewContainer"],
-[data-testid="stAppViewContainer"] > *,
 [data-testid="stAppViewBlockContainer"],
-[data-testid="stAppViewBlockContainer"] > *,
-[data-testid="stVerticalBlock"],
-[data-testid="stVerticalBlock"] > *,
-[data-testid="stHorizontalBlock"],
-[data-testid="stHorizontalBlock"] > *,
-[data-testid="column"],
-[data-testid="column"] > *,
-[data-testid="stVerticalBlockBorderWrapper"],
-[data-testid="stVerticalBlockBorderWrapper"] > *,
-.element-container,
-.stMarkdown,
-.block-container,
-.block-container > *,
-section.main,
-section.main > * {
+section.main, .main {
   background:#0d1a17 !important;
-  border:none !important;
-  border-color:transparent !important;
-  outline:none !important;
-  box-shadow:none !important;
 }
-/* Nuclear: kill the border wrapper pseudo-elements too */
-[data-testid="stVerticalBlockBorderWrapper"]::before,
-[data-testid="stVerticalBlockBorderWrapper"]::after,
-[data-testid="stVerticalBlock"]::before,
-[data-testid="stVerticalBlock"]::after {
-  display:none !important;
-  border:none !important;
+/* Inner wrappers — transparent so parent dark bg shows through, border killed */
+.block-container,
+.element-container,
+.stContainer,
+.stVerticalBlock,
+.stHorizontalBlock,
+div[data-testid="stVerticalBlockBorderWrapper"],
+div[data-testid="stVerticalBlockBorderWrapper"] > * {
   background:transparent !important;
-}
-/* Also target any div with a white/light border inline style */
-div[style*="border"][style*="#fff"],
-div[style*="border"][style*="white"],
-div[style*="border"][style*="rgb(255"],
-div[style*="border-left"],
-div[style*="border-right"] {
   border:none !important;
-  border-left:none !important;
-  border-right:none !important;
+  box-shadow:none !important;
+  outline:none !important;
 }
 /* Restore specific component backgrounds and borders */
 .av-card { background:#162421 !important; border-color:#253d36 !important; box-shadow:none !important; }
