@@ -1205,7 +1205,7 @@ div[data-testid="stVerticalBlockBorderWrapper"] > *,
 .av-tone-info { background:#091d2c !important; border-color:#0f3a52 !important; }
 [data-baseweb="select"]>div { background:#162421 !important; border-color:#253d36 !important; }
 input, textarea { background:#162421 !important; border-color:#253d36 !important; }
-.st-key-navtabs{border-color:#253d36 !important; border-bottom:1px solid #253d36 !important;}
+.st-key-navtabs{border-top:1px solid #253d36 !important; border-bottom:1px solid #253d36 !important;}
 .st-key-navtabs .stButton>button[kind="secondary"] p,
 .st-key-navtabs .stButton>button[kind="secondary"] span,
 .st-key-navtabs .stButton>button[kind="secondary"] div{color:#9ec4bb !important;}
@@ -1245,7 +1245,7 @@ NAV_ITEMS = [
 # in the app (e.g. the Light/Dark Mode toggle, which was broken by
 # an earlier unscoped [kind="secondary"] rule).
 st.markdown("""<style>
-.st-key-navtabs{border-bottom:1px solid var(--border); margin-bottom:1rem; padding-bottom:2px;}
+.st-key-navtabs{border-top:1px solid var(--border); border-bottom:1px solid var(--border); margin-top:.6rem; margin-bottom:1rem; padding-top:.6rem; padding-bottom:.6rem;}
 .st-key-navtabs .stButton>button{
   transition:background-color .22s ease, color .22s ease, box-shadow .22s ease, transform .12s ease !important;
 }
