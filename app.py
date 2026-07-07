@@ -1058,13 +1058,17 @@ with hc2:
     """, height=105)
     st.markdown(f"""
     <style>
+    .st-key-dm_toggle {{
+      display:flex !important;
+      justify-content:flex-end !important;
+      width:100% !important;
+    }}
     .st-key-dm_toggle > button {{
-      width:160px !important;
-      min-width:160px !important;
-      max-width:160px !important;
+      width:150px !important;
+      min-width:150px !important;
+      max-width:150px !important;
       padding:.3rem .5rem !important;
       font-size:.78rem !important;
-      float:right;
     }}
     </style>""", unsafe_allow_html=True)
     if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode",
