@@ -1170,12 +1170,13 @@ with hc2:
         var n=new Date(),
           D=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
           M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var h=n.getHours(), ap=h>=12?'PM':'AM', h12=h%12; if(h12===0) h12=12;
         document.getElementById('av-clock').innerHTML=
           '<div>'+D[n.getDay()]+' '+String(n.getDate()).padStart(2,'0')+
           ' '+M[n.getMonth()]+'</div><div>'+
-          String(n.getHours()).padStart(2,'0')+':'+
+          String(h12).padStart(2,'0')+':'+
           String(n.getMinutes()).padStart(2,'0')+':'+
-          String(n.getSeconds()).padStart(2,'0')+'</div>';
+          String(n.getSeconds()).padStart(2,'0')+' '+ap+'</div>';
       }}
       tick(); setInterval(tick,1000);
     }})();
@@ -1488,7 +1489,7 @@ if st.session_state.active_tab == "dashboard":
                       if changed_count else "No parameters changed since the previous run")
         st.markdown(
             f"<div class='av-card av-tone-ok' style='margin-bottom:1rem;'>"
-            f"<h4>✅ Analysis #{analysis_count} — run at {last_run_time.strftime('%d %b, %H:%M:%S')}</h4>"
+            f"<h4>✅ Analysis #{analysis_count} — run at {last_run_time.strftime('%d %b, %I:%M:%S %p')}</h4>"
             f"<p>{change_msg}.</p></div>",
             unsafe_allow_html=True
         )
