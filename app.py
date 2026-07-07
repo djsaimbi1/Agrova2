@@ -1437,7 +1437,7 @@ elif st.session_state.active_tab == "advisor":
     section(f"{T('crop_detail', lang)}: {CN(sel, lang)}")
     dp = st.columns(3)
     dp[0].metric("⏱️ Days", f"{grow_days}")
-    dp[1].metric("💰 ₹/kg", f"{price_kg}")
+    dp[1].metric("💰 Sell price/kg", f"₹{price_kg}")
     dp[2].metric("🐛 Pest risk", L.get(pest_risk_level.lower(), L["medium"])[lang])
     season_label = L_SEASON_K if crop_season == "Kharif" else (L_SEASON_R if crop_season == "Rabi" else L_SEASON_A)
     st.markdown(bar(sc, "var(--brand)"), unsafe_allow_html=True)
