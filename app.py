@@ -327,14 +327,14 @@ section[data-testid="stSidebar"] .stNumberInput button{
     padding: .35rem .7rem !important;
   }
 
-  /* Streamlit metric columns — wrap to 2 per row with gap */
+  /* Streamlit metric columns — 1 per row, full width, equal gap */
   [data-testid="stHorizontalBlock"] {
     flex-wrap: wrap !important;
-    gap: .6rem !important;
+    gap: .55rem !important;
   }
   [data-testid="stHorizontalBlock"] > div {
-    min-width: calc(50% - .3rem) !important;
-    flex: 1 1 calc(50% - .3rem) !important;
+    min-width: 100% !important;
+    flex: 1 1 100% !important;
     margin-bottom: 0 !important;
   }
 
@@ -380,13 +380,13 @@ section[data-testid="stSidebar"] .stNumberInput button{
   .av-pill{font-size:.72rem !important; padding:.14rem .45rem !important; white-space:nowrap !important;}
   .av-pill-neutral{display:inline-block !important; margin:.15rem .1rem !important;}
 
-  /* Metrics — still 2 per row, slightly larger gap on small phones */
+  /* Metrics — 1 per row on small phones */
   [data-testid="stHorizontalBlock"] {
     gap: .5rem !important;
   }
   [data-testid="stHorizontalBlock"] > div {
-    min-width: calc(50% - .25rem) !important;
-    flex: 1 1 calc(50% - .25rem) !important;
+    min-width: 100% !important;
+    flex: 1 1 100% !important;
   }
 
   .stMetric [data-testid="stMetricValue"]{font-size:1.05rem !important;}
