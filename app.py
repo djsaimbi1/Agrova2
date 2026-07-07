@@ -280,6 +280,122 @@ section[data-testid="stSidebar"] .stNumberInput button{
 .av-card a{text-decoration:none;}
 .av-card a:hover{text-decoration:underline;}
 
+/* ── RESPONSIVE — tablet & mobile ─────────────────────────── */
+
+/* Prevent ALL text from breaking mid-word globally */
+*, *::before, *::after {
+  word-break: keep-all !important;
+  overflow-wrap: break-word !important;
+  -webkit-hyphens: none !important;
+  hyphens: none !important;
+}
+
+@media (max-width: 768px) {
+  /* Layout */
+  .block-container{padding-left:.8rem !important; padding-right:.8rem !important; padding-top:1.5rem !important;}
+
+  /* Hero */
+  .av-hero{padding:1.4rem 1rem !important; max-width:100% !important; border-radius:14px !important;}
+  .av-hero h1,.av-hero h1 *{font-size:1.9rem !important; white-space:normal !important;}
+  .av-hero p{font-size:.86rem !important;}
+
+  /* Section headings */
+  .av-section h3{font-size:.66rem !important; letter-spacing:.08em !important;}
+
+  /* Cards */
+  .av-card{padding:.85rem 1rem !important;}
+  .av-card h4{font-size:.85rem !important; white-space:normal !important;}
+  .av-card p{font-size:.83rem !important; line-height:1.5 !important;}
+
+  /* Card grids — collapse to 1 column on tablet/mobile */
+  div[style*="grid-template-columns"]{
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Nav tabs — horizontal scroll, no wrapping, no letter breaks */
+  .st-key-navtabs > div {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    flex-wrap: nowrap !important;
+    scrollbar-width: none !important;
+  }
+  .st-key-navtabs > div::-webkit-scrollbar{display:none !important;}
+  .st-key-navtabs .stButton > button {
+    white-space: nowrap !important;
+    min-width: max-content !important;
+    font-size: .78rem !important;
+    padding: .35rem .7rem !important;
+  }
+
+  /* Streamlit metric columns — wrap to 2 per row */
+  [data-testid="stHorizontalBlock"] {
+    flex-wrap: wrap !important;
+  }
+  [data-testid="stHorizontalBlock"] > div {
+    min-width: 45% !important;
+    flex: 1 1 45% !important;
+  }
+
+  /* Header: stack title left, pill+clock right stays compact */
+  .stMetric [data-testid="stMetricValue"]{font-size:1.15rem !important;}
+  .stMetric label{font-size:.64rem !important;}
+
+  /* Tabs */
+  .stTabs [data-baseweb="tab"]{padding:0 10px !important; font-size:.8rem !important;}
+  .stTabs [data-baseweb="tab-list"]{overflow-x:auto !important; flex-wrap:nowrap !important; -webkit-overflow-scrolling:touch !important;}
+
+  /* Crop tiles — 2 per row */
+  .av-crop-tile{padding:.45rem !important;}
+  .av-crop-tile .name{font-size:.75rem !important;}
+  .av-crop-tile .score{font-size:.66rem !important;}
+
+  /* Dark mode button — full width on mobile */
+  .st-key-dm_toggle > button {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .block-container{padding-left:.5rem !important; padding-right:.5rem !important;}
+
+  /* Hero */
+  .av-hero h1,.av-hero h1 *{font-size:1.5rem !important;}
+  .av-hero{padding:1.1rem .75rem !important; border-radius:12px !important;}
+
+  /* Cards */
+  .av-card{padding:.7rem .85rem !important; border-radius:10px !important;}
+  .av-card p{font-size:.81rem !important;}
+
+  /* Nav tabs */
+  .st-key-navtabs .stButton > button {
+    font-size: .72rem !important;
+    padding: .3rem .55rem !important;
+  }
+
+  /* Pills */
+  .av-pill{font-size:.72rem !important; padding:.14rem .45rem !important; white-space:nowrap !important;}
+  .av-pill-neutral{display:inline-block !important; margin:.15rem .1rem !important;}
+
+  /* Metrics — stack to 1 per row on very small screens */
+  [data-testid="stHorizontalBlock"] > div {
+    min-width: 100% !important;
+    flex: 1 1 100% !important;
+  }
+
+  .stMetric [data-testid="stMetricValue"]{font-size:1.05rem !important;}
+  .stMetric label{font-size:.6rem !important;}
+
+  /* Section heading */
+  .av-section h3{font-size:.62rem !important;}
+
+  /* Keep all text from ever wrapping mid-word */
+  p, span, div, td, th, li, h1, h2, h3, h4, button {
+    white-space: normal !important;
+    word-break: keep-all !important;
+  }
+}
+
 /* Selectbox in main area */
 [data-baseweb="select"]>div{border-radius:var(--radius-sm) !important; border-color:var(--border) !important;}
 /* Landing page language selector — always white text on dark bg since it sits on a dark card */
