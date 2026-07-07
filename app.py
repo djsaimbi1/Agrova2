@@ -1056,9 +1056,19 @@ with hc2:
     }})();
     </script>
     """, height=105)
-    st.markdown("<div style='height:.3rem'></div>", unsafe_allow_html=True)
+    st.markdown(f"""
+    <style>
+    .st-key-dm_toggle > button {{
+      width:160px !important;
+      min-width:160px !important;
+      max-width:160px !important;
+      padding:.3rem .5rem !important;
+      font-size:.78rem !important;
+      float:right;
+    }}
+    </style>""", unsafe_allow_html=True)
     if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode",
-                 key="dm_toggle", use_container_width=True):
+                 key="dm_toggle", use_container_width=False):
         st.session_state.dark_mode = not _dm
         st.rerun()
 
