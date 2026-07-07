@@ -1055,8 +1055,8 @@ with hc2:
       tick(); setInterval(tick,1000);
     }})();
     </script>
-    """, height=85)
-    st.markdown("<style>.st-key-dm_toggle>button{padding:.25rem .6rem !important; font-size:.78rem !important; min-height:0 !important; height:auto !important;}</style>", unsafe_allow_html=True)
+    """, height=105)
+    st.markdown("<div style='height:.3rem'></div>", unsafe_allow_html=True)
     if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode",
                  key="dm_toggle", use_container_width=True):
         st.session_state.dark_mode = not _dm
