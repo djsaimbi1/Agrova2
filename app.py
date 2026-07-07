@@ -1587,8 +1587,9 @@ elif st.session_state.active_tab == "water":
 # ══════════════════════════════════════════════════════════════
 elif st.session_state.active_tab == "finance":
     section(T("financial", lang))
-    base_yield    = round((sc/100) * 2500 * farm_size, 0)   # realistic avg 2500 kg/ha
-    gross_rev     = round(base_yield * price_kg, 0)
+    base_yield    = round((sc/100) * 1100 * farm_size, 0)   # realistic avg 1100 kg/ha
+    farm_gate_px  = round(price_kg * 0.62, 1)               # farmer gets ~62% of market price after mandi/middlemen
+    gross_rev     = round(base_yield * farm_gate_px, 0)
     # Input cost breakdown (realistic Indian farm costs)
     seed_cost     = round(farm_size * 3500, 0)              # seeds ₹3,500/ha
     fert_cost     = round(farm_size * 8000, 0)              # fertiliser ₹8,000/ha
@@ -1607,7 +1608,9 @@ elif st.session_state.active_tab == "finance":
     card_grid([
         ("📈 Revenue", f"<p>Est. yield: <strong>{int(base_yield)} kg</strong></p>"
          f"<p>After loss risk: <strong>{int(adj_yield)} kg</strong></p>"
-         f"<p>Price: <strong>₹{price_kg}/kg</strong></p><p>Gross: <strong>₹{int(gross_rev):,}</strong></p>", "", "brand"),
+         f"<p>Market price: <strong>₹{price_kg}/kg</strong></p>"
+         f"<p>Farm gate price: <strong>₹{farm_gate_px}/kg</strong> (after mandi/middlemen)</p>"
+         f"<p>Gross: <strong>₹{int(gross_rev):,}</strong></p>", "", "brand"),
         ("💸 Cost Breakdown",
          f"<p>🌱 Seeds: <strong>₹{int(seed_cost):,}</strong></p>"
          f"<p>🧪 Fertilizer: <strong>₹{int(fert_cost):,}</strong></p>"
