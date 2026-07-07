@@ -1589,20 +1589,31 @@ elif st.session_state.active_tab == "water":
 # ══════════════════════════════════════════════════════════════
 elif st.session_state.active_tab == "finance":
     section(T("financial", lang))
-    base_yield = round((sc/100) * 8500 * farm_size, 0)
-    gross_rev  = round(base_yield * price_kg, 0)
-    input_cost = round(farm_size * 25000, 0)
-    transport  = round(market_dist * base_yield * 0.002, 0)
-    net_profit = round(gross_rev - input_cost - transport, 0)
-    roi        = round((net_profit/input_cost)*100, 1) if input_cost > 0 else 0
-    adj_yield  = round(base_yield * (1 - loss_pct/100), 0)
-    adj_profit = round(adj_yield * price_kg - input_cost - transport, 0)
+    base_yield  = round((sc/100) * 8500 * farm_size, 0)
+    gross_rev   = round(base_yield * price_kg, 0)
+    # Input cost breakdown
+    seed_cost   = round(farm_size * 3500, 0)   # avg seed cost ₹3500/ha
+    fert_cost   = round(farm_size * 8000, 0)   # fertiliser ₹8000/ha
+    water_cost  = round(farm_size * water_need * grow_days * 0.05, 0)  # ₹0.05/L/ha/day
+    input_cost  = round(seed_cost + fert_cost + water_cost, 0)
+    # Transport: base truck hire by distance + per-kg loading charge
+    trucks_needed = max(1, round(base_yield / 5000))  # 1 truck per 5000 kg
+    transport   = round(trucks_needed * (1200 + market_dist * 18), 0)  # ₹1200 base + ₹18/km
+    net_profit  = round(gross_rev - input_cost - transport, 0)
+    roi         = round((net_profit/input_cost)*100, 1) if input_cost > 0 else 0
+    adj_yield   = round(base_yield * (1 - loss_pct/100), 0)
+    adj_profit  = round(adj_yield * price_kg - input_cost - transport, 0)
     card_grid([
         ("📈 Revenue", f"<p>Est. yield: <strong>{int(base_yield)} kg</strong></p>"
          f"<p>After loss risk: <strong>{int(adj_yield)} kg</strong></p>"
          f"<p>Price: <strong>₹{price_kg}/kg</strong></p><p>Gross: <strong>₹{int(gross_rev):,}</strong></p>", "", "brand"),
-        ("💸 Cost", f"<p>Input cost: <strong>₹{int(input_cost):,}</strong></p>"
-         f"<p>Transport: <strong>₹{int(transport):,}</strong></p><p>ROI: <strong>{roi}%</strong></p>", "", "brand"),
+        ("💸 Cost Breakdown",
+         f"<p>🌱 Seeds: <strong>₹{int(seed_cost):,}</strong></p>"
+         f"<p>🧪 Fertilizer: <strong>₹{int(fert_cost):,}</strong></p>"
+         f"<p>💧 Water/irrigation: <strong>₹{int(water_cost):,}</strong></p>"
+         f"<p>🚛 Transport ({trucks_needed} truck{'s' if trucks_needed>1 else ''}, {market_dist} km): <strong>₹{int(transport):,}</strong></p>"
+         f"<p>Total cost: <strong>₹{int(input_cost+transport):,}</strong></p>"
+         f"<p>ROI: <strong>{roi}%</strong></p>", "", "brand"),
         ("🏆 Net", f"<p>Net profit: <strong style='font-size:1.05rem;'>₹{int(net_profit):,}</strong></p>"
          f"<p>Adj. profit (after loss): <strong>₹{int(adj_profit):,}</strong></p>"
          f"<p>Sell at: <strong>{'APMC Mandi' if market_dist<50 else 'eNAM Online'}</strong></p>", "", "brand"),
