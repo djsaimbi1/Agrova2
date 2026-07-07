@@ -1517,8 +1517,8 @@ elif st.session_state.active_tab == "finance":
     freq     = "Every 3 days" if soil < 40 else "Every 5–7 days"
     rainwater = round(rain * farm_size * 100, 0)
     card_grid([
-        (T("rain", lang), f"<p>Daily: <strong>{daily_w} L/ha</strong></p><p>Weekly: <strong>{weekly_w} L/ha</strong></p>"
-         f"<p>Season: <strong>{season_w} L/ha</strong></p><p>Farm total: <strong>{total_w} L</strong></p>", "📊", "info"),
+        ("Water Consumption", f"<p>Daily: <strong>{daily_w} L/ha</strong></p><p>Weekly: <strong>{weekly_w} L/ha</strong></p>"
+         f"<p>Season: <strong>{season_w} L/ha</strong></p><p>Farm total: <strong>{total_w} L/ha</strong></p>", "📊", "info"),
         (irr_type, f"<p>Frequency: <strong>{freq}</strong></p><p>Best time: <strong>5–7 AM</strong></p>"
          "<p>PMKSY subsidy: <strong>55–75%</strong></p>", "🚿", "info"),
         ("Rainwater harvesting", f"<p>Estimated: <strong>{int(rainwater)} L</strong></p>"
