@@ -1204,16 +1204,7 @@ if gas > 70:
 
 risks, loss_pct = crop_loss_risk(soil, rain, temp, gas, humidity, wind)
 
-# ── Dark Mode toggle — sits between subtitle and nav tabs ──────
-st.markdown("<div style='height:.2rem'></div>", unsafe_allow_html=True)
 _dm = st.session_state.get("dark_mode", False)
-_dm_cols = st.columns([1, 2, 1])
-with _dm_cols[1]:
-    if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode",
-                 key="dm_toggle", use_container_width=True):
-        st.session_state.dark_mode = not _dm
-        st.rerun()
-st.markdown("<div style='height:.2rem'></div>", unsafe_allow_html=True)
 st.markdown("<hr style='margin:.4rem 0 .8rem 0;border-top:1px solid var(--border);border-bottom:none;'>",
             unsafe_allow_html=True)
 
@@ -1268,6 +1259,15 @@ with st.container(key="navtabs"):
                          type="primary" if is_active else "secondary"):
                 st.session_state.active_tab = nav_key
                 st.rerun()
+
+# ── Dark Mode toggle — small centered button below nav tabs ────
+_dm_c1, _dm_c2, _dm_c3 = st.columns([2, 1, 2])
+with _dm_c2:
+    if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode",
+                 key="dm_toggle", use_container_width=True):
+        st.session_state.dark_mode = not _dm
+        st.rerun()
+st.markdown("<div style='height:.4rem'></div>", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
 # SCROLL RESET — whenever the active tab changes (nav bar click,
