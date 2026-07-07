@@ -1427,6 +1427,7 @@ if st.session_state.active_tab == "dashboard":
                 if st.button(CN(crop, lang), key=f"pick_{crop}", use_container_width=True):
                     st.session_state.sel_crop = crop
                     st.session_state.active_tab = "advisor"
+                    st.session_state.scroll_top = True
                     st.rerun()
         st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
@@ -1434,6 +1435,8 @@ if st.session_state.active_tab == "dashboard":
 # TAB 2 — CROP ADVISOR
 # ══════════════════════════════════════════════════════════════
 elif st.session_state.active_tab == "advisor":
+    if st.session_state.pop("scroll_top", False):
+        components.html("<script>try{window.parent.scrollTo(0,0);}catch(e){} window.scrollTo(0,0);</script>", height=0)
     section(f"{T('crop_detail', lang)}: {CN(sel, lang)}")
     dp = st.columns(3)
     dp[0].metric("⏱️ Days", f"{grow_days}")
