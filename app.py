@@ -226,11 +226,13 @@ hr{border:none !important; border-top:1px solid var(--border) !important; margin
 .av-chat-user{background:var(--bg-alt); border-radius:var(--radius-sm); padding:.6rem .9rem; margin:.35rem 0; font-size:.88rem;}
 .av-chat-bot{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:.6rem .9rem; margin:.35rem 0; font-size:.88rem;}
 
-.av-hero{background:linear-gradient(135deg, var(--brand) 0%, var(--brand-dark, #0d3b2e) 100%); border-radius:20px; padding:3rem 2rem; text-align:center; color:#fff; margin-bottom:1.4rem; box-shadow:var(--shadow-lg); max-width:900px; margin-left:auto; margin-right:auto;}
-.av-hero h1,.av-hero h1 *{color:#ffffff !important; font-size:3.2rem !important; letter-spacing:-.02em; margin:0 !important; font-weight:800 !important;}
-.av-hero p{color:#c8e6de !important; font-size:1rem !important; margin-top:.6rem !important;}
+.av-hero{background:linear-gradient(135deg, var(--brand) 0%, var(--brand-dark, #0d3b2e) 100%); border-radius:20px; padding:1.7rem 2rem; text-align:center; color:#fff; margin-bottom:1.4rem; box-shadow:var(--shadow-lg); max-width:900px; margin-left:auto; margin-right:auto; position:relative; overflow:hidden;}
+.av-hero::before{content:"";position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.06);}
+.av-hero::after{content:"";position:absolute;bottom:-70px;left:-70px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.05);}
+.av-hero h1,.av-hero h1 *{color:#ffffff !important; font-size:2.6rem !important; letter-spacing:-.02em; margin:0 !important; font-weight:800 !important; position:relative; z-index:1;}
+.av-hero p{color:#c8e6de !important; font-size:.95rem !important; margin-top:.4rem !important; position:relative; z-index:1;}
 /* Gold accent stripe below hero title */
-.av-hero-accent{display:inline-block;width:48px;height:3px;background:var(--accent);border-radius:2px;margin:.7rem auto .5rem;}
+.av-hero-accent{display:inline-block;width:44px;height:3px;background:var(--accent);border-radius:2px;margin:.5rem auto .35rem;position:relative;z-index:1;}
 
 /* Pills */
 .av-pill{display:inline-block;padding:.18rem .6rem;border-radius:999px;font-size:.78rem;font-weight:600;margin:.12rem .2rem;line-height:1.5;}
