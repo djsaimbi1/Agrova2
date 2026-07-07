@@ -1056,6 +1056,11 @@ with hc2:
     }})();
     </script>
     """, height=105)
+    st.markdown("<div style='height:.3rem'></div>", unsafe_allow_html=True)
+    if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode",
+                 key="dm_toggle", use_container_width=True):
+        st.session_state.dark_mode = not _dm
+        st.rerun()
 
 if st.session_state.get("dark_mode", False):
     st.markdown("""<style>
@@ -1260,14 +1265,6 @@ with st.container(key="navtabs"):
                 st.session_state.active_tab = nav_key
                 st.rerun()
 
-# ── Dark Mode toggle — small centered button below nav tabs ────
-_dm_c1, _dm_c2, _dm_c3 = st.columns([2, 1, 2])
-with _dm_c2:
-    if st.button("☀️ Light Mode" if _dm else "🌙 Dark Mode",
-                 key="dm_toggle", use_container_width=True):
-        st.session_state.dark_mode = not _dm
-        st.rerun()
-st.markdown("<div style='height:.4rem'></div>", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
 # SCROLL RESET — whenever the active tab changes (nav bar click,
