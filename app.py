@@ -327,16 +327,19 @@ section[data-testid="stSidebar"] .stNumberInput button{
     padding: .35rem .7rem !important;
   }
 
-  /* Streamlit metric columns — wrap to 2 per row */
+  /* Streamlit metric columns — wrap to 2 per row with gap */
   [data-testid="stHorizontalBlock"] {
     flex-wrap: wrap !important;
+    gap: .6rem !important;
   }
   [data-testid="stHorizontalBlock"] > div {
-    min-width: 45% !important;
-    flex: 1 1 45% !important;
+    min-width: calc(50% - .3rem) !important;
+    flex: 1 1 calc(50% - .3rem) !important;
+    margin-bottom: 0 !important;
   }
 
   /* Header: stack title left, pill+clock right stays compact */
+  .stMetric {margin-bottom:.5rem !important;}
   .stMetric [data-testid="stMetricValue"]{font-size:1.15rem !important;}
   .stMetric label{font-size:.64rem !important;}
 
@@ -377,10 +380,13 @@ section[data-testid="stSidebar"] .stNumberInput button{
   .av-pill{font-size:.72rem !important; padding:.14rem .45rem !important; white-space:nowrap !important;}
   .av-pill-neutral{display:inline-block !important; margin:.15rem .1rem !important;}
 
-  /* Metrics — stack to 1 per row on very small screens */
+  /* Metrics — still 2 per row, slightly larger gap on small phones */
+  [data-testid="stHorizontalBlock"] {
+    gap: .5rem !important;
+  }
   [data-testid="stHorizontalBlock"] > div {
-    min-width: 100% !important;
-    flex: 1 1 100% !important;
+    min-width: calc(50% - .25rem) !important;
+    flex: 1 1 calc(50% - .25rem) !important;
   }
 
   .stMetric [data-testid="stMetricValue"]{font-size:1.05rem !important;}
