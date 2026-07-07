@@ -1594,7 +1594,7 @@ elif st.session_state.active_tab == "finance":
     # Input cost breakdown (realistic Indian farm costs)
     seed_cost     = round(farm_size * 3500, 0)              # seeds ₹3,500/ha
     fert_cost     = round(farm_size * 8000, 0)              # fertiliser ₹8,000/ha
-    water_cost    = round(farm_size * water_need * grow_days * 0.05, 0)  # ₹0.05/L/ha/day
+    water_cost    = round(farm_size * grow_days * ((100-rain)/100) * 32, 0)  # ₹32/ha/day of irrigation need (pump+labor+canal)
     labor_cost    = round(farm_size * 12000, 0)             # labor ₹12,000/ha (sowing+harvest)
     pesticide_cost= round(farm_size * 3000, 0)              # pesticides/fungicides ₹3,000/ha
     input_cost    = round(seed_cost + fert_cost + water_cost + labor_cost + pesticide_cost, 0)
