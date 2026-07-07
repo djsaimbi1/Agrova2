@@ -1205,7 +1205,7 @@ div[data-testid="stVerticalBlockBorderWrapper"] > *,
 .av-tone-info { background:#091d2c !important; border-color:#0f3a52 !important; }
 [data-baseweb="select"]>div { background:#162421 !important; border-color:#253d36 !important; }
 input, textarea { background:#162421 !important; border-color:#253d36 !important; }
-.st-key-navtabs{border-bottom:1px solid rgba(255,255,255,0.4) !important;}
+.st-key-navtabs{border-bottom:1px solid rgba(255,255,255,1) !important;}
 .st-key-navtabs .stButton>button[kind="secondary"] p,
 .st-key-navtabs .stButton>button[kind="secondary"] span,
 .st-key-navtabs .stButton>button[kind="secondary"] div{color:#9ec4bb !important;}
