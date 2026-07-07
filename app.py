@@ -1587,7 +1587,7 @@ elif st.session_state.active_tab == "water":
 # ══════════════════════════════════════════════════════════════
 elif st.session_state.active_tab == "finance":
     section(T("financial", lang))
-    base_yield    = round((sc/100) * 1100 * farm_size, 0)   # realistic avg 1100 kg/ha
+    base_yield    = round((sc/100) * 720 * farm_size, 0)    # realistic avg 720 kg/ha (Indian small farmer)
     farm_gate_px  = round(price_kg * 0.62, 1)               # farmer gets ~62% of market price after mandi/middlemen
     gross_rev     = round(base_yield * farm_gate_px, 0)
     # Input cost breakdown (realistic Indian farm costs)
@@ -1622,7 +1622,8 @@ elif st.session_state.active_tab == "finance":
          f"<p>Total: <strong>₹{int(total_cost):,}</strong> · ROI: <strong>{roi}%</strong></p>", "", "brand"),
         ("🏆 Net", f"<p>Net profit: <strong style='font-size:1.05rem;'>₹{int(net_profit):,}</strong></p>"
          f"<p>Adj. profit (after loss): <strong>₹{int(adj_profit):,}</strong></p>"
-         f"<p>Sell at: <strong>{'APMC Mandi' if market_dist<50 else 'eNAM Online'}</strong></p>", "", "brand"),
+         f"<p>Market distance: <strong>{market_dist} km</strong></p>"
+         f"<p>Sell at: <strong>{'Local APMC Mandi (nearby)' if market_dist<30 else ('District APMC Mandi' if market_dist<80 else 'eNAM Online / FPO aggregator')}</strong></p>", "", "brand"),
     ], ncols=3)
 
 # ══════════════════════════════════════════════════════════════
