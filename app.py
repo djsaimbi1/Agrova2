@@ -1214,8 +1214,6 @@ input, textarea { background:#162421 !important; border-color:#253d36 !important
 .st-key-navtabs .stButton>button[kind="primary"] span,
 .st-key-navtabs .stButton>button[kind="primary"] div{color:#3f9c88 !important;}
 </style>""", unsafe_allow_html=True)
-st.markdown("<hr>", unsafe_allow_html=True)
-
 if gas > 70:
     card(f"{L['danger'][lang]} — {RISK_LABELS['gas'][lang]}",
          f"<p><strong>{T('gas', lang)}: {gas}%</strong> — evacuate the area, avoid electrical switches, call 101.</p>",
@@ -1245,7 +1243,7 @@ NAV_ITEMS = [
 # in the app (e.g. the Light/Dark Mode toggle, which was broken by
 # an earlier unscoped [kind="secondary"] rule).
 st.markdown("""<style>
-.st-key-navtabs{border-bottom:1px solid var(--border); margin-top:.6rem; margin-bottom:1rem; padding-top:.6rem; padding-bottom:.6rem;}
+.st-key-navtabs{border-bottom:1px solid var(--border); margin-bottom:1rem; padding-bottom:.6rem;}
 .st-key-navtabs .stButton>button{
   transition:background-color .22s ease, color .22s ease, box-shadow .22s ease, transform .12s ease !important;
 }
