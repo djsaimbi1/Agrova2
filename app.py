@@ -1236,7 +1236,8 @@ st.markdown("<hr style='margin:.4rem 0 .8rem 0;border-top:1px solid var(--border
 NAV_ITEMS = [
     ("dashboard", "📊 " + T("tab_dashboard", lang)),
     ("advisor",   "🌾 " + T("tab_advisor", lang)),
-    ("finance",   "💧 " + T("tab_finance", lang)),
+    ("water",     "💧 Water"),
+    ("finance",   "💰 Finance"),
     ("schemes",   "🏛️ " + T("tab_schemes", lang)),
     ("chat",      "💬 " + T("tab_chat", lang)),
 ]
@@ -1505,9 +1506,9 @@ elif st.session_state.active_tab == "advisor":
     st.markdown("<div style='margin-bottom:1.5rem;'></div>", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════
-# TAB 3 — WATER & FINANCE
+# TAB 3 — WATER
 # ══════════════════════════════════════════════════════════════
-elif st.session_state.active_tab == "finance":
+elif st.session_state.active_tab == "water":
     section(T("water_plan", lang))
     daily_w  = round((100-rain) * water_need * 0.15, 1)
     weekly_w = round(daily_w * 7, 1)
@@ -1526,26 +1527,6 @@ elif st.session_state.active_tab == "finance":
          "<p>PMKSY subsidy: <strong>55–75%</strong></p>", "🚿", "info"),
         ("Rainwater harvesting", f"<p>Estimated: <strong>{int(rainwater)} L</strong></p>"
          "<p>Pond size: <strong>10×10×2 m</strong></p><p>Saves: <strong>~30% cost</strong></p>", "♻️", "info"),
-    ], ncols=3)
-
-    section(T("financial", lang))
-    base_yield = round((sc/100) * 8500 * farm_size, 0)
-    gross_rev  = round(base_yield * price_kg, 0)
-    input_cost = round(farm_size * 25000, 0)
-    transport  = round(market_dist * base_yield * 0.002, 0)
-    net_profit = round(gross_rev - input_cost - transport, 0)
-    roi        = round((net_profit/input_cost)*100, 1) if input_cost > 0 else 0
-    adj_yield  = round(base_yield * (1 - loss_pct/100), 0)
-    adj_profit = round(adj_yield * price_kg - input_cost - transport, 0)
-    card_grid([
-        ("📈 Revenue", f"<p>Est. yield: <strong>{int(base_yield)} kg</strong></p>"
-         f"<p>After loss risk: <strong>{int(adj_yield)} kg</strong></p>"
-         f"<p>Price: <strong>₹{price_kg}/kg</strong></p><p>Gross: <strong>₹{int(gross_rev):,}</strong></p>", "", "brand"),
-        ("💸 Cost", f"<p>Input cost: <strong>₹{int(input_cost):,}</strong></p>"
-         f"<p>Transport: <strong>₹{int(transport):,}</strong></p><p>ROI: <strong>{roi}%</strong></p>", "", "brand"),
-        ("🏆 Net", f"<p>Net profit: <strong style='font-size:1.05rem;'>₹{int(net_profit):,}</strong></p>"
-         f"<p>Adj. profit (after loss): <strong>₹{int(adj_profit):,}</strong></p>"
-         f"<p>Sell at: <strong>{'APMC Mandi' if market_dist<50 else 'eNAM Online'}</strong></p>", "", "brand"),
     ], ncols=3)
 
     section(T("soil_section", lang))
@@ -1604,7 +1585,31 @@ elif st.session_state.active_tab == "finance":
     ], ncols=2)
 
 # ══════════════════════════════════════════════════════════════
-# TAB 4 — GOVERNMENT SCHEMES
+# TAB 4 — FINANCE
+# ══════════════════════════════════════════════════════════════
+elif st.session_state.active_tab == "finance":
+    section(T("financial", lang))
+    base_yield = round((sc/100) * 8500 * farm_size, 0)
+    gross_rev  = round(base_yield * price_kg, 0)
+    input_cost = round(farm_size * 25000, 0)
+    transport  = round(market_dist * base_yield * 0.002, 0)
+    net_profit = round(gross_rev - input_cost - transport, 0)
+    roi        = round((net_profit/input_cost)*100, 1) if input_cost > 0 else 0
+    adj_yield  = round(base_yield * (1 - loss_pct/100), 0)
+    adj_profit = round(adj_yield * price_kg - input_cost - transport, 0)
+    card_grid([
+        ("📈 Revenue", f"<p>Est. yield: <strong>{int(base_yield)} kg</strong></p>"
+         f"<p>After loss risk: <strong>{int(adj_yield)} kg</strong></p>"
+         f"<p>Price: <strong>₹{price_kg}/kg</strong></p><p>Gross: <strong>₹{int(gross_rev):,}</strong></p>", "", "brand"),
+        ("💸 Cost", f"<p>Input cost: <strong>₹{int(input_cost):,}</strong></p>"
+         f"<p>Transport: <strong>₹{int(transport):,}</strong></p><p>ROI: <strong>{roi}%</strong></p>", "", "brand"),
+        ("🏆 Net", f"<p>Net profit: <strong style='font-size:1.05rem;'>₹{int(net_profit):,}</strong></p>"
+         f"<p>Adj. profit (after loss): <strong>₹{int(adj_profit):,}</strong></p>"
+         f"<p>Sell at: <strong>{'APMC Mandi' if market_dist<50 else 'eNAM Online'}</strong></p>", "", "brand"),
+    ], ncols=3)
+
+# ══════════════════════════════════════════════════════════════
+# TAB 5 — GOVERNMENT SCHEMES
 # ══════════════════════════════════════════════════════════════
 elif st.session_state.active_tab == "schemes":
     section(T("gov_section", lang))
